@@ -5,6 +5,12 @@ Overview to Time-Evolving fits
 The **TEfits** package streamlines nonlinear regression, such as that encountered in analysis of learning. The **TEfits** package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
 ``` r
+cat('# anstrain_s1 is 250 trials of perceptual learning data')
+```
+
+    ## # anstrain_s1 is 250 trials of perceptual learning data
+
+``` r
 mod <- TEfit(anstrain_s1[,c('acc','trialNum')])
 ```
 
@@ -33,8 +39,8 @@ summary(mod)
     ## pRate     6.960
     ## 
     ## >> Goodness-of-fit:
-    ##          err nullErr nPars nObs      Fval      Pval   Rsquared      BIC
-    ## ols 48.43851  48.576     3  250 0.3505366 0.7046598 0.00283032 -393.727
+    ##          err nullErr nPars nObs      Fval      Pval    Rsquared      BIC
+    ## ols 48.43851  48.576     3  250 0.3505377 0.7046591 0.002830328 -393.727
     ##       nullBIC deltaBIC
     ## ols -404.0614 10.33434
     ## 
