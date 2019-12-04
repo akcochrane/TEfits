@@ -1,0 +1,132 @@
+---
+title: "TEfits explained"
+author: "Aaron Cochrane"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TEfits-explained}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+
+```
+
+## Introduction to Time-Evolving Fits
+
+  Data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. This package serves to allow the same questions to be asked about time-evolving aspects of these indices.
+
+  Nonlinear regression is on the fringes of many analysis domains. In the immortal words that accompany the codification of the so-called "Power Law of Practice," Newell and Rosenbloom (1981) asserted that "Curve fitting without benefit of a model is notoriously a black art." This notoriety has hardly diminished in the intervening decades, although the use of Generalized Additive Models and Gaussian Processes has certainly become more popular. 
+  
+  The `TEfits` package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Rather than a "black art," parameters fit by `TEfits` are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
+  
+  The underlying goal of this package is to simplify the analysis of data
+[a response variable] that manifests as a saturating function of time.
+Many heuristics included in the package rely on this notion, e.g., exponential and power functions
+only are allowed to decay [are negative in the exponent]. Additionally, the default assumption is that
+he saturation should largely take place within the observed time. That is, if parameters
+of a time-evolving function are to be reliably estimated, the inflection point of the associated
+curve must be observed. This constraint allows the rejection of extreme curve
+shape parameters (i.e., "rate" parameters) which greatly improves the identifiability
+of nonlinear functions. That is to say, constraining this parameter reduces the
+possibility of mimicry of parameter combinations and the associated multiple error minima.
+
+Other excellent packages exist that facilitate nonlinear regression (e.g., *brms*, *gnm*, *lme4*, *nlme*) as well as *stats::nls*. *TEfits* is designed to fill a gap in these previous packages in two ways: 
+  
+1. Allow for non-normal distributions of response variables. Note that this means more than generalizing a (non-) linear model using a link function; in real data the likelihood function defining the error profile itself varies depending on the data being modeled. *brms* is the only one of the packages above that also allows this flexibility.
+  
+2. Lower the amount of expertise needed to implement nonlinear models. A core goal of *TEfits* is to minimize the barriers to parametric time-dependent analysis. While more custom and complex models can certainly be specified in a full modeling language (e.g., *Stan*) or one of its front-end packages (e.g., *brms*), *TEfits* is designed to open the door to users with minimal experience with nonlinear regression specification and implementation.
+  
+## Basic fitting: y~x
+
+explanation "under the hood" of parameters, parameterizations, interpretations
+
+how starts work, what parameters are named, how GoF and spearmanchange works
+
+what output is, summary(), plot(), simulate(), a
+
+how to change errFun and changeFun
+
+## Including covariates
+
+explanation "under the hood" as multilevel model, with linear models predicting 
+the nonlinear parameters
+covariates for everything, and for only some
+recommendations about limits and values... 2? centered, or is intercept calculated?
+special case of "covariate" is blockfun
+
+## Link functions: 
+
+how it works for defining the logistX
+how logistic works
+
+how it works for presence --
+how d_prime works --
+Note that a hwhm argument below ~.25 will essentially return 5 discrete levels of d-prime and can be considered
+the least smoothed option.
+
+## resampling
+
+how it works: nitty gritty, and also output
+what to expect: ==1
+what to expect: <1 (e.g., non-good CI)
+
+## Drawing inferences
+
+How to assess model fit? How to tell whether using a time-evolving function to describe your data is 
+"worth it?" Three primary methods are recommended: (1) Compare BIC -- a negative delta BIC indicates that 
+your parameters decreased error enough to justify their inclusion; (2) Compare conditional independence -- 
+a Spearman correlation between your response variable and time that is smaller with the model than without the model 
+indicates that your model is removing a pre-existing bias in your data, and proportional Spearman change can
+help with this comparison; (3) See how robust the directional trend is -- bootstrap your fit and see whether
+the time-dependent increase (or decrease) in predicted values is consistent across your resampled parameters. 
+Each of these methods of evaluating fit are available from the summary() function. Of course, the above
+can also be used to compare fits with different change functions, covariates, fixed parameters, etc.
+
+## Down the rabbit hole: `control`
+
+implications of ylim, default ylim, and custom ylim
+
+implications of ratelim, default ratelim, and custom rate ... implications and reasons around penalizing error
+
+
+
+## Change functions, explained.
+
+## Link functions, explained
+
+Identity
+
+Logistic
+
+
+
+## Error functions, explained.
+
+what is an error function, how is convergence checked, what are GoF measures calculated
+
+what are each qualitatively, what are each implemented as.
+
+`logcosh`: the log hyperbolic cosine error function can be thought of as an interpolation between ordinary least squares (OLS) and absolute errors (median regression). At small absolute errors logcosh increases with an increasing slope. At large absolute errors logcosh increases with a near-constant slope of 1. More specifically, it is approximately equal to (error^2)/2 for small errors and to abs(error)-log(2) for large error. This means that below values of around 20, there is nonzero second derivative that is helpful to optimization routines. In reality this curvilinear regime is always shallower than OLS, making `logcosh` consistently less influenced by outlying data. 
+_Implementation:_ `log(cosh(y-yHat))`
+
+## Do you want complete control?
+
+For more traditional nonlinear regression, in which a formula is explicitly stated,
+define the formula in the control list. Convergence criterion can also be set arbitrarily
+low to simply return the best-fit model after the desired number of runs (note that, regardless 
+of the number of runs, a warning regarding nonconvergence will likely be printed).
+
+`TEfit(varIn[,c('y','time_v')],control=list(explicit='y~a_par+log(1/time_v^b_par)',nTries=1E3,convergeTol=1E-10))`
+
+## References
+
+cite Wichman Hill 2001 I for bernoulli likelihood, and other things.
+also: Strasburger, H. Perception & Psychophysics (2001) 63: 1348. https://doi.org/10.3758/BF03194547
+
+read Gold Law Connolly Bennur 2010 (has a parameterization for time-dependent threshold and time-independent shape of Weibull)
+P(C) = 0.5 + (0.5 - lapseRate)(1 - expBase^(-(stim_strength/threshold)^shape))
+[expBase=2.0851 so threshold point is at d'=1]
+
+cite Klein 2001
