@@ -5,14 +5,16 @@ Overview to Time-Evolving fits
 The **TEfits** package streamlines nonlinear regression, such as that encountered in analysis of learning. The **TEfits** package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
 ``` r
-mod <- TEfit(anstrain_s1[,c('acc','trialNum')])
+dat <- data.frame(resp=c(seq(0,2,.1),seq(2,10)),trialNum=1:30)
+
+mod <- TEfit(dat[,c('resp','trialNum')])
 ```
 
     ## 
     ## Your rate is very close to the boundary. Consider penalizing the likelihood.
 
 ``` r
-plot(mod,plot_title='Time-evolving fit of anstrain_s1 data')
+plot(mod,plot_title='Time-evolving fit of artificial data')
 ```
 
 ![](README_files/figure-markdown_github/simple_model-1.png)
@@ -22,26 +24,26 @@ summary(mod)
 ```
 
     ## 
-    ## >> Call: acc~(pAsym) + ((pStart) - (pAsym)) * 2^((1 - trialNum)/(2^(pRate)))
+    ## >> Call: resp~(pAsym) + ((pStart) - (pAsym)) * 2^((1 - trialNum)/(2^(pRate)))
     ## 
     ## >> Converged: TRUE 
     ## 
     ## >> Fit Values:
     ##        Estimate
-    ## pAsym     0.795
-    ## pStart    0.686
-    ## pRate     6.960
+    ## pAsym     7.669
+    ## pStart   -1.834
+    ## pRate     3.858
     ## 
     ## >> Goodness-of-fit:
-    ##          err nullErr nPars nObs      Fval      Pval    Rsquared      BIC
-    ## ols 48.43851  48.576     3  250 0.3505375 0.7046592 0.002830327 -393.727
-    ##       nullBIC deltaBIC
-    ## ols -404.0614 10.33434
+    ##          err nullErr nPars nObs    Fval         Pval  Rsquared      BIC
+    ## ols 92.51078   225.2     3   30 19.3632 6.080279e-06 0.5892061 43.98743
+    ##      nullBIC  deltaBIC
+    ## ols 63.87494 -19.88752
     ## 
     ## >> Test of change in nonindependence:
-    ##                                           rawSpearman modelConditionalSpearman
-    ## Nonindependence between acc and trialNum:  0.06085813                0.5674394
-    ##                                           proportionalSpearmanChange
-    ## Nonindependence between acc and trialNum:                    9.32397
-    ##                                           pValSpearmanChange
-    ## Nonindependence between acc and trialNum:       9.372569e-11
+    ##                                            rawSpearman modelConditionalSpearman
+    ## Nonindependence between resp and trialNum:   0.9998888               0.03136819
+    ##                                            proportionalSpearmanChange
+    ## Nonindependence between resp and trialNum:                 0.03137168
+    ##                                            pValSpearmanChange
+    ## Nonindependence between resp and trialNum:                  0
