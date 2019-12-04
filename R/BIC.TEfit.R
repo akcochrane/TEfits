@@ -1,6 +1,3 @@
-
-
-
 #' Extract BIC from a TEfit model
 #'
 #' @param TEs3 A TEfit model

@@ -1,4 +1,4 @@
-#' {{CREATE EXPLANATION}}
+#' Create table of error messages
 #'
 #' @export
 #'

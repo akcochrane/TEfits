@@ -1,5 +1,3 @@
-
-
 #' Extract residuals from a TEfit model
 #'
 #' Plotting of the residuals is also an option.

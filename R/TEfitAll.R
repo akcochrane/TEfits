@@ -4,7 +4,8 @@
 #' A wrapper for fitting a TEfit model to the data
 #' for every unique value of groupingVar. Defaults to
 #' returning a list including two summaries and all models; returning
-#' only a summary is also an option.
+#' only a summary is also an option. Arguments (except groupingvar, a grouping vector)
+#' are identical to, and are passed directly to, TEfit().
 #'
 #' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param groupingVar Variable (e.g., participant ID) with which to separate TEfit models. Length must be nrows(varIn)

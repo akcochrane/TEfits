@@ -1,11 +1,9 @@
-
-
-
-
-#' {{CREATE EXPLANATION}}
+#' Construct parameter terms for the double-rate change function
 #'
-#' @param modList {{CREATE EXPLANATION}}
-#' @param pPrefix {{CREATE EXPLANATION}}
+#' NOTE: test more thoroughly.
+#'
+#' @param modList List of TEfit model details
+#' @param pPrefix prefix for parameters (e.g., p or thresh)
 #'
 #' @export
 #'
