@@ -16,8 +16,7 @@ The **TEfits** package streamlines nonlinear regression, such as that encountere
 
 ```{r simple_model, message=FALSE, warning=FALSE}
 
-dat <- data.frame(resp=c(seq(0,2,.1),seq(2,10)),trialNum=1:30)
-
+dat <- data.frame(resp=c(seq(0,2,.1),rep(2,9)),trialNum=1:30)
 mod <- TEfit(dat[,c('resp','trialNum')])
 
 plot(mod,plot_title='Time-evolving fit of artificial data')
