@@ -1,9 +1,6 @@
 #' Calculate the error of data, given the model and certain parameters
 #'
-#' This function should be improved. It is very very slow currently,
-#' and its use of grep() and if() statements should be minimized or removed.
-#' A bit of creativity will be needed for the
-#' reaching-boundaries and linkfun-specific checks
+#' This function should be in a state of constant improvement for speeding.
 #'
 #' @param guesses proposed parameter values
 #' @param varIn Data to be fit
