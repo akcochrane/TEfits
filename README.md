@@ -2,7 +2,9 @@
 Overview to Time-Evolving fits
 ------------------------------
 
-The **TEfits** package streamlines nonlinear regression such as that encountered in analysis of learning. The **TEfits** package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes such as starting values, number of trials until 50% of change, or asymptotic values. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
+Data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. The **TEfits** package serves to allow the same questions to be asked about time-evolving aspects of these indices, such as the starting level, the amount of time that the index takes to change, and the asymptotic level of that index. Nonlinear regression applied to time-evolving functions is made as intuitive and painless as is feasible, with many extensions if desired.
+
+The **TEfits** package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes such as starting values, number of trials until 50% of change, or asymptotic values. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
 ``` r
 dat <- data.frame(resp=log(1:30),trialNum=1:30)
@@ -65,9 +67,9 @@ summary(mod)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.998 0.973 1.000    0.007
-    ## pRate     2.557 2.374 2.764    0.099
-    ## pStart    0.046 0.000 0.178    0.045
+    ## pAsym     0.998 0.961 1.000    0.010
+    ## pRate     2.557 2.245 2.735    0.125
+    ## pStart    0.046 0.000 0.176    0.045
     ## 
     ## >> Goodness-of-fit:
     ##                err nullErr nPars nObs      BIC nullBIC  deltaBIC
@@ -86,8 +88,8 @@ summary(mod)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.621 0.830 0.088
-    ## pStart 0.621  1.000 0.931 0.452
-    ## pRate  0.830  0.931 1.000 0.364
-    ## err    0.088  0.452 0.364 1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000  0.527 0.844 -0.247
+    ## pStart  0.527  1.000 0.871  0.292
+    ## pRate   0.844  0.871 1.000  0.054
+    ## err    -0.247  0.292 0.054  1.000
