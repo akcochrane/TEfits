@@ -43,7 +43,7 @@ An example of fitting a given model to subsets of data (e.g., individual partici
 
 ```{r model_groups, message=FALSE, warning=FALSE}
 
-dat <- data.frame(response=c(dat$response,dat$response*1.1,dat$response*1.2,dat$response*1.3),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
+dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 mod <- TEfitAll(dat[,c('response','trial_number')], 
              groupingVar = dat$group)

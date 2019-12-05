@@ -28,11 +28,11 @@ summary(mod)
     ##        Estimate
     ## pAsym     3.522
     ## pStart    0.869
-    ## pRate     2.866
+    ## pRate     2.867
     ## 
     ## >> Goodness-of-fit:
     ##            err nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
-    ## ols 0.09355702 15.2815     3   30 2191.575    0 0.9938778 -162.9079 -16.83544
+    ## ols 0.09355704 15.2815     3   30 2191.574    0 0.9938778 -162.9078 -16.83544
     ##      deltaBIC
     ## ols -146.0724
     ## 
@@ -70,12 +70,12 @@ summary(mod)
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
     ## pAsym     1.000 1.000 1.000    0.000
-    ## pRate     2.740 2.658 2.841    0.047
-    ## pStart    0.231 0.209 0.278    0.018
+    ## pRate     2.739 2.684 2.832    0.038
+    ## pStart    0.231 0.209 0.260    0.013
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42284 16.83409     3   30 37.04928 37.06937 -0.02009175
+    ## bernoulli 13.42284 16.83409     3   30 37.04928 37.06937 -0.02009108
     ## 
     ## >> Test of change in nonindependence:
     ##                                                    rawSpearman
@@ -92,22 +92,25 @@ summary(mod)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000 -0.115 0.087 -0.474
-    ## pStart -0.115  1.000 0.884  0.433
-    ## pRate   0.087  0.884 1.000  0.447
-    ## err    -0.474  0.433 0.447  1.000
+    ##         pAsym pStart  pRate    err
+    ## pAsym   1.000 -0.176 -0.245 -0.077
+    ## pStart -0.176  1.000  0.840  0.504
+    ## pRate  -0.245  0.840  1.000  0.562
+    ## err    -0.077  0.504  0.562  1.000
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
 ``` r
-dat <- data.frame(response=c(dat$response,dat$response*1.1,dat$response*1.2,dat$response*1.3),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
+dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 mod <- TEfitAll(dat[,c('response','trial_number')], 
              groupingVar = dat$group)
 ```
 
-    ## . . . .
+    ## 
+    ## Your rate is very close to the boundary. Consider penalizing the likelihood.. 
+    ## Your rate is very close to the boundary. Consider penalizing the likelihood.. 
+    ## Your rate is very close to the boundary. Consider penalizing the likelihood.. .
 
 ``` r
 plot(mod)
@@ -123,16 +126,16 @@ summary(mod)
     ## >> Call: response ~ (pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate)))
     ## 
     ## >> Overall effects:
-    ##             pAsym     pStart        pRate
-    ## mean   1.16873035 0.28830871 2.866463e+00
-    ## stdErr 0.06559772 0.01618762 4.534049e-05
+    ##             pAsym     pStart      pRate
+    ## mean   0.14922125 0.01638942 3.83358311
+    ## stdErr 0.03932946 0.01060345 0.02439782
     ## 
-    ##                err   nullErr nPars nObs         Fval Pval     Rsquared
-    ## mean   0.010398404 1.6984638     3   30 2.191575e+03    0 9.938778e-01
-    ## stdErr 0.001157272 0.1890277     0    0 2.613288e-04    0 7.255617e-10
-    ##                BIC    nullBIC      deltaBIC  linkFun errFun changeFun converged
-    ## mean   -229.383415 -83.310998 -1.460724e+02 identity    ols      expo         1
-    ## stdErr    3.387974   3.387976  3.555373e-06 identity    ols      expo         0
+    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
+    ## mean   3.005043e-04 0.03071614     3   30 1692.5911 1.110223e-16 0.97598961
+    ## stdErr 6.864637e-05 0.01187769     0    0  653.4833 1.110223e-16 0.01661145
+    ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
+    ## mean   -337.338939 -211.91820 -125.42074 identity    ols      expo         1
+    ## stdErr    6.548342   14.35328   19.26151 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -143,6 +146,6 @@ summary(mod)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.258
-    ## pStart  1.000  1.000 -0.258
-    ## pRate  -0.258 -0.258  1.000
+    ## pAsym   1.000  1.000 -0.757
+    ## pStart  1.000  1.000 -0.763
+    ## pRate  -0.757 -0.763  1.000
