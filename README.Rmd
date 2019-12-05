@@ -18,7 +18,7 @@ The **TEfits** package has a heavy emphasis on interpretability of parameters. A
 
 ```{r simple_model, message=FALSE, warning=FALSE}
 
-dat <- data.frame(response=log(1:30),trial_number=1:30)
+dat <- data.frame(response=log(2:31),trial_number=1:30)
 mod <- TEfit(dat[,c('response','trial_number')])
 
 plot(mod,plot_title='Time-evolving fit of artificial data')
@@ -28,13 +28,26 @@ summary(mod)
 
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
-```{r model_a, message=FALSE, warning=FALSE}
+```{r model_boot, message=FALSE, warning=FALSE}
 
-dat <- data.frame(response=log(1:30)/log(31),trial_number=1:30)
+dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 mod <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=list(nBoots=40))
 plot(mod,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
+
+summary(mod)
+```
+
+An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
+
+```{r model_groups, message=FALSE, warning=FALSE}
+
+dat <- data.frame(response=c(dat$response,dat$response*1.1,dat$response*1.2,dat$response*1.3),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
+
+mod <- TEfitAll(dat[,c('response','trial_number')], 
+             groupingVar = dat$group)
+plot(mod)
 
 summary(mod)
 ```
