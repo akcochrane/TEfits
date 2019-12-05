@@ -16,7 +16,7 @@ The **TEfits** package streamlines nonlinear regression such as that encountered
 
 ```{r simple_model, message=FALSE, warning=FALSE}
 
-dat <- data.frame(resp=log(6:35),trialNum=1:30)
+dat <- data.frame(resp=log(1:30),trialNum=1:30)
 mod <- TEfit(dat[,c('resp','trialNum')])
 
 plot(mod,plot_title='Time-evolving fit of artificial data')
@@ -28,7 +28,7 @@ An example of a learning fit using a Bernoulli response distribution, with 40 bo
 
 ```{r model_a, message=FALSE, warning=FALSE}
 
-dat <- data.frame(resp=log(6:35)/log(36),trialNum=1:30)
+dat <- data.frame(resp=log(1:30)/log(31),trialNum=1:30)
 mod <- TEfit(dat[,c('resp','trialNum')], 
              errFun='bernoulli',
              bootPars=list(nBoots=40))
