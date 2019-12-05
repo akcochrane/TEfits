@@ -12,7 +12,7 @@ library(TEfits)
 
 ## Overview to Time-Evolving fits
 
-The **TEfits** package streamlines nonlinear regression, such as that encountered in analysis of learning. The **TEfits** package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
+The **TEfits** package streamlines nonlinear regression, such as that encountered in analysis of learning. The **TEfits** package is intended to assist in the implementation and interpretation of nonlinear regression with a heavy emphasis on interpretability of parameters. Parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes such as starting values, number of trials until 50% of change, or asymptotic values. Error functions, nonlinear ("change") functions linking parameters and time to predicted values, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
 ```{r simple_model, message=FALSE, warning=FALSE}
 
@@ -24,3 +24,17 @@ plot(mod,plot_title='Time-evolving fit of artificial data')
 summary(mod)
 ```
 
+An example of a double-exponential fit using a Bernoulli response distribution, with 50 bootstrapped fits.
+
+```{r model_a, message=FALSE, warning=FALSE}
+
+dat <- data.frame(resp=log(1:30)/log(31),trialNum=1:30)
+mod <- TEfit(dat[,c('resp','trialNum')], 
+             errFun='bernoulli',
+             changeFun='expo_double',
+             bootPars=list(nBoots=50))
+
+plot(mod,plot_title='Time-evolving fit of artificial data')
+
+summary(mod)
+```

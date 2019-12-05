@@ -4,7 +4,6 @@
 #' @param TEs3s A TEfitAll model object (collection of fit models)
 #' @param ymin minimum y value
 #' @param ymax maximum y value
-#' @param returnSummary Return the predicted values?
 #'
 #' @export
 #'
