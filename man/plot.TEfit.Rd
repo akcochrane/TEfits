@@ -8,20 +8,21 @@
   sub_title = "", ymin = NA, ymax = NA)
 }
 \arguments{
-\item{TEs3}{{{EXPLAIN}}}
+\item{TEs3}{TEfit model output}
 
-\item{plot_title}{{{EXPLAIN}}}
+\item{plot_title}{optional plot title}
 
-\item{xlabel}{{{EXPLAIN}}}
+\item{xlabel}{optional plot x axis label}
 
-\item{ylabel}{{{EXPLAIN}}}
+\item{ylabel}{optional plot y axis label}
 
-\item{sub_title}{{{EXPLAIN}}}
+\item{sub_title}{optional plot caption}
 
-\item{ymin}{{E}}
+\item{ymin}{optional lower boundary for Y axis}
 
-\item{ymax}{{E}}
+\item{ymax}{optional upper boundary for X axis}
 }
 \description{
-Plot a TEfit
+Plot predicted values of a TEfit model. Predictions are thresholds, if relevant;
+otherwise they are overall model predictions
 }

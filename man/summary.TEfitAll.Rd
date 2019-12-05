@@ -7,7 +7,7 @@
 \method{summary}{TEfitAll}(TEs3s, printOutput = T, printAll = F)
 }
 \arguments{
-\item{TEs3s}{A set of fit TEfit models}
+\item{TEs3s}{A set of fit TEfit models (output from TEfitAll())}
 
 \item{printOutput}{Print output to console (if T) or return a list of summary items (if F)}
 

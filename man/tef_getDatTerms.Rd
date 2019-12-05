@@ -9,10 +9,10 @@ tef_getDatTerms(modList, pPrefix, whichChange = "expo")
 \arguments{
 \item{modList}{List of TEfit model details}
 
-\item{pPrefix}{{{CREATE EXPLANATION}}}
+\item{pPrefix}{parameter prefix (e.g., p or thresh)}
 
-\item{whichChange}{{{CREATE EXPLANATION}}}
+\item{whichChange}{current change function to use}
 }
 \description{
-For a TEfit model, use a change function to gt the appropriate RHS terms
+Internal to TEfits
 }

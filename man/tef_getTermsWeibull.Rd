@@ -12,5 +12,5 @@ tef_getTermsWeibull(modList, pPrefix)
 \item{pPrefix}{prefix for parameters}
 }
 \description{
-Define the terms for a Weibull change function
+Internal to TEfits.
 }

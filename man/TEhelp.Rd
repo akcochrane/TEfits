@@ -7,7 +7,7 @@
 TEhelp(topic = "package")
 }
 \arguments{
-\item{topic}{Help topic. options are "package", "errFun"}
+\item{topic}{Help topic. To see options, see TEhelp('package')}
 }
 \description{
 Get help for the TEfits package

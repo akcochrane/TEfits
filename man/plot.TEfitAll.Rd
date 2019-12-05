@@ -12,8 +12,6 @@
 \item{ymin}{minimum y value}
 
 \item{ymax}{maximum y value}
-
-\item{returnSummary}{Return the predicted values?}
 }
 \description{
 Plot a collection of models fit by TEfitAll()

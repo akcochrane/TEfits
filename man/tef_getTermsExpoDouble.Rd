@@ -2,15 +2,15 @@
 % Please edit documentation in R/tef_getTermsExpoDouble.R
 \name{tef_getTermsExpoDouble}
 \alias{tef_getTermsExpoDouble}
-\title{{{CREATE EXPLANATION}}}
+\title{Construct parameter terms for the double-rate change function}
 \usage{
 tef_getTermsExpoDouble(modList, pPrefix)
 }
 \arguments{
-\item{modList}{{{CREATE EXPLANATION}}}
+\item{modList}{List of TEfit model details}
 
-\item{pPrefix}{{{CREATE EXPLANATION}}}
+\item{pPrefix}{prefix for parameters (e.g., p or thresh)}
 }
 \description{
-{{CREATE EXPLANATION}}
+NOTE: test more thoroughly.
 }

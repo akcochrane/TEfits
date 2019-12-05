@@ -2,15 +2,15 @@
 % Please edit documentation in R/tef_getTermsPower4.R
 \name{tef_getTermsPower4}
 \alias{tef_getTermsPower4}
-\title{{{CREATE EXPLANATION}}}
+\title{Define a time-dependent change function}
 \usage{
 tef_getTermsPower4(modList, pPrefix)
 }
 \arguments{
-\item{modList}{{{CREATE EXPLANATION}}}
+\item{modList}{TEfit modList}
 
-\item{pPrefix}{{{CREATE EXPLANATION}}}
+\item{pPrefix}{parameter prefix}
 }
 \description{
-{{CREATE EXPLANATION}}
+Internal to TEfits. 4-parameter power function.
 }

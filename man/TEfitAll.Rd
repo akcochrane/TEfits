@@ -37,5 +37,6 @@ TEfitAll(varIn, groupingVar, returnAll = T, progressDot = T,
 A wrapper for fitting a TEfit model to the data
 for every unique value of groupingVar. Defaults to
 returning a list including two summaries and all models; returning
-only a summary is also an option.
+only a summary is also an option. Arguments (except groupingvar, a grouping vector)
+are identical to, and are passed directly to, TEfit().
 }

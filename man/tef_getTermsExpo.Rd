@@ -2,15 +2,15 @@
 % Please edit documentation in R/tef_getTermsExpo.R
 \name{tef_getTermsExpo}
 \alias{tef_getTermsExpo}
-\title{{{CREATE EXPLANATION}}}
+\title{Define a time-dependent change function}
 \usage{
 tef_getTermsExpo(modList, pPrefix)
 }
 \arguments{
-\item{modList}{{{CREATE EXPLANATION}}}
+\item{modList}{TEfit modList}
 
-\item{pPrefix}{{{CREATE EXPLANATION}}}
+\item{pPrefix}{parameter prefix}
 }
 \description{
-Note that, despite the name, this is the getterms function for  *both* exponential and power [3-parameter] change functions
+Internal to TEfits. Note that, despite the name, this is the getterms function for  *both* exponential and power [3-parameter] change functions
 }

@@ -2,14 +2,14 @@
 % Please edit documentation in R/tef_getTermsExpoBlock.R
 \name{tef_getTermsExpoBlock}
 \alias{tef_getTermsExpoBlock}
-\title{{{CREATE EXPLANATION}}}
+\title{Construct parameter terms for the exponential+blocks change function}
 \usage{
 tef_getTermsExpoBlock(modList, pPrefix)
 }
 \arguments{
 \item{modList}{List of TEfit model details}
 
-\item{pPrefix}{{{CREATE EXPLANATION}}}
+\item{pPrefix}{prefix for parameters (e.g., p or thresh)}
 }
 \description{
 pBlScale indicates the warping of distance-to-asymptote based on block trial number.

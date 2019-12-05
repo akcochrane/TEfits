@@ -36,8 +36,5 @@ tef_fitErr(guesses, varIn, pNames, evalFun, errFun, respVar,
 \item{paramTerms}{the terms for parameters}
 }
 \description{
-This function should be improved. It is very very slow currently,
-and its use of grep() and if() statements should be minimized or removed.
-A bit of creativity will be needed for the
-reaching-boundaries and linkfun-specific checks
+This function should be in a state of constant improvement for speeding.
 }

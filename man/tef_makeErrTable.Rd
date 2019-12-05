@@ -2,10 +2,10 @@
 % Please edit documentation in R/tef_makeErrTable.R
 \name{tef_makeErrTable}
 \alias{tef_makeErrTable}
-\title{{{CREATE EXPLANATION}}}
+\title{Create table of error messages}
 \usage{
 tef_makeErrTable()
 }
 \description{
-{{CREATE EXPLANATION}}
+Create table of error messages
 }

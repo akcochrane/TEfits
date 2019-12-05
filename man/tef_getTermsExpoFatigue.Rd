@@ -2,15 +2,15 @@
 % Please edit documentation in R/tef_getTermsExpoFatigue.R
 \name{tef_getTermsExpoFatigue}
 \alias{tef_getTermsExpoFatigue}
-\title{{{CREATE EXPLANATION}}}
+\title{Define a time-dependent change function}
 \usage{
 tef_getTermsExpoFatigue(modList, pPrefix)
 }
 \arguments{
-\item{modList}{{{CREATE EXPLANATION}}}
+\item{modList}{TEfit modList}
 
-\item{pPrefix}{{{CREATE EXPLANATION}}}
+\item{pPrefix}{parameter prefix}
 }
 \description{
-Exponential change followed by logistic decay.
+Internal to TEfits. Exponential change followed by logistic decay.
 }
