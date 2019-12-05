@@ -1,7 +1,7 @@
 
 #' Get help for the TEfits package
 #'
-#' @param topic Help topic. options are "package", "errFun"
+#' @param topic Help topic. To see options, see TEhelp('package')
 #'
 #' @export
 #'

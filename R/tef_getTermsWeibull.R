@@ -1,5 +1,7 @@
 #' Define the terms for a Weibull change function
 #'
+#' Internal to TEfits.
+#'
 #' @param modList TEfit modList
 #' @param pPrefix prefix for parameters
 #'

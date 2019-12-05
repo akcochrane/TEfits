@@ -1,11 +1,11 @@
 
 
-#' {{CREATE EXPLANATION}}
+#' Define a time-dependent change function
 #'
-#' Note that, despite the name, this is the getterms function for  *both* exponential and power [3-parameter] change functions
+#' Internal to TEfits. Note that, despite the name, this is the getterms function for  *both* exponential and power [3-parameter] change functions
 #'
-#' @param modList {{CREATE EXPLANATION}}
-#' @param pPrefix {{CREATE EXPLANATION}}
+#' @param modList TEfit modList
+#' @param pPrefix parameter prefix
 #'
 #' @export
 #'

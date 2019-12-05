@@ -1,11 +1,11 @@
 
 
-#' {{CREATE EXPLANATION}}
+#' Define a time-dependent change function
 #'
-#' Exponential change followed by logistic decay.
+#' Internal to TEfits. Exponential change followed by logistic decay.
 #'
-#' @param modList {{CREATE EXPLANATION}}
-#' @param pPrefix {{CREATE EXPLANATION}}
+#' @param modList TEfit modList
+#' @param pPrefix parameter prefix
 #'
 #' @export
 #'

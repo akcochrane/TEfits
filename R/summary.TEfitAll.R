@@ -2,7 +2,7 @@
 #'
 #'
 #'
-#' @param TEs3s A set of fit TEfit models
+#' @param TEs3s A set of fit TEfit models (output from TEfitAll())
 #' @param printOutput Print output to console (if T) or return a list of summary items (if F)
 #' @param printAll Print grouping-level fits?
 #'

@@ -1,10 +1,11 @@
 
 
-#' {{CREATE EXPLANATION}}
+#' Define a time-dependent change function
 #'
+#' Internal to TEfits. 4-parameter power function.
 #'
-#' @param modList {{CREATE EXPLANATION}}
-#' @param pPrefix {{CREATE EXPLANATION}}
+#' @param modList TEfit modList
+#' @param pPrefix parameter prefix
 #'
 #' @export
 #'

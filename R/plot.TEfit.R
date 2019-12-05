@@ -1,12 +1,15 @@
 #' Plot a TEfit
 #'
-#' @param TEs3  {{EXPLAIN}}
-#' @param plot_title  {{EXPLAIN}}
-#' @param xlabel {{EXPLAIN}}
-#' @param ylabel {{EXPLAIN}}
-#' @param sub_title {{EXPLAIN}}
-#' @param ymin {E}
-#' @param ymax {E}
+#' Plot predicted values of a TEfit model. Predictions are thresholds, if relevant;
+#' otherwise they are overall model predictions
+#'
+#' @param TEs3  TEfit model output
+#' @param plot_title  optional plot title
+#' @param xlabel optional plot x axis label
+#' @param ylabel optional plot y axis label
+#' @param sub_title optional plot caption
+#' @param ymin optional lower boundary for Y axis
+#' @param ymax optional upper boundary for X axis
 #'
 #'
 #' @export

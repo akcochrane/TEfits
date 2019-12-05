@@ -11,6 +11,10 @@
 #' @export
 #'
 simulate.TEfit <- function(model_in,nsim=100,newdata=data.frame(),toPlot=F){
+
+require(psych)
+require(MASS)
+
   if(exists('bootList',model_in)){
   if(dim(newdata)[1]==0){
     newdata <- model_in$modList$varIn
@@ -20,9 +24,6 @@ simulate.TEfit <- function(model_in,nsim=100,newdata=data.frame(),toPlot=F){
       cat('Your input data variables do not match your model variables.\n')
       # break
     }
-
-require(psych)
-require(MASS)
 
   if(toPlot){
     if(!exists('fitThresh',model_in$model)){

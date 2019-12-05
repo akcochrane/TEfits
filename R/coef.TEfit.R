@@ -8,7 +8,6 @@ coef.TEfit <- function(TEs3){
   parVals <- data.frame(Estimate=round(TEs3$model$par,3))
 
   if(exists('bootList',TEs3)){
-
     nPars <- ncol(TEs3$bootList$boots)-4
 
     bootCoef <- data.frame(Q025 = round(TEs3$bootList$boots[2,1:nPars],3),
@@ -23,9 +22,6 @@ coef.TEfit <- function(TEs3){
      rownames(parVals) <- parVals$Row.names
   parVals$Row.names <- NULL
   }
-
-
-
 
   return(parVals)
 }

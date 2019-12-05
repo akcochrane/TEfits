@@ -1,10 +1,10 @@
-
-
 #' For a TEfit model, use a change function to gt the appropriate RHS terms
 #'
+#' Internal to TEfits
+#'
 #' @param modList List of TEfit model details
-#' @param pPrefix {{CREATE EXPLANATION}}
-#' @param whichChange {{CREATE EXPLANATION}}
+#' @param pPrefix parameter prefix (e.g., p or thresh)
+#' @param whichChange current change function to use
 #'
 #' @export
 #'
