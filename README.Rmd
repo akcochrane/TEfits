@@ -51,3 +51,8 @@ plot(mod)
 
 summary(mod)
 ```
+
+Additional principles guiding the development of **TEfits**:
+
+- Reliance only on base R (dependencies are few and optional: **psych**, **MASS**)
+- Good things come to those who wait: Speed is nice, but robustness is better.
