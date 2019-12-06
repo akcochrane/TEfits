@@ -56,7 +56,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         parLims=modList$parLims,
                         thresh_fun = thresh_fun,
                         paramTerms = paramTerms,
-                        control=list(relTol=1E-4)
+                        control=list(relTol=1E-4,maxit=200)
         )
 
       },silent = modList$quietErrs)
