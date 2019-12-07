@@ -19,12 +19,5 @@ tef_penalizedErr(boundedPar, errPar, loBound, upBound,
 \item{dbeta_penalty}{The multiplicative error penalty at approximately 5.3% away from the boundary. Error increases with increasing proximity to a bound.}
 }
 \description{
-Formally, "pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)"
-}
-\examples{
-lB <- 2
-uB <- 6
-x <- seq(lB+.0001,uB-.0001,.001)
-plot(x,tef_penalizedErr(x,1,lB,uB,1.001))
-
+Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)`
 }

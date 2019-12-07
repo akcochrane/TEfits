@@ -23,6 +23,8 @@ tef_checkPars(err, guesses, curDat, pNames, evalFun, errFun, respVar,
 
 \item{respVar}{?}
 
+\item{linkFunX}{?}
+
 \item{y_lim}{?}
 
 \item{rate_lim}{?}

@@ -56,9 +56,12 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         parLims=modList$parLims,
                         thresh_fun = thresh_fun,
                         paramTerms = paramTerms,
+                        # upper = modList$parLims$parMax,
+                        # lower = modList$parLims$parMin,
+                        # method='L-BFGS-B', # use this or BFGS; go back to NM if poor performance
+                        method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
                         control=list(relTol=1E-4
                                      ,maxit=100
-                                     ,method='BFGS'
                                      )
         )
 
@@ -87,7 +90,6 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                       data.frame(t(allFit)))
 
     bestFits <- bestFits[order(bestFits[,1]),][1:max(10,nPerRep),]
-    # print(thresh_fun)
 
     ## ## with several parameters
     if(ncol(bestFits)>2){
@@ -98,7 +100,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
       ){
         converged=T
       }
-    }else if( ## with only time
+    }else if( ## with only time as predictor
       max(sd(bestFits[,2])) < modList$convergeTol
       &&
       max(bestFits[1,2]-mean(bestFits[2:10,2])) < modList$convergeTol

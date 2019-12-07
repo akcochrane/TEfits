@@ -7,7 +7,7 @@
 #' @param evalFun ?
 #' @param errFun ?
 #' @param respVar ?
-#' @param linkFunX?
+#' @param linkFunX ?
 #' @param y_lim ?
 #' @param rate_lim ?
 #' @param shape_lim ?
