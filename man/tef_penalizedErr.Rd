@@ -16,8 +16,9 @@ tef_penalizedErr(boundedPar, errPar, loBound, upBound,
 
 \item{upBound}{Upper parameter boundary.}
 
-\item{dbeta_penalty}{The multiplicative error penalty at approximately 5.3% away from the boundary. Error increases with increasing proximity to a bound.}
+\item{dbeta_penalty}{The multiplicative error penalty at approximately 5.3 percent away from the boundary. Error increases with increasing proximity to a bound.}
 }
 \description{
-Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)`
+Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)`, where
+par is the rate parameter normalized between 0 [lower bound] and 1 [upper bound]
 }
