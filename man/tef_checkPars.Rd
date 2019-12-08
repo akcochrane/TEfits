@@ -9,33 +9,33 @@ tef_checkPars(err, guesses, curDat, pNames, evalFun, errFun, respVar,
   guessGroups = guessGroups)
 }
 \arguments{
-\item{err}{?}
+\item{err}{Error}
 
-\item{guesses}{?}
+\item{guesses}{Parameter values}
 
-\item{curDat}{?}
+\item{curDat}{Data being fit}
 
-\item{pNames}{?}
+\item{pNames}{Parameter names}
 
-\item{evalFun}{?}
+\item{evalFun}{Function being fit}
 
-\item{errFun}{?}
+\item{errFun}{Function to calculate error}
 
-\item{respVar}{?}
+\item{respVar}{Name of the response variable}
 
-\item{linkFunX}{?}
+\item{linkFunX}{If relevant, the "x" value for a link function (e.g., Weibull, logistic)}
 
-\item{y_lim}{?}
+\item{y_lim}{Limits to fit values}
 
-\item{rate_lim}{?}
+\item{rate_lim}{Limits to rate parameter}
 
-\item{shape_lim}{?}
+\item{shape_lim}{If using a Weibull change function, limits to Weibull shape parameter}
 
-\item{penalizeRate}{?}
+\item{penalizeRate}{Logical. Should error be penalized if rate is extremely close to the bounds?}
 
-\item{paramTerms}{?}
+\item{paramTerms}{parameter-level regressions, to be evaluated for checking y_lim and rate_lim}
 
-\item{guessGroups}{?}
+\item{guessGroups}{deprecated}
 }
 \description{
 Check for bound hitting and other undesireable outcomes within an optim() call

@@ -1,19 +1,19 @@
 #' Check for bound hitting and other undesireable outcomes within an optim() call
 #'
-#' @param err ?
-#' @param guesses ?
-#' @param curDat ?
-#' @param pNames ?
-#' @param evalFun ?
-#' @param errFun ?
-#' @param respVar ?
-#' @param linkFunX ?
-#' @param y_lim ?
-#' @param rate_lim ?
-#' @param shape_lim ?
-#' @param penalizeRate ?
-#' @param paramTerms ?
-#' @param guessGroups  ?
+#' @param err Error
+#' @param guesses Parameter values
+#' @param curDat Data being fit
+#' @param pNames Parameter names
+#' @param evalFun Function being fit
+#' @param errFun Function to calculate error
+#' @param respVar Name of the response variable
+#' @param linkFunX If relevant, the "x" value for a link function (e.g., Weibull, logistic)
+#' @param y_lim Limits to fit values
+#' @param rate_lim Limits to rate parameter
+#' @param shape_lim If using a Weibull change function, limits to Weibull shape parameter
+#' @param penalizeRate Logical. Should error be penalized if rate is extremely close to the bounds?
+#' @param paramTerms parameter-level regressions, to be evaluated for checking y_lim and rate_lim
+#' @param guessGroups  deprecated
 #'
 #' @export
 #'
