@@ -23,6 +23,8 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
   modList <- tef_getBounds(modList=modList,whichPnames=whichPnames,linkFunX=linkFunX)
 
+  use_optim_bounds <- length(grep('+',modList$covarTerms,fixed=T))==0
+
   # print(modList$parGuessBounds)
   # print(modList$parLims)
 
@@ -45,9 +47,9 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     names(guesses) <- modList$guessNames
     # preRunTime <- Sys.time()
     suppressWarnings({
-      try({
-        if(length(grep('+',modList$covarTerms,fixed=T))==0){
-          curFit <- optim(guesses,fn=tef_fitErr,
+
+        if(use_optim_bounds){
+         try({ curFit <- optim(guesses,fn=tef_fitErr,
                           varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                           errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
                           y_lim=modList$y_lim,rate_lim=modList$rate_lim,
@@ -59,11 +61,11 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                           upper = modList$parLims$parMax,
                           lower = modList$parLims$parMin,
                           method='L-BFGS-B', # use this or BFGS; go back to NM if poor performance
-                          control=list(relTol=1E-4
+                          control=list(relTol=1E-3
                                        ,maxit=100
                           )
-          )
-        }else{
+          )},silent=T)
+        }else{try({
         curFit <- optim(guesses,fn=tef_fitErr,
                         varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                         errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
@@ -74,13 +76,11 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         thresh_fun = thresh_fun,
                         paramTerms = paramTerms,
                          method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
-                        control=list(relTol=1E-4
+                        control=list(relTol=1E-3
                                      ,maxit=100
                                      )
         )
-        }
-
-      },silent = modList$quietErrs)
+      },silent = modList$quietErrs)}
     })
     # cat('\n',names(guesses),'\n',guesses,'--',curFit$value)
     # print(Sys.time()-preRunTime)
