@@ -46,7 +46,24 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     # preRunTime <- Sys.time()
     suppressWarnings({
       try({
-
+        if(length(grep('+',m$modList$covarTerms,fixed=T))==0){
+          curFit <- optim(guesses,fn=tef_fitErr,
+                          varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
+                          errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
+                          y_lim=modList$y_lim,rate_lim=modList$rate_lim,
+                          shape_lim=modList$shape_lim,
+                          penalizeRate = modList$penalizeRate,
+                          parLims=modList$parLims,
+                          thresh_fun = thresh_fun,
+                          paramTerms = paramTerms,
+                          upper = modList$parLims$parMax,
+                          lower = modList$parLims$parMin,
+                          method='L-BFGS-B', # use this or BFGS; go back to NM if poor performance
+                          control=list(relTol=1E-4
+                                       ,maxit=100
+                          )
+          )
+        }else{
         curFit <- optim(guesses,fn=tef_fitErr,
                         varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                         errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
@@ -56,14 +73,12 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         parLims=modList$parLims,
                         thresh_fun = thresh_fun,
                         paramTerms = paramTerms,
-                        # upper = modList$parLims$parMax,
-                        # lower = modList$parLims$parMin,
-                        # method='L-BFGS-B', # use this or BFGS; go back to NM if poor performance
-                        method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
+                         method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
                         control=list(relTol=1E-4
                                      ,maxit=100
                                      )
         )
+        }
 
       },silent = modList$quietErrs)
     })
