@@ -46,7 +46,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     # preRunTime <- Sys.time()
     suppressWarnings({
       try({
-        if(length(grep('+',m$modList$covarTerms,fixed=T))==0){
+        if(length(grep('+',modList$covarTerms,fixed=T))==0){
           curFit <- optim(guesses,fn=tef_fitErr,
                           varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                           errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
