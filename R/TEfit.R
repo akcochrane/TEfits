@@ -119,7 +119,7 @@
 #'  ## Increase convergence tolerance to 0.1:
 #'  m <- TEfit(dat[,c('respVar','timeVar')],control=list(convergeTol=.1))
 #'
-#'  ## Increase the maximum run number to 5000:
+#'  ## Increase the maximum run number to 5000 (defaults to 200):
 #'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(nTries=5000))
 #'
 #'  ## If the function will asymptote in the given time period, then one option is to calculate the TE function stepwise: first get a stable fit of last 20% of timepoints (if there are enough timepoints, average this with a stable fit to the last 10% of timepoints). Then fit the start and rate of approach to this asymptote:
@@ -180,7 +180,7 @@ TEfit <- function(varIn,
 
   # # # # control arguments:
   if(exists('convergeTol',control)){modList$convergeTol <- control$convergeTol}else{modList$convergeTol <- 5E-2}
-  if(exists('nTries',control)){     modList$nTries      <- control$nTries     }else{modList$nTries <- 500}
+  if(exists('nTries',control)){     modList$nTries      <- control$nTries     }else{modList$nTries <- 200}
   if(exists('y_lim',control)){      modList$y_lim       <- control$y_lim      }else{modList$y_lim <- c(-1E6,1E6)}
   if(exists('rate_lim',control)){   modList$rate_lim    <- control$rate_lim   }else{modList$rate_lim <- c(0,0)}
   if(exists('shape_lim',control)){  modList$shape_lim   <- control$shape_lim  }else{modList$shape_lim <- c(0,0)}
