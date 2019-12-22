@@ -4,16 +4,18 @@
 \alias{TEfitAll}
 \title{Fit several time-evolving regression models}
 \usage{
-TEfitAll(varIn, groupingVar, returnAll = T, progressDot = T,
-  linkFun = list(link = "identity"), errFun = "ols",
-  changeFun = "expo", bootPars = list(nBoots = 0, bootTries = 0,
-  bootPercent = 0), blockTimeVar = NULL, covarTerms = list(),
-  control = list())
+TEfitAll(varIn, groupingVar, groupingVarName = "grouping_var",
+  returnAll = T, progressDot = T, linkFun = list(link = "identity"),
+  errFun = "ols", changeFun = "expo", bootPars = list(nBoots = 0,
+  bootTries = 0, bootPercent = 0), blockTimeVar = NULL,
+  covarTerms = list(), control = list())
 }
 \arguments{
 \item{varIn}{Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.}
 
 \item{groupingVar}{Variable (e.g., participant ID) with which to separate TEfit models. Length must be nrows(varIn)}
+
+\item{groupingVarName}{Name of grouping var}
 
 \item{returnAll}{Logical. Return only a summary (when T), or that summary plus every model, in a list (when F)}
 

@@ -9,6 +9,7 @@
 #'
 #' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param groupingVar Variable (e.g., participant ID) with which to separate TEfit models. Length must be nrows(varIn)
+#' @param groupingVarName Name of grouping var
 #' @param returnAll Logical. Return only a summary (when T), or that summary plus every model, in a list (when F)
 #' @param progressDot If TRUE, prints a dot after each group fit
 #' @param linkFun A list defining a link function (i.e., 'identity', 'Quick', or 'logistic')
@@ -23,6 +24,7 @@
 #'
 TEfitAll <- function(varIn,
                      groupingVar,
+                     groupingVarName = 'grouping_var',
                      returnAll=T,
                      progressDot=T,
                   linkFun = list(link='identity'),
@@ -84,14 +86,9 @@ TEfitAll <- function(varIn,
   TEFitSummary <- TEFitSummary[,2:ncol(TEFitSummary)]
   colnames(TEFitSummary) <- colnames(TEFit_group)
 
-  ## ## get the actual grouping variable name, if used
-  if(!is.null(names(groupingVar))){
-     grouping_variable <-
-      unique(substr(names(groupingVar),1,min(nchar(names(groupingVar))-1)))
-  }else{grouping_variable <- 'grouping_variable'}
-  attr(TEFitSummary,'grouping_var') <- grouping_variable
-  attr(TEFit_group,'grouping_var') <- grouping_variable
-  attr(TEFitList,'grouping_var') <- grouping_variable
+  attr(TEFitSummary,'grouping_var') <- groupingVarName
+  attr(TEFit_group,'grouping_var') <- groupingVarName
+  attr(TEFitList,'grouping_var') <- groupingVarName
 
 
 

@@ -41,7 +41,7 @@
 #' and threshold defaults to .75. Weibull is paramaterized such that change occurs in
 #' the threshold value (by default .75), the lapse rate defaults to .005, and the
 #' y-intercept defaults to .5.
-#' For the d-prime link the pFA and pH are
+#' For the d-prime link a *presence* variable is included, the pFA and pH are
 #' first calculated using a windowed average of stimulus-present or
 #' stimulus-absent trials (penalized to bound the max d-prime), then calculating the
 #' by-timepoint d-prime, then fitting that d-prime as the response variable. See

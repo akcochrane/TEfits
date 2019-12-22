@@ -68,7 +68,7 @@ the bias value (defaults to constant). Lapse rate defaults to .005
 and threshold defaults to .75. Weibull is paramaterized such that change occurs in
 the threshold value (by default .75), the lapse rate defaults to .005, and the
 y-intercept defaults to .5.
-For the d-prime link the pFA and pH are
+For the d-prime link a *presence* variable is included, the pFA and pH are
 first calculated using a windowed average of stimulus-present or
 stimulus-absent trials (penalized to bound the max d-prime), then calculating the
 by-timepoint d-prime, then fitting that d-prime as the response variable. See
@@ -133,7 +133,7 @@ plot(m)
  ## Increase convergence tolerance to 0.1:
  m <- TEfit(dat[,c('respVar','timeVar')],control=list(convergeTol=.1))
 
- ## Increase the maximum run number to 5000:
+ ## Increase the maximum run number to 5000 (defaults to 200):
   m <- TEfit(dat[,c('respVar','timeVar')],control=list(nTries=5000))
 
  ## If the function will asymptote in the given time period, then one option is to calculate the TE function stepwise: first get a stable fit of last 20\% of timepoints (if there are enough timepoints, average this with a stable fit to the last 10\% of timepoints). Then fit the start and rate of approach to this asymptote:
