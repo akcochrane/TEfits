@@ -8,13 +8,13 @@
 #' @export
 #'
 tef_fitAll2brms <- function(TEs3s,nIter= 2000){
-  
+
 # TO DO:
 # # make groupingVar actually have a name
 # # customization? (iter, err, etc?)
 # # should have argument brmList=list(iter=2000,chains=0,fixefVars=NA)
 # # what returns?
-  
+
 library(brms)
 par_lims <- TEs3s$allFitList[[1]]$modList$parLims
 pars <- TEs3s$allFitList[[1]]$modList$pNames
@@ -23,7 +23,7 @@ groupingVarName <- attr(TEs3s$fitSummary,'grouping_var')
 
 varIn <- data.frame(); for(curGroup in 1:length(TEs3s$allFitList)){
   subDat <- data.frame(TEs3s$allFitList[[curGroup]]$data)
-  subDat[,groupingVarName] <- 
+  subDat[,groupingVarName] <-
     rownames(TEs3s$allFits)[curGroup]
 varIn <- rbind(varIn,subDat)}
 
@@ -43,7 +43,7 @@ brmPriors <- set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars[1]],',',TEs
               nlpar=pars[curPar],ub=par_lims$parMax[curPar],lb=par_lims$parMin[curPar])
                          }}
 
-## NEED TO ALSO HAVE VARIANCE PRIORS; HERE AND EVERYWHERE, HAVE VARIANCE PRIORS BE LOGNORMAL, WITH 
+## NEED TO ALSO HAVE VARIANCE PRIORS; HERE AND EVERYWHERE, HAVE VARIANCE PRIORS BE LOGNORMAL, WITH
 ## -3 ALWAYS BEING AT -4 SD AND +4SD BE AN UNLIKELY LARGE NUMBER
 
 ## WHEN IN DOUBT, DEFAULT TO LOGNORMAL(1,1)
@@ -55,7 +55,8 @@ brmModel <- brm(brmForm,
                 chains = 3,
   iter = nIter,
   thin=max(c(1,floor(nIter/4000))),
-  control = list(adapt_delta = .95))
+  control = list(adapt_delta = .95,
+                 max_treedepth = 50))
 
 return(brmModel)
 }
