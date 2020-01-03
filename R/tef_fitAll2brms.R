@@ -36,11 +36,13 @@ brmForm <- brmsformula(TEs3s$allFitList[[1]]$modList$modl_fun
 ## make priors (better to have normal guided by TEfit result and bounded by par_lims)
 se2sd <- sqrt(length(TEs3s$allFitList))
 brmPriors <- set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars[1]],',',TEs3s$fitSummary['stdErr',pars[1]]*se2sd*2,')'),
-                       nlpar=pars[1],ub=par_lims$parMax[1],lb=par_lims$parMin[1]) ; if(length(pars)>1){
+                       nlpar=pars[1] ## ,ub=par_lims$parMax[1],lb=par_lims$parMin[1]
+                       ) ; if(length(pars)>1){
                          for(curPar in 2:length(pars)){
   brmPriors <- brmPriors+
     set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars[curPar]],',',TEs3s$fitSummary['stdErr',pars[curPar]]*se2sd*2,')'),
-              nlpar=pars[curPar],ub=par_lims$parMax[curPar],lb=par_lims$parMin[curPar])
+              nlpar=pars[curPar] ## ,ub=par_lims$parMax[curPar],lb=par_lims$parMin[curPar]
+              )
                          }}
 
 ## NEED TO ALSO HAVE VARIANCE PRIORS; HERE AND EVERYWHERE, HAVE VARIANCE PRIORS BE LOGNORMAL, WITH
