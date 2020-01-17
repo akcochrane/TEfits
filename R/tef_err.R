@@ -32,7 +32,7 @@ tef_err <- function(y,yHat,errFun,curDat=NA){
            err <- sqrt(mean(errVect,na.rm=T))
            if(sum(!is.na(errVect))<y_n){err <- 1E12}
          }
-         ########%# Is really pretty bad:
+         ########%# Is really unusably bad:
          ,median={
            fourParts <- cut(seq_along(y), 4, labels = FALSE)
            threeParts <- cut(seq_along(y), 3, labels = FALSE)
@@ -100,6 +100,10 @@ tef_err <- function(y,yHat,errFun,curDat=NA){
               curDat$mu_param < 0||
               sum(!is.na(exGlik))<y_n
            ){err <- 1E12}
+         }
+         ,wiener_dr={
+           require(RWiener)
+           wPars <- wdm(data.frame(q=y,resp=curDat$binResp))$coefficients
          }
   )
   return(err)

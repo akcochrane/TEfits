@@ -8,8 +8,6 @@
 #' Various handy S3 methods are available, such as
 #' plot(), summary(), coef(), and simulate()
 #'
-#' TO DO: clean up docs. implement tef_checkPars.
-#' make bound setting clear, and allow specific parameter bounds as well as evaluated, e.g. start or rate functions [max and min] lims.
 #'
 #'TEfit defines a nonlinear regression model and re-fits that model
 #'using `optim()` numerous times, with random starting values, until
@@ -155,6 +153,10 @@ TEfit <- function(varIn,
                   covarTerms = list(),
                   control=list()
 ){
+
+  #' TO DO: clean up docs. implement tef_checkPars.
+  #' make bound setting clear, and allow specific parameter bounds as well as evaluated, e.g. start or rate functions [max and min] lims.
+
   modList <- list()
   modList$times <- c()
   modList$times['start'] <- Sys.time()
