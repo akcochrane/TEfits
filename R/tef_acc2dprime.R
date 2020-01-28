@@ -15,7 +15,7 @@
 #'
 tef_acc2dprime <- function(accuracy,stim_present,by_index=T,trial_hwhm=3,max_dprime=5){
   stim_present <- as.numeric(stim_present)
-  accuracy <- qnorm(-max_dprime/2)+accuracy*(1-2*(qnorm(-max_dprime/2)))
+  accuracy <- pnorm(-max_dprime/2)+accuracy*(1-2*(pnorm(-max_dprime/2)))
 
   stim_pres_acc <- stim_abs_acc <- rep(NA,length(accuracy))
 
