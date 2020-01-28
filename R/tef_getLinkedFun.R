@@ -148,7 +148,7 @@ tef_getLinkedFun <- function(modList){
 
     if(exists('max_d_prime',modList$linkFun)){
       max_d_prime <- modList$linkFun$max_d_prime
-    }else{max_d_prime <- modList$linkFun$max_d_prime <- .75}
+    }else{max_d_prime <- modList$linkFun$max_d_prime <- 5}
 
     if(exists('smooth_hwhm',modList$linkFun)){
       smooth_hwhm <- modList$linkFun$smooth_hwhm
@@ -162,6 +162,7 @@ tef_getLinkedFun <- function(modList){
                                         as.numeric(modList$varIn[,modList$linkFun$presence]),
                                         max_dprime=modList$linkFun$max_d_prime,
                                         trial_hwhm=smooth_hwhm)
+
     names(modList$varIn)[1] <- modList$respVar <- 'd_prime'
 
     modList$covarTerms <- tef_getDatTerms(modList,pPrefix='p',whichChange = modList$changeFun)
