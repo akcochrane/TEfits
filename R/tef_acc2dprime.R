@@ -13,7 +13,7 @@
 #'
 #' @export
 #'
-tef_acc2dprime <- function(accuracy,stim_present,by_index=T,trial_hwhm=2,max_dprime=5){
+tef_acc2dprime <- function(accuracy,stim_present,by_index=T,trial_hwhm=3,max_dprime=5){
   stim_present <- as.numeric(stim_present)
   accuracy <- pnorm(-max_dprime/2)+accuracy*(1-2*(pnorm(-max_dprime/2)))
 

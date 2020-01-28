@@ -150,13 +150,18 @@ tef_getLinkedFun <- function(modList){
       max_d_prime <- modList$linkFun$max_d_prime
     }else{max_d_prime <- modList$linkFun$max_d_prime <- .75}
 
+    if(exists('smooth_hwhm',modList$linkFun)){
+      smooth_hwhm <- modList$linkFun$smooth_hwhm
+    }else{smooth_hwhm <- modList$linkFun$smooth_hwhm <- 3}
+
     if(length(unique(na.omit(as.numeric(
       modList$varIn[,modList$linkFun$presence]
     ))))!=2){cat('\nPlease fix your "presence" variable.\n')}
 
     modList$varIn[,1] <- tef_acc2dprime(modList$varIn[,modList$respVar],
                                         as.numeric(modList$varIn[,modList$linkFun$presence]),
-                                        max_dprime=modList$linkFun$max_d_prime)
+                                        max_dprime=modList$linkFun$max_d_prime,
+                                        trial_hwhm=smooth_hwhm)
     names(modList$varIn)[1] <- modList$respVar <- 'd_prime'
 
     modList$covarTerms <- tef_getDatTerms(modList,pPrefix='p',whichChange = modList$changeFun)
