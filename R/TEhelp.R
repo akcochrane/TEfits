@@ -22,7 +22,11 @@ TEhelp <- function(topic='package'){
   )}
 
   if(topic=='linkFun=logistic'){cat('help page pending')}
-  if(topic=='linkFun=d_prime'){cat('help page pending')}
+  if(topic=='linkFun=d_prime'){cat('With the d_prime link function, you can use a binary (0 or 1) variable called `presence` to
+                                   categorize your outcomes (bounded at 0 and 1) as being the result of a "present" event (miss or hit)
+                                   or an "absent" event (Correct Rejection or False Alarm). This link function first uses
+                                   TEfits::tef_acc2dprime to calculate a bounded running d_prime, then fits that running d_prime as
+                                   the response variable (defaulting to OLS fitting, |d_prime| bounded at 5, and a smoothing HWHM of 3.')}
 
   if(topic=='errFun=logcosh'){cat('The log-hyperbolic-cosine error function'
                                   ,'is a compromise between OLS and absolute error'
@@ -42,4 +46,6 @@ TEhelp <- function(topic='package'){
   if(topic=='errFun=rmse'){cat('help page pending')}
   if(topic=='errFun=exGauss_tau'){cat('help page pending')}
   if(topic=='errFun=exGauss_mu'){cat('help page pending')}
+
+  if(topic=='e'){cat('help page pending')}
 }
