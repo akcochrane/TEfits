@@ -26,7 +26,11 @@ TEhelp <- function(topic='package'){
                                    categorize your outcomes (bounded at 0 and 1) as being the result of a "present" event (miss or hit)
                                    or an "absent" event (Correct Rejection or False Alarm). This link function first uses
                                    TEfits::tef_acc2dprime to calculate a bounded running d_prime, then fits that running d_prime as
-                                   the response variable (defaulting to OLS fitting, |d_prime| bounded at 5, and a smoothing HWHM of 3.')}
+                                   the response variable (defaulting to OLS fitting, |d_prime| bounded at 5, and a smoothing HWHM of 3.
+
+                                   Example:
+                                   mod_dprime <- TEfit(dat[,c("acc,"trialNum","present")],linkFun = list(link="d_prime",presence="present",smooth_hwhm=2))
+                                   ')}
 
   if(topic=='errFun=logcosh'){cat('The log-hyperbolic-cosine error function'
                                   ,'is a compromise between OLS and absolute error'
