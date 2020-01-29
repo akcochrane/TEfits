@@ -1,16 +1,22 @@
 
 #' Get help for the TEfits package
 #'
-#' @param topic Help topic. To see options, see TEhelp('package')
+#' Many options for fitting are specified in obscure lists and such. To help,
+#' this function allows for a verbose explanation of how to use various tools.
+#'
+#' @param topic Help topic.
 #'
 #' @export
+#' @examples
+#' TEhelp('package')
+#' TEhelp('errFun')
+#' TEhelp('linkFun=d_prime')
+#' TEhelp('errFun=logcosh')
 #'
 TEhelp <- function(topic='package'){
   if(topic=='package'){cat(
     'This package is designed to facilitate painless nonlinear regression of time-evolving measures.'
-        ,'Use this help function to get more information about specific aspects. \n'
-    ,'\nOptions:\nTEhelp("errFun")'
-    ,'\nTEhelp("errFun=logcosh")'
+        ,'Use this help function to get more information about specific aspects.'
     )}
 
   if(topic=='errFun'){cat(
@@ -22,6 +28,7 @@ TEhelp <- function(topic='package'){
   )}
 
   if(topic=='linkFun=logistic'){cat('help page pending')}
+
   if(topic=='linkFun=d_prime'){cat('With the d_prime link function, you can use a binary (0 or 1) variable called `presence` to
                                    categorize your outcomes (bounded at 0 and 1) as being the result of a "present" event (miss or hit)
                                    or an "absent" event (Correct Rejection or False Alarm). This link function first uses

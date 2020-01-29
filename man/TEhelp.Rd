@@ -7,8 +7,16 @@
 TEhelp(topic = "package")
 }
 \arguments{
-\item{topic}{Help topic. To see options, see TEhelp('package')}
+\item{topic}{Help topic.}
 }
 \description{
-Get help for the TEfits package
+Many options for fitting are specified in obscure lists and such. To help,
+this function allows for a verbose explanation of how to use various tools.
+}
+\examples{
+TEhelp('package')
+TEhelp('errFun')
+TEhelp('linkFun=d_prime')
+TEhelp('errFun=logcosh')
+
 }

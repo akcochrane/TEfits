@@ -4,7 +4,7 @@
 \alias{tef_acc2dprime}
 \title{Convert an ordered vector of accuracies to d-prime}
 \usage{
-tef_acc2dprime(accuracy, stim_present, by_index = T, trial_hwhm = 2,
+tef_acc2dprime(accuracy, stim_present, by_index = T, trial_hwhm = 3,
   max_dprime = 5)
 }
 \arguments{

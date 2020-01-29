@@ -55,7 +55,7 @@ Currently supported likelihood functions are
 Sum of Squared Error ('ols'),
 Root Mean Square Error ('rmse'),
 Log-Hyperbolic-Cosine ('logcosh'),
-Ex-Gaussian ('exgauss_mu' or 'exgauss_tau'; tau is recommended),
+Ex-Gaussian ('exGauss_mu' or 'exGauss_tau'; tau is recommended),
 Bernoulli ('bernoulli'),
 
 Currently supported link functions are
