@@ -58,7 +58,7 @@
 #'
 #' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param linkFun A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')
-#' @param errFun  A string defining an error function (e.g., 'ols', 'logcosh', 'exgauss').
+#' @param errFun  A string defining an error function (e.g., 'ols', 'logcosh', 'bernoulli').
 #' @param changeFun A string defining the functional form of change (e.g., 'expo', 'power', 'weibull')
 #' @param bootPars A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.
 #' @param blockTimeVar A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)
