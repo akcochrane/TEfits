@@ -8,7 +8,7 @@
 #' first calculating the .025 and .975 quantile() of the resampled parameters. Then, the absolute
 #' difference is calculated bewteen each of these CI values and the overall fit value. The absolute
 #' differences are divided by qnorm(.975) and averaged in order to get the pseudo-SE, the
-#' pseudo standard deviation of the parameter.
+#' pseudo standard deviation of the parameter expected value.
 #'
 #' @param TEs3 A fit TEfit model
 #' @param printOutput Print output to console (if T) or return a list of summary items (if F)

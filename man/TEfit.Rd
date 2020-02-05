@@ -14,7 +14,7 @@ TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
 
 \item{linkFun}{A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')}
 
-\item{errFun}{A string defining an error function (e.g., 'ols', 'logcosh', 'exgauss').}
+\item{errFun}{A string defining an error function (e.g., 'ols', 'logcosh', 'bernoulli').}
 
 \item{changeFun}{A string defining the functional form of change (e.g., 'expo', 'power', 'weibull')}
 

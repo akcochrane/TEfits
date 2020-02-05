@@ -17,9 +17,9 @@ convergence, the full formula, goodness-of-fit metrics, measures of change in
 conditional independence, and (if applicable) distributional information from resampling.
 }
 \details{
-Pseudo-SE is an approximation to the standard error of the parameter. It is calculated by
+Pseudo-SE is an approximation to the standard error of the parameter using bootstrapped estimates. It is calculated by
 first calculating the .025 and .975 quantile() of the resampled parameters. Then, the absolute
 difference is calculated bewteen each of these CI values and the overall fit value. The absolute
 differences are divided by qnorm(.975) and averaged in order to get the pseudo-SE, the
-pseudo standard deviation of the parameter.
+pseudo standard deviation of the parameter expected value.
 }

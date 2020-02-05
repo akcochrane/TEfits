@@ -4,7 +4,7 @@
 \alias{tef_fitAll2brms}
 \title{Refit a TEfitAll model with brms}
 \usage{
-tef_fitAll2brms(TEs3s, nIter = 2000)
+tef_fitAll2brms(TEs3s, nIter = 2000, nChains = 3, nCores = 2)
 }
 \arguments{
 \item{TEs3s}{TEfitAll model}

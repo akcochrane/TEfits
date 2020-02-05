@@ -10,8 +10,8 @@ TEhelp(topic = "package")
 \item{topic}{Help topic.}
 }
 \description{
-Many options for fitting are specified in obscure lists and such. To help,
-this function allows for a verbose explanation of how to use various tools.
+Many options for fitting using TEfits are specified in obscure lists and such. To help,
+this function provides verbose explanations of how to use various tools.
 }
 \examples{
 TEhelp('package')
