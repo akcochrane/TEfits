@@ -35,7 +35,7 @@ Every effort is made to balance sensible defaults, full customization, and inter
   if(topic=='linkFun=logistic'){cat('help page pending')}
 
   if(topic=='linkFun=d_prime'){cat('With the d_prime link function, you can use a binary (0 or 1) variable called `presence` to
-                                   categorize your outcomes (bounded at 0 and 1) as being the result of a "present" event (miss or hit)
+                                   categorize your outcomes (bounded at 0 and 1) as being the result of a "present" event (Miss or Hit)
                                    or an "absent" event (Correct Rejection or False Alarm). This link function first uses
                                    TEfits::tef_acc2dprime to calculate a bounded running d_prime, then fits that running d_prime as
                                    the response variable (defaulting to OLS fitting, |d_prime| bounded at 5, and a smoothing HWHM of 3.
@@ -54,7 +54,7 @@ Every effort is made to balance sensible defaults, full customization, and inter
                                   ,'this is a versatile error function that'
                                   ,'\nis especially well-suited for data with outliers or other shapes'
                                   ,'indicating\ndispersion beyond a standard Gaussian distribution.'
-                                  ,'\n\nImplementation: log(cosh(y-yHat))\n__ __ __ __'
+                                  ,'\n\nR Implementation: log(cosh(y-yHat))\n__ __ __ __'
   )}
 
   if(topic=='errFun=ols'){cat('help page pending')}

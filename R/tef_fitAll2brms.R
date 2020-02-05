@@ -6,7 +6,7 @@
 #'
 #' @export
 #'
-tef_fitAll2brms <- function(TEs3s,nIter= 2000){
+tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2){
 
   # TO DO:
   # # make groupingVar actually have a name
@@ -51,9 +51,10 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000){
   brmModel <- brm(brmForm,
                   varIn,
                   prior = brmPriors,
-                  chains = 3,
+                  chains = nChains,
                   iter = nIter,
                   thin=max(c(1,floor(nIter/4000))),
+                  cores = getOption("mc.cores",nCores),
                   control = list(adapt_delta = .95,
                                  max_treedepth = 50))
 

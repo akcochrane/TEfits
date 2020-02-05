@@ -11,7 +11,9 @@
 tef_getLinkedFun <- function(modList){
 
 
-  ## set up, for the link funs:
+  ## ## ## # # ## # # # # #
+  ## set up the change funs:
+  ## ## ## # # ## # # # # #
 {
   if(modList$changeFun=='expo' ||
      modList$changeFun=='expo_block' ||
@@ -41,7 +43,10 @@ tef_getLinkedFun <- function(modList){
      }}
 }
 
-  ## the funs:
+
+  ## ## ## # # ## # # # # #
+  ## the link funs:
+  ## ## ## # # ## # # # # #
   if(modList$linkFun$link=='identity'){
     modList$covarTerms <- tef_getDatTerms(modList,pPrefix='p',whichChange = modList$changeFun)
 
