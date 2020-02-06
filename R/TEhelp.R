@@ -8,10 +8,19 @@
 #'
 #' @export
 #' @examples
+#' ## Package summary:
 #' TEhelp('package')
+#'
+#' ## Overview of error functions:
 #' TEhelp('errFun')
+#'
+#' ## The d prime link function:
 #' TEhelp('linkFun=d_prime')
+#'
+#' ## The log-cosh error function:
 #' TEhelp('errFun=logcosh')
+#'
+#' ## The summary method for TEfit models:
 #' TEhelp('summary(TEfit)')
 #'
 TEhelp <- function(topic='package'){

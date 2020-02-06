@@ -14,9 +14,19 @@ Many options for fitting using TEfits are specified in obscure lists and such. T
 this function provides verbose explanations of how to use various tools.
 }
 \examples{
+## Package summary:
 TEhelp('package')
+
+## Overview of error functions:
 TEhelp('errFun')
+
+## The d prime link function:
 TEhelp('linkFun=d_prime')
+
+## The log-cosh error function:
 TEhelp('errFun=logcosh')
+
+## The summary method for TEfit models:
+TEhelp('summary(TEfit)')
 
 }
