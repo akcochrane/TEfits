@@ -53,9 +53,8 @@ Every effort is made to balance sensible defaults, full customization, and inter
                                   ,'\nwhich allows for easier optimization. In practice,'
                                   ,'this is a versatile error function that'
                                   ,'\nis especially well-suited for data with outliers or other shapes'
-                                  ,'indicating\ndispersion beyond a standard Gaussian distribution.
-
-                                  Example: mod <- TEfit(dat[,c("resp","trialNum")],errFun="logCosh")'
+                                  ,'indicating\ndispersion beyond a standard Gaussian distribution.'
+                                  ,'\n\nExample: mod <- TEfit(dat[,c("resp","trialNum")],errFun="logCosh")'
                                   ,'\n\nR Implementation: log(cosh(y-yHat))\n__ __ __ __'
   )}
 
