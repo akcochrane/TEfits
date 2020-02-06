@@ -12,6 +12,7 @@
 #' TEhelp('errFun')
 #' TEhelp('linkFun=d_prime')
 #' TEhelp('errFun=logcosh')
+#' TEhelp('summary(TEfit)')
 #'
 TEhelp <- function(topic='package'){
   if(topic=='package'){cat(
@@ -45,9 +46,9 @@ Every effort is made to balance sensible defaults, full customization, and inter
                                    __ __ __ __')}
 
   if(topic=='errFun=logcosh'){cat('The log-hyperbolic-cosine error function'
-                                  ,'is a compromise between OLS and absolute error'
+                                  ,'is, conceptually, a compromise between OLS and absolute error'
                                   ,'\nfunctions. While at absolute errors of approximately'
-                                  ,'4 or greater the function is '
+                                  ,'4 or greater the function is functionally'
                                   ,"\nindistinguishable from absolute error, at smaller errors the function's"
                                   ,'slope decreases,'
                                   ,'\nwhich allows for easier optimization. In practice,'
@@ -67,8 +68,26 @@ Every effort is made to balance sensible defaults, full customization, and inter
   if(topic=='cross-validate'){cat('help page pending')}
   if(topic=='bootstrap'){cat('help page pending')}
 
-  if(topic=='summary(TEfit)'){cat('help page pending')}
+  if(topic=='summary(TEfit)'){cat('The summary function for a standard
+                                  time-evolving model is intended to convey several pieces of information.
+                                  Of greatest importance are the actual values of fit parameters. Additionally,
+                                  several fit and convergence indices may assist with model interpretation.
+                                  BIC and delta-BIC relative to a non-time-evolving model may be utilized to compare
+                                  the relative benefits of additional [time-evolving] parameters. Likewise, the
+                                  nonindependence between response variables and time (and the change thereof) is
+                                  reported.')}
+
+
+
+
   if(topic=='summary(TEfitAll)'){cat('help page pending')}
+
+  if(topic=='control(explicit)'){cat('The most flexibility in nonlinear model fitting is implemented when
+                                     an entry into the control list is "explicit". As with other nonlinear
+                                     fitting methods (e.g., nls(), nlmer(), brm(), this requires a full and
+                                     specific parameterization of the regression formula. All terms in the
+                                     formula that do not exactly match input variables are assumed to be
+                                     parameters to be estimated.')}
 
   if(topic=='e'){cat('help page pending')}
 }
