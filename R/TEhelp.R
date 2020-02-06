@@ -53,7 +53,9 @@ Every effort is made to balance sensible defaults, full customization, and inter
                                   ,'\nwhich allows for easier optimization. In practice,'
                                   ,'this is a versatile error function that'
                                   ,'\nis especially well-suited for data with outliers or other shapes'
-                                  ,'indicating\ndispersion beyond a standard Gaussian distribution.'
+                                  ,'indicating\ndispersion beyond a standard Gaussian distribution.
+
+                                  Example: mod <- TEfit(dat[,c("resp","trialNum")],errFun="logCosh")'
                                   ,'\n\nR Implementation: log(cosh(y-yHat))\n__ __ __ __'
   )}
 
@@ -62,6 +64,12 @@ Every effort is made to balance sensible defaults, full customization, and inter
   if(topic=='errFun=rmse'){cat('help page pending')}
   if(topic=='errFun=exGauss_tau'){cat('help page pending')}
   if(topic=='errFun=exGauss_mu'){cat('help page pending')}
+
+  if(topic=='cross-validate'){cat('help page pending')}
+  if(topic=='bootstrap'){cat('help page pending')}
+
+  if(topic=='summary(TEfit)'){cat('help page pending')}
+  if(topic=='summary(TEfitAll)'){cat('help page pending')}
 
   if(topic=='e'){cat('help page pending')}
 }
