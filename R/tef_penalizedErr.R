@@ -1,7 +1,7 @@
 #' Penalize error for being close to a boundary
 #'
-#' Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)`, where
-#' par is the rate parameter normalized between 0 [lower bound] and 1 [upper bound]
+#' Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)` when Err is positive, where
+#' par is the (often rate) parameter normalized between 0 [lower bound] and 1 [upper bound]
 #'
 #' @param boundedPar Value of the parameter that has bounds.
 #' @param errPar Value of the error to be penalized.
@@ -13,6 +13,10 @@
 #'
 tef_penalizedErr <-  function(boundedPar,errPar,loBound,upBound,dbeta_penalty=1.001){
   boundedPar <- (boundedPar-loBound)/(upBound-loBound)
+  if(sign(errPar)==1){
   p_err <- errPar/dbeta(boundedPar,dbeta_penalty,dbeta_penalty)
+  }else{
+  p_err <- errPar*dbeta(boundedPar,dbeta_penalty,dbeta_penalty)
+  }
   return(p_err)
 }

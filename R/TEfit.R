@@ -154,9 +154,6 @@ TEfit <- function(varIn,
                   control=list()
 ){
 
-  #' TO DO: clean up docs. implement tef_checkPars.
-  #' make bound setting clear, and allow specific parameter bounds as well as evaluated, e.g. start or rate functions [max and min] lims.
-
   modList <- list()
   modList$times <- c()
   modList$times['start'] <- Sys.time()

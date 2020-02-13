@@ -1,12 +1,19 @@
 
 #' Refit a TEfitAll model with brms
 #'
+#' Passes a TEfitAll model to [hierarchical nonlinear Bayesian] fitting using the
+#' brms package. Note that, due to the extensive time needed to fit brms models,
+#' this function is even less tested than most functions in the TEfits package.
+#'
 #' @param TEs3s TEfitAll model
 #' @param nIter number of iterations
+#' @param nChains number of chains
+#' @param nCores number of cores
+#' @param errFun the error function to use. Defaults to the same as the TEfitAll model, if possible.
 #'
 #' @export
 #'
-tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2){
+tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
 
   # TO DO:
   # # make groupingVar actually have a name
@@ -47,11 +54,28 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2){
 
   ## WHEN IN DOUBT, DEFAULT TO LOGNORMAL(1,1)
 
+  if(is.na(errFun)){errFun <- as.character(unique(TEs3s$fitSummary$errFun))}
+
+  if(errFun=='bernoulli'){
+    if(min(varIn[,1],na.rm=T)<0 || max(varIn[,1],na.rm=T) > 1){cat('The response variable is outside [0,1].')}
+    else{
+    if(!all(unique(na.omit(varIn[,1]))[1:2]==c(0,1))){
+      cat('edge correction [.0001] was applied')
+      varIn[,1] <- (x*.9998)+.0001
+    }
+  }
+
+  # Transform errFun into link functions
+  switch (errFun,
+    'ols' = gaussian(),
+    'bernoulli' = bernoulli(link='identity')
+  )
   ## fit model
   brmModel <- brm(brmForm,
                   varIn,
                   prior = brmPriors,
                   chains = nChains,
+                  family = errFun,
                   iter = nIter,
                   thin=max(c(1,floor(nIter/4000))),
                   cores = getOption("mc.cores",nCores),

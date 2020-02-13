@@ -28,7 +28,19 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
   prevTimeInds <- grep('prevTime',modList$guessNames,ignore.case = T)
   weibLinkShapeInds <- grep('weibull_shape',modList$guessNames,ignore.case = T)
   ##
-  if(length(rateInds)>0){guessGroups$rateInds_interc    <- rateInds[1]
+  if(length(rateInds)>0){
+
+    guessGroups$rateInds_interc   <- c()
+
+    guessGroups$rateInds_interc <- sort(
+      which(substr(modList$guessNames,nchar(modList$guessNames)-2,nchar(modList$guessNames))=='teA' |
+              substr(modList$guessNames,nchar(modList$guessNames)-2,nchar(modList$guessNames))=='teB' |
+              substr(modList$guessNames,nchar(modList$guessNames)-2,nchar(modList$guessNames))=='ate' |
+              substr(modList$guessNames,nchar(modList$guessNames)-2,nchar(modList$guessNames))=='e_0' |
+              substr(modList$guessNames,nchar(modList$guessNames)-2,nchar(modList$guessNames))=='A_0' |
+              substr(modList$guessNames,nchar(modList$guessNames)-2,nchar(modList$guessNames))=='B_0'
+            ))
+
   modList$parLims$parMin[guessGroups$rateInds_interc] <- modList$rate_lim[1]
   modList$parLims$parMax[guessGroups$rateInds_interc] <- modList$rate_lim[2]
   modList$parGuessBounds$parMin[guessGroups$rateInds_interc] <- modList$rate_lim[1]

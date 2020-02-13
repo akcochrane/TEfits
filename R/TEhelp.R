@@ -20,6 +20,9 @@
 #' ## The log-cosh error function:
 #' TEhelp('errFun=logcosh')
 #'
+#' ## The ex-Gaussian error function, with change in the exponential component:
+#' TEhelp('errFun=exGauss_tau')
+#'
 #' ## The summary method for TEfit models:
 #' TEhelp('summary(TEfit)')
 #'
@@ -68,10 +71,16 @@ Every effort is made to balance sensible defaults, full customization, and inter
                                   ,'\n\nR Implementation: log(cosh(y-yHat))\n__ __ __ __'
   )}
 
+
   if(topic=='errFun=ols'){cat('help page pending')}
   if(topic=='errFun=bernoulli'){cat('help page pending')}
   if(topic=='errFun=rmse'){cat('help page pending')}
-  if(topic=='errFun=exGauss_tau'){cat('help page pending')}
+  if(topic=='errFun=exGauss_tau'){cat('The ex-Gaussian distribution is a 3-parameter convolution of exponential
+                                      and Gaussian distributions often used to fit response time data.
+                                      By fitting change in the tau [exponential mean] component of this
+                                      distribution, the frequent covariance between mean and variance of RT
+                                      is naturally accommodated.')}
+
   if(topic=='errFun=exGauss_mu'){cat('help page pending')}
 
   if(topic=='cross-validate'){cat('help page pending')}
