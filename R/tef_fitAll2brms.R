@@ -57,14 +57,14 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
   if(is.na(errFun)){errFun <- as.character(unique(TEs3s$fitSummary$errFun))}
 
   # Transform errFun into link functions
-  switch (errFun,
+  errorFun <- switch(errFun,
           'rmse' = gaussian(),
           'exGauss_mu' = exgaussian(),
     'ols' = gaussian(),
     'bernoulli' = bernoulli(link='identity')
   )
 
-  if(as.character(unique(TEs3s$fitSummary$errFun)) =='bernoulli'){
+  if(errFun =='bernoulli'){
     if(min(varIn[,1],na.rm=T)<0 || max(varIn[,1],na.rm=T) > 1){
       cat('The response variable is outside [0,1].')}
     else{
@@ -72,7 +72,7 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
         cat('edge correction [.0001] was applied and a beta response distribution was used.')
         varIn[,1] <- (x*.9998)+.0001
 
-        errFun <- Beta(link = "identity")
+        errorFun <- Beta(link = "identity")
       }
     }
   }
@@ -82,7 +82,7 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
                   varIn,
                   prior = brmPriors,
                   chains = nChains,
-                  family = errFun,
+                  family = errorFun,
                   iter = nIter,
                   thin=max(c(1,floor(nIter/4000))),
                   cores = getOption("mc.cores",nCores),
