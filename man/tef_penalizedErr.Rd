@@ -19,6 +19,6 @@ tef_penalizedErr(boundedPar, errPar, loBound, upBound,
 \item{dbeta_penalty}{The multiplicative error penalty at approximately 5.3 percent away from the boundary. Error increases with increasing proximity to a bound.}
 }
 \description{
-Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)`, where
-par is the rate parameter normalized between 0 [lower bound] and 1 [upper bound]
+Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)` when Err is positive, where
+par is the (often rate) parameter normalized between 0 [lower bound] and 1 [upper bound]
 }

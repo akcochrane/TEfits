@@ -26,6 +26,9 @@ TEhelp('linkFun=d_prime')
 ## The log-cosh error function:
 TEhelp('errFun=logcosh')
 
+## The ex-Gaussian error function, with change in the exponential component:
+TEhelp('errFun=exGauss_tau')
+
 ## The summary method for TEfit models:
 TEhelp('summary(TEfit)')
 

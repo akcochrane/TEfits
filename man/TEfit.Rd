@@ -157,6 +157,4 @@ plot(m)
  ## Fix a parameter [asymptote] to 0.8:
   m <- TEfit(dat[,c('respVar','timeVar')],control=list(pFix=list(pAsym=.8)))
 
-TO DO: clean up docs. implement tef_checkPars.
-make bound setting clear, and allow specific parameter bounds as well as evaluated, e.g. start or rate functions [max and min] lims.
 }

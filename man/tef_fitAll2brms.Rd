@@ -4,13 +4,22 @@
 \alias{tef_fitAll2brms}
 \title{Refit a TEfitAll model with brms}
 \usage{
-tef_fitAll2brms(TEs3s, nIter = 2000, nChains = 3, nCores = 2)
+tef_fitAll2brms(TEs3s, nIter = 2000, nChains = 3, nCores = 2,
+  errFun = NA)
 }
 \arguments{
 \item{TEs3s}{TEfitAll model}
 
 \item{nIter}{number of iterations}
+
+\item{nChains}{number of chains}
+
+\item{nCores}{number of cores}
+
+\item{errFun}{the error function to use. Defaults to the same as the TEfitAll model, if possible.}
 }
 \description{
-Refit a TEfitAll model with brms
+Passes a TEfitAll model to [hierarchical nonlinear Bayesian] fitting using the
+brms package. Note that, due to the extensive time needed to fit brms models,
+this function is even less tested than most functions in the TEfits package.
 }

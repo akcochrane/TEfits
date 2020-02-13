@@ -63,6 +63,7 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
       cat('edge correction [.0001] was applied')
       varIn[,1] <- (x*.9998)+.0001
     }
+    }
   }
 
   # Transform errFun into link functions
