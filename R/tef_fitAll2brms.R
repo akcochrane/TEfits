@@ -56,21 +56,27 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
 
   if(is.na(errFun)){errFun <- as.character(unique(TEs3s$fitSummary$errFun))}
 
-  if(errFun=='bernoulli'){
-    if(min(varIn[,1],na.rm=T)<0 || max(varIn[,1],na.rm=T) > 1){cat('The response variable is outside [0,1].')}
-    else{
-    if(!all(unique(na.omit(varIn[,1]))[1:2]==c(0,1))){
-      cat('edge correction [.0001] was applied')
-      varIn[,1] <- (x*.9998)+.0001
-    }
-    }
-  }
-
   # Transform errFun into link functions
   switch (errFun,
+          'rmse' = gaussian(),
+          'exGauss_mu' = exgaussian(),
     'ols' = gaussian(),
     'bernoulli' = bernoulli(link='identity')
   )
+
+  if(as.character(unique(TEs3s$fitSummary$errFun)) =='bernoulli'){
+    if(min(varIn[,1],na.rm=T)<0 || max(varIn[,1],na.rm=T) > 1){
+      cat('The response variable is outside [0,1].')}
+    else{
+      if(!all(unique(na.omit(varIn[,1]))[1:2]==c(0,1))){
+        cat('edge correction [.0001] was applied and a beta response distribution was used.')
+        varIn[,1] <- (x*.9998)+.0001
+
+        errFun <- Beta(link = "identity")
+      }
+    }
+  }
+
   ## fit model
   brmModel <- brm(brmForm,
                   varIn,
