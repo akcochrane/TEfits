@@ -5,6 +5,11 @@
 #' brms package. Note that, due to the extensive time needed to fit brms models,
 #' this function is even less tested than most functions in the TEfits package.
 #'
+#' TEfitAll 'bernoulli' models are fit using either 'bernoulli' or 'Beta' response
+#' distributions in brms, depending on whether the TEfitAll distribution is
+#' binary. TEfitAll 'logcosh' models are fit using a 'asym_laplace' response distribution
+#' in brms.
+#'
 #' @param TEs3s TEfitAll model
 #' @param nIter number of iterations
 #' @param nChains number of chains
@@ -58,10 +63,11 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
 
   # Transform errFun into link functions
   errorFun <- switch(errFun,
-          'rmse' = gaussian(),
-          'exGauss_mu' = exgaussian(),
-    'ols' = gaussian(),
-    'bernoulli' = bernoulli(link='identity')
+                     'rmse' = gaussian(),
+                     'exGauss_mu' = exgaussian(),
+                     'ols' = gaussian(),
+                     'bernoulli' = bernoulli(link='identity'),
+                     'logcosh' = asym_laplace()
   )
 
   if(errFun =='bernoulli'){
