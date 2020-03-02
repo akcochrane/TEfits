@@ -103,8 +103,16 @@ tef_err <- function(y,yHat,errFun,curDat=NA){
          }
          ,wiener_dr={
            require(RWiener)
-           wPars <- wdm(data.frame(q=y,resp=curDat$binResp))$coefficients
+           # cat(paste0('\nBS:',curDat$bs_param,' - ndt:',curDat$bs_param,' - fivenum_yhat:',fivenum(yHat)))
+           # cat(fivenum(yHat))
+           err <- tef_applyWDM(dat=y,
+                               DR=yHat,
+                               BS=curDat$bs_param,
+                               NDT=curDat$ndt_param,
+                               Bias=curDat$bias_param)
+            # cat(err,'\n')
          }
   )
+  if(is.infinite(err)){err <- 1E12}
   return(err)
 }

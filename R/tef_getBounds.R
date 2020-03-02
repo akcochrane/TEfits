@@ -28,6 +28,11 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
   prevTimeInds <- grep('prevTime',modList$guessNames,ignore.case = T)
   weibLinkShapeInds <- grep('weibull_shape',modList$guessNames,ignore.case = T)
   ##
+  if(modList$errFun=='wiener_dr'){
+    modList$wdModel <- wdm(modList$varIn[,modList$respVar])
+    # print(modList$wdModel$coefficients)
+  }
+  ##
   if(length(rateInds)>0){
 
     guessGroups$rateInds_interc   <- c()
@@ -57,6 +62,12 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
     modList$parLims$parMin[guessGroups$asymInds_interc] <- 0
     modList$parLims$parMax[guessGroups$asymInds_interc] <- max(modList$varIn[,modList$respVar],na.rm=T)*2
   }
+  if(modList$errFun=='wiener_dr'){
+    modList$parGuessBounds$parMin[guessGroups$asymInds_interc] <- -abs(modList$wdModel$coefficients['delta']*3)
+    modList$parGuessBounds$parMax[guessGroups$asymInds_interc] <- abs(modList$wdModel$coefficients['delta']*3)
+    modList$parLims$parMin[guessGroups$asymInds_interc] <- -abs(modList$wdModel$coefficients['delta']*3)
+    modList$parLims$parMax[guessGroups$asymInds_interc] <- abs(modList$wdModel$coefficients['delta']*3)
+  }
   if(modList$linkFun$link=='weibull' || modList$linkFun$link=='logit'){
     modList$parGuessBounds$parMin[guessGroups$asymInds_interc] <- 0
     modList$parGuessBounds$parMax[guessGroups$asymInds_interc] <- max(abs(modList$varIn[,linkFunX]),na.rm=T)*2
@@ -73,6 +84,12 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
     modList$parGuessBounds$parMax[guessGroups$startInds_interc] <- max(modList$varIn[,modList$respVar],na.rm=T)*2
     modList$parLims$parMin[guessGroups$startInds_interc] <- 0
     modList$parLims$parMax[guessGroups$startInds_interc] <- max(modList$varIn[,modList$respVar],na.rm=T)*2
+  }
+  if(modList$errFun=='wiener_dr'){
+    modList$parGuessBounds$parMin[guessGroups$startInds_interc] <- -abs(modList$wdModel$coefficients['delta']*3)
+    modList$parGuessBounds$parMax[guessGroups$startInds_interc] <- abs(modList$wdModel$coefficients['delta']*3)
+    modList$parLims$parMin[guessGroups$startInds_interc] <- -abs(modList$wdModel$coefficients['delta']*3)
+    modList$parLims$parMax[guessGroups$startInds_interc] <- abs(modList$wdModel$coefficients['delta']*3)
   }
   if(modList$linkFun$link=='weibull' || modList$linkFun$link=='logit'){
     modList$parGuessBounds$parMin[guessGroups$startInds_interc] <- 0
@@ -106,8 +123,20 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
   modList$parGuessBounds$parMin[guessGroups$prevTimeInds_interc] <- modList$prevTime_lim[1]
   modList$parGuessBounds$parMax[guessGroups$prevTimeInds_interc] <- modList$prevTime_lim[2]
   if(length(prevTimeInds)>1){guessGroups$prevTimeInds_covars <- prevTimeInds[2:length(prevTimeInds)]}}
-  }
 
+
+  if(modList$errFun=='wiener_dr'){
+    modList$parLims$parMin[grep("Intercept",modList$guessNames)] <- -abs(modList$wdModel$coefficients['delta']*3)
+    modList$parLims$parMax[grep("Intercept",modList$guessNames)] <-  abs(modList$wdModel$coefficients['delta']*3)
+    modList$parLims$parMin[grep('bs_param',modList$guessNames)] <- 1E-6
+    modList$parLims$parMin[grep('ndt_param',modList$guessNames)] <- 1E-6
+    modList$parLims$parMax[grep('ndt_param',modList$guessNames)] <- modList$wdModel$coefficients['tau']*3
+    modList$parLims$parMin[grep('bias_param',modList$guessNames)] <- 0
+    modList$parLims$parMax[grep('bias_param',modList$guessNames)] <- 1
+    modList$parLims$parMax[grep('bs_param',modList$guessNames)] <- modList$wdModel$coefficients['alpha']*3
+    modList$parGuessBounds <- modList$parLims
+
+  }
   if(length(weibLinkShapeInds)>0){guessGroups$weibLinkShapeInds_interc <- weibLinkShapeInds[1]
   if(exists('fatigue_lim',modList)){fatigue_lim <- modList$fatigue_lim}else{fatigue_lim <- modList$fatigue_lim <- c(nrow(modList$varIn)/2,nrow(modList$varIn))}
   modList$parLims$parMin[guessGroups$weibLinkShapeInds_interc] <- 0
@@ -115,6 +144,8 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
   modList$parGuessBounds$parMin[guessGroups$weibLinkShapeInds_interc] <- 0
   modList$parGuessBounds$parMax[guessGroups$weibLinkShapeInds_interc] <- 10
   if(length(weibLinkShapeInds)>1){guessGroups$weibLinkShapeInds_covars <- weibLinkShapeInds[2:length(weibLinkShapeInds)]}}
+
+  }
 
   return(modList)
 }

@@ -7,7 +7,7 @@
 TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
   changeFun = "expo", bootPars = list(nBoots = 0, bootTries = 0,
   bootPercent = 0), blockTimeVar = NULL, covarTerms = list(),
-  control = list())
+  control = tef_control())
 }
 \arguments{
 \item{varIn}{Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.}
@@ -24,7 +24,7 @@ TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
 
 \item{covarTerms}{An optional list of logical vectors indicating whether parameters should vary by covariates. See examples.}
 
-\item{control}{A list of model parameters. For details, see examples.}
+\item{control}{A list of model parameters. Use of tef_control() is highly recommended.}
 }
 \description{
 This is the primary function for the TEfits package. Fits a
@@ -79,6 +79,11 @@ double exponential ('expo_double'),
 4-parameter power ('power'; start, [inverse] rate, asymptote, and "previous learning time"),
 4-parameter weibull ('weibull'; start, [inverse] rate, asymptote, and shape).
 
+By default, during fitting the fits' errors are penalized multiplicatively by 1 + the square of the difference
+between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
+constrain model predictions to a "sane" range. This constraint can be removed with `control=tef_control(penalizeMean=F)`.
+Output errors [and BIC, etc.].
+
 `plot()`, `summary()`, `simulate()`, and `coef()` methods are defined for the TEfit class.
 }
 \examples{
@@ -128,33 +133,36 @@ plot(m)
  ## ## ## control parameters:
 
  ## Increase convergence tolerance to 0.1:
- m <- TEfit(dat[,c('respVar','timeVar')],control=list(convergeTol=.1))
+ m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(convergeTol=.1))
 
  ## Increase the maximum run number to 5000 (defaults to 200):
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(nTries=5000))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(nTries=5000))
 
  ## If the function will asymptote in the given time period, then one option is to calculate the TE function stepwise: first get a stable fit of last 20\% of timepoints (if there are enough timepoints, average this with a stable fit to the last 10\% of timepoints). Then fit the start and rate of approach to this asymptote:
- m <- TEfit(dat[,c('respVar','timeVar')],control=list(stepwise_asym = T))
+ m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(stepwise_asym = T))
 
  ## Put limits on the predicted values:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(y_lim=c(.1,.9)))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(y_lim=c(.1,.9)))
 
  ## Put limits on the rate parameter:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(rate_lim=c(2,4)))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(rate_lim=c(2,4)))
+
+ ## Remove the constraint that the time-evolving fit values should have the same mean as the null fit values:
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeMean))
 
  ## If rate parameter is hitting the boundary, try imposing a slight penalization for extreme rate values:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(penalizeRate=T))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeRate=T))
 
  ## Change the exponential change log base from 2 to e:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(expBase=exp(1)))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(expBase=exp(1)))
 
  ## Change the rate parameter log base from 2 to e:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(rateBase=exp(1)))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(rateBase=exp(1)))
 
  ## Silence errors:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(quietErrs=T))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(quietErrs=T))
 
  ## Fix a parameter [asymptote] to 0.8:
-  m <- TEfit(dat[,c('respVar','timeVar')],control=list(pFix=list(pAsym=.8)))
+  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(pFix=list(pAsym=.8)))
 
 }

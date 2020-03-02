@@ -23,3 +23,9 @@ Passes a TEfitAll model to [hierarchical nonlinear Bayesian] fitting using the
 brms package. Note that, due to the extensive time needed to fit brms models,
 this function is even less tested than most functions in the TEfits package.
 }
+\details{
+TEfitAll 'bernoulli' models are fit using either 'bernoulli' or 'Beta' response
+distributions in brms, depending on whether the TEfitAll distribution is
+binary. TEfitAll 'logcosh' models are fit using a 'asym_laplace' response distribution
+in brms.
+}

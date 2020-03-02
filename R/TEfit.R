@@ -53,6 +53,11 @@
 #' 4-parameter power ('power'; start, [inverse] rate, asymptote, and "previous learning time"),
 #' 4-parameter weibull ('weibull'; start, [inverse] rate, asymptote, and shape).
 #'
+#' By default, during fitting the fits' errors are penalized multiplicatively by 1 + the square of the difference
+#' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
+#' constrain model predictions to a "sane" range. This constraint can be removed with `control=tef_control(penalizeMean=F)`.
+#' Output errors [and BIC, etc.].
+#'
 #'
 #' `plot()`, `summary()`, `simulate()`, and `coef()` methods are defined for the TEfit class.
 #'
@@ -63,7 +68,7 @@
 #' @param bootPars A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.
 #' @param blockTimeVar A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)
 #' @param covarTerms An optional list of logical vectors indicating whether parameters should vary by covariates. See examples.
-#' @param control A list of model parameters. For details, see examples.
+#' @param control A list of model parameters. Use of tef_control() is highly recommended.
 
 #'
 #' @export
@@ -115,34 +120,37 @@
 #'  ## ## ## control parameters:
 #'
 #'  ## Increase convergence tolerance to 0.1:
-#'  m <- TEfit(dat[,c('respVar','timeVar')],control=list(convergeTol=.1))
+#'  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(convergeTol=.1))
 #'
 #'  ## Increase the maximum run number to 5000 (defaults to 200):
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(nTries=5000))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(nTries=5000))
 #'
 #'  ## If the function will asymptote in the given time period, then one option is to calculate the TE function stepwise: first get a stable fit of last 20% of timepoints (if there are enough timepoints, average this with a stable fit to the last 10% of timepoints). Then fit the start and rate of approach to this asymptote:
-#'  m <- TEfit(dat[,c('respVar','timeVar')],control=list(stepwise_asym = T))
+#'  m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(stepwise_asym = T))
 #'
 #'  ## Put limits on the predicted values:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(y_lim=c(.1,.9)))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(y_lim=c(.1,.9)))
 #'
 #'  ## Put limits on the rate parameter:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(rate_lim=c(2,4)))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(rate_lim=c(2,4)))
+#'
+#'  ## Remove the constraint that the time-evolving fit values should have the same mean as the null fit values:
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeMean))
 #'
 #'  ## If rate parameter is hitting the boundary, try imposing a slight penalization for extreme rate values:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(penalizeRate=T))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeRate=T))
 #'
 #'  ## Change the exponential change log base from 2 to e:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(expBase=exp(1)))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(expBase=exp(1)))
 #'
 #'  ## Change the rate parameter log base from 2 to e:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(rateBase=exp(1)))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(rateBase=exp(1)))
 #'
 #'  ## Silence errors:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(quietErrs=T))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(quietErrs=T))
 #'
 #'  ## Fix a parameter [asymptote] to 0.8:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=list(pFix=list(pAsym=.8)))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(pFix=list(pAsym=.8)))
 #'
 TEfit <- function(varIn,
                   linkFun = list(link='identity'),
@@ -151,7 +159,7 @@ TEfit <- function(varIn,
                   bootPars = list(nBoots = 0, bootTries = 0, bootPercent=0),
                   blockTimeVar = NULL,
                   covarTerms = list(),
-                  control=list()
+                  control=tef_control()
 ){
 
   modList <- list()
@@ -162,7 +170,7 @@ TEfit <- function(varIn,
   ## ## ##
   ### ##
 
-  # # # #  "explicit" arguments:
+  # # # #  arguments:
 
   modList$linkFun <- linkFun
   modList$errFun <- errFun
@@ -178,20 +186,22 @@ TEfit <- function(varIn,
   }
 
   # # # # control arguments:
-  if(exists('convergeTol',control)){modList$convergeTol <- control$convergeTol}else{modList$convergeTol <- 5E-2}
-  if(exists('nTries',control)){     modList$nTries      <- control$nTries     }else{modList$nTries <- 200}
-  if(exists('y_lim',control)){      modList$y_lim       <- control$y_lim      }else{modList$y_lim <- c(-1E6,1E6)}
-  if(exists('rate_lim',control)){   modList$rate_lim    <- control$rate_lim   }else{modList$rate_lim <- c(0,0)}
-  if(exists('shape_lim',control)){  modList$shape_lim   <- control$shape_lim  }else{modList$shape_lim <- c(0,0)}
-  if(exists('expBase',control)){    modList$expBase     <- control$expBase    }else{modList$expBase <- 2}
-  if(exists('rateBase',control)){   modList$rateBase    <- control$rateBase   }else{modList$rateBase <- 2}
-  if(exists('pFix',control)){       modList$pFix        <- control$pFix       }else{modList$pFix <- c()}
-  if(exists('stepwise_asym',control)){modList$stepwise_asym<- control$stepwise_asym}else{modList$stepwise_asym <- F}
-  if(exists('penalizeRate',control)){modList$penalizeRate<- control$penalizeRate}else{modList$penalizeRate <- F}
-  if(exists('explicit',control)){   modList$explicit    <- control$explicit   }else{modList$explicit <- ''}
-  if(exists('quietErrs',control)){  modList$quietErrs   <- control$quietErrs  }else{modList$quietErrs <- F}
+  if(length(control) < 14){cat('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
 
-  if(exists('suppressWarnings',control)){modList$suppressWarnings<-control$suppressWarnings}else{modList$suppressWarnings <- F}
+  modList$convergeTol <- control$convergeTol
+  modList$nTries      <- control$nTries
+  modList$y_lim       <- control$y_lim
+  modList$rate_lim    <- control$rate_lim
+  modList$shape_lim   <- control$shape_lim
+  modList$expBase     <- control$expBase
+  modList$rateBase    <- control$rateBase
+  modList$pFix        <- control$pFix
+  modList$stepwise_asym<- control$stepwise_asym
+  modList$penalizeRate<- control$penalizeRate
+  modList$penalizeMean<- control$penalizeMean
+  modList$explicit    <- control$explicit
+  modList$quietErrs   <- control$quietErrs
+  modList$suppressWarnings<-control$suppressWarnings
 
   # # name your response variable and your time variable
   modList$respVar <- colnames(modList$varIn)[1]
@@ -237,15 +247,21 @@ TEfit <- function(varIn,
   ### ### ### CAN ALSO DO THINGS LIKE REDUCTION TO 2D SEARCH,
   # # # # NULL LL VALUES, NULL PREDICTED VALUES, ETC
 
+  nullFit <- tef_tryFits(modList,whichPnames = 'null_pNames',whichFun='null_fun')
+
+  parDat <- as.data.frame(matrix(nullFit$par[1:length(modList$null_pNames)],dim(modList$varIn)[1],length(modList$null_pNames),byrow=T))
+  colnames(parDat) <- modList$null_pNames
+  nullFit$fullDat <- data.frame(modList$varIn,parDat)
+
+  modList$nullYhat <- eval(expr=modList$null_fun,env=nullFit$fullDat)
+
+  modList$times['nullFits'] <- Sys.time() - sum(modList$times)
+
   bestFit <- tef_tryFits(modList)
 
   modList$times['modFits'] <- Sys.time() - sum(modList$times)
 
-  nullFit <- tef_tryFits(modList,whichPnames = 'null_pNames',whichFun='null_fun')
-
   if(modList$stepwise_asym){bestFit$par['stepwiseAsym'] <- modList$stable_ending_asym}
-
-  modList$times['nullFits'] <- Sys.time() - sum(modList$times)
 
   ##
   ##
@@ -287,6 +303,11 @@ TEfit <- function(varIn,
     bestFit$GoF$deltaBIC <- bestFit$GoF$BIC - bestFit$GoF$nullBIC
   }
   if(modList$errFun == 'bernoulli'){
+    bestFit$GoF$BIC <- bestFit$value*2 + bestFit$GoF$nPars*log(nObs)
+    bestFit$GoF$nullBIC <- nullFit$value*2 + length(nullFit$par)*log(nObs)
+    bestFit$GoF$deltaBIC <- bestFit$GoF$BIC - bestFit$GoF$nullBIC
+  }
+  if(modList$errFun == 'wiener_dr'){
     bestFit$GoF$BIC <- bestFit$value*2 + bestFit$GoF$nPars*log(nObs)
     bestFit$GoF$nullBIC <- nullFit$value*2 + length(nullFit$par)*log(nObs)
     bestFit$GoF$deltaBIC <- bestFit$GoF$BIC - bestFit$GoF$nullBIC
@@ -413,28 +434,4 @@ TEfit <- function(varIn,
 
   return(TEs3)
 
-}
-
-if(F){
-  library(TEfits)
-  d_logist <- AaronFuns::dat_5dots_trans[AaronFuns::dat_5dots_trans$subID=='FF14DMFV',]
-  d_logist$resp <- d_logist$resp-1
-  d_logist$trialOffset <- d_logist$trial.theta
-
-  dIn <- data.frame(
-    my_resp = rnorm(200,0,.1)+c(rep(.8,10),seq(.8,.4,length=100),rep(.4,90)),
-    timeVar = 1:200,
-    my_covar = rnorm(200),
-    z = rnorm(200)
-  )
-  dIn[3,'my_resp'] <- NA
-  dIn$binResp <- rbinom(dim(dIn)[1],1,plogis(scale(dIn$my_resp)))
-
-  dInBl <- rbind(dIn,dIn,dIn,dIn)
-  dInBl$totalResp <- dInBl$my_resp + c(seq(-5,2,length=400),rep(1,400)) + 8
-  dInBl$totalTime <- 1:dim(dInBl)[1]
-  # plot(dInBl$totalTime,dInBl$totalResp)
-  # setwd('c:/users/uwlat/box sync/aaron/functions/fitPack')
-  setwd('c:/users/ac/google drive/functions/fitPack')
-  # setwd('//client/c$/users/ac/box sync/functions/fitPack')
 }

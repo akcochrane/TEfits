@@ -5,8 +5,8 @@
 \title{Calculate the error of data, given the model and certain parameters}
 \usage{
 tef_fitErr(guesses, varIn, pNames, evalFun, errFun, respVar,
-  linkFunX = NA, y_lim, rate_lim, shape_lim, penalizeRate, parLims,
-  thresh_fun, paramTerms)
+  linkFunX = NA, y_lim, rate_lim, shape_lim, penalizeMean, penalizeRate,
+  parLims, thresh_fun, paramTerms)
 }
 \arguments{
 \item{guesses}{proposed parameter values}
@@ -26,6 +26,8 @@ tef_fitErr(guesses, varIn, pNames, evalFun, errFun, respVar,
 \item{rate_lim}{Bounds for the rate parameter}
 
 \item{shape_lim}{Bounds for the shape parameter, if needed.}
+
+\item{penalizeMean}{two-element vector. The first element is logical, the second is the mean predicted value from the null fit}
 
 \item{penalizeRate}{logical, whether or not to penalize rate parameter}
 

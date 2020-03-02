@@ -61,6 +61,11 @@ tef_vars2forms <- function(modList){
     modList$pNames <- c(modList$pNames,'mu_param','sigma_param')
     modList$null_pNames <- c(modList$null_pNames,'mu_param','sigma_param')
   }
+  if(modList$errFun=='wiener_dr'){
+    require(RWiener)
+    modList$pNames <- c(modList$pNames,'bs_param','ndt_param','bias_param')
+    modList$null_pNames <- c(modList$null_pNames,'bs_param','ndt_param','bias_param')
+  }
   ##
 
   modList$evalFun <- modList$modl_fun[[3]]

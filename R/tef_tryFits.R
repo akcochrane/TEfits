@@ -18,15 +18,18 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
   if(exists('thresh_fun',modList) && whichFun =='evalFun'){
     thresh_fun <- modList$thresh_fun}else{thresh_fun <- NA} # should bound for null too?
 
-  if (whichPnames=='null_pNames'){paramTerms <- as.list(modList$null_pNames); names(paramTerms) <- paramTerms
-  }else{paramTerms <- modList$covarTerms}
+  if (whichPnames=='null_pNames'){paramTerms <- as.list(modList$null_pNames)
+  names(paramTerms) <- paramTerms
+  penalizeMean <- F
+  nullYhat <- 0
+  }else{
+    nullYhat <- modList$nullYhat
+    penalizeMean <- modList$penalizeMean
+    paramTerms <- modList$covarTerms}
 
   modList <- tef_getBounds(modList=modList,whichPnames=whichPnames,linkFunX=linkFunX)
 
   use_optim_bounds <- length(grep('+',modList$covarTerms,fixed=T))==0
-
-  # print(modList$parGuessBounds)
-  # print(modList$parLims)
 
   replTry <- function(modList=modList){
 
@@ -46,6 +49,8 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
     names(guesses) <- modList$guessNames
     # preRunTime <- Sys.time()
+
+
     suppressWarnings({
 
         if(use_optim_bounds){
@@ -54,6 +59,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                           errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
                           y_lim=modList$y_lim,rate_lim=modList$rate_lim,
                           shape_lim=modList$shape_lim,
+                          penalizeMean = c(penalizeMean,mean(nullYhat,na.rm=T)),
                           penalizeRate = modList$penalizeRate,
                           parLims=modList$parLims,
                           thresh_fun = thresh_fun,
@@ -71,6 +77,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
                         y_lim=modList$y_lim,rate_lim=modList$rate_lim,
                         shape_lim=modList$shape_lim,
+                        penalizeMean = c(penalizeMean,mean(nullYhat,na.rm=T)),
                         penalizeRate = modList$penalizeRate,
                         parLims=modList$parLims,
                         thresh_fun = thresh_fun,
@@ -129,8 +136,22 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
   if(!converged && !modList$suppressWarnings){cat('\nWarning: model did not converge at tol =',modList$convergeTol,'. Consider respecifying, allowing more runs, or increasing the convergence tolerance.\n')}
 
   bestFit <- as.numeric(bestFits[1,])
-  names(bestFit) <- c('err',modList[[whichPnames]])
 
+  ## ## ##
+  # ensure that the reported error is the actual [unpenalized] error
+  bestFit[1] <- tef_fitErr(bestFit[2:length(bestFit)],
+  varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
+  errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
+  y_lim=modList$y_lim,rate_lim=modList$rate_lim,
+  shape_lim=modList$shape_lim,
+  penalizeMean = c(F,mean(nullYhat,na.rm=T)),
+  penalizeRate = F,
+  parLims=modList$parLims,
+  thresh_fun = thresh_fun,
+  paramTerms = paramTerms)
+  ## ## ##
+
+  names(bestFit) <- c('err',modList[[whichPnames]])
 
   ## throw a warning if the rate is within 1% of the limits
   if(!is.na(bestFit['pRate']) && !modList$penalizeRate && !modList$suppressWarnings){if(
