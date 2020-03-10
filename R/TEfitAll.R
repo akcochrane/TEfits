@@ -18,7 +18,7 @@
 #' @param bootPars A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.
 #' @param blockTimeVar A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)
 #' @param covarTerms {{description}}
-#' @param control A list of model parameters. Full description {here}
+#' @param control A list of model parameters. Use tef_control() to generate.
 #'
 #' @export
 #'
@@ -33,7 +33,7 @@ TEfitAll <- function(varIn,
                   bootPars = list(nBoots = 0, bootTries = 0, bootPercent=0),
                   blockTimeVar = NULL,
                   covarTerms = list(),
-                  control=list()
+                  control=tef_control()
 ){
 
   TEFitList <- list()

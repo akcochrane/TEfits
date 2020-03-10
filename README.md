@@ -31,8 +31,8 @@ summary(mod)
     ## pRate     2.866
     ## 
     ## >> Goodness-of-fit:
-    ##            err nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
-    ## ols 0.09355702 15.2815     3   30 2191.575    0 0.9938778 -162.9079 -16.83544
+    ##          err nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
+    ## ols 0.093557 15.2815     3   30 2191.575    0 0.9938778 -162.9079 -16.83544
     ##      deltaBIC
     ## ols -146.0724
     ## 
@@ -69,21 +69,21 @@ summary(mod)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 1.000 1.000    0.000
-    ## pRate     2.740 2.664 2.805    0.036
-    ## pStart    0.231 0.205 0.259    0.014
+    ## pAsym     0.999 0.981 1.000    0.005
+    ## pRate     2.716 2.506 2.827    0.082
+    ## pStart    0.228 0.163 0.286    0.031
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42284 16.83409     3   30 37.04928 37.06937 -0.02009185
+    ## bernoulli 13.42459 16.83409     3   30 37.05277 37.06937 -0.01660093
     ## 
     ## >> Test of change in nonindependence:
     ##                                                    rawSpearman
     ## Nonindependence between response and trial_number:           1
     ##                                                    modelConditionalSpearman
-    ## Nonindependence between response and trial_number:              -0.03581758
+    ## Nonindependence between response and trial_number:              -0.05806452
     ##                                                    proportionalSpearmanChange
-    ## Nonindependence between response and trial_number:                 0.03581758
+    ## Nonindependence between response and trial_number:                 0.05806452
     ##                                                    pValSpearmanChange
     ## Nonindependence between response and trial_number:                  0
     ## 
@@ -92,11 +92,11 @@ summary(mod)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate    err
-    ## pAsym   1.000 -0.158 -0.289 -0.265
-    ## pStart -0.158  1.000  0.805  0.569
-    ## pRate  -0.289  0.805  1.000  0.553
-    ## err    -0.265  0.569  0.553  1.000
+    ##        pAsym pStart pRate   err
+    ## pAsym  1.000  0.427 0.558 0.035
+    ## pStart 0.427  1.000 0.687 0.313
+    ## pRate  0.558  0.687 1.000 0.178
+    ## err    0.035  0.313 0.178 1.000
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
@@ -104,7 +104,8 @@ An example of fitting a given model to subsets of data (e.g., individual partici
 dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 mod <- TEfitAll(dat[,c('response','trial_number')], 
-             groupingVar = dat$group)
+             groupingVar = dat$group,
+             groupingVarName = 'Participant')
 ```
 
     ## 
@@ -127,21 +128,21 @@ summary(mod)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922478 0.01638736 3.83367711
-    ## stdErr 0.03933806 0.01060312 0.02429049
+    ## mean   0.14922726 0.01639034 3.83366632
+    ## stdErr 0.03933408 0.01060454 0.02431467
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.005109e-04 0.03071614     3   30 1692.5189 1.110223e-16 0.97598924
-    ## stdErr 6.864467e-05 0.01187769     0    0  653.4475 1.110223e-16 0.01661159
+    ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
+    ## stdErr 6.864644e-05 0.01187769     0    0  653.4848 1.110223e-16 0.01661145
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.338005 -211.91820 -125.41980 identity    ols      expo         1
-    ## stdErr    6.547862   14.35328   19.26124 identity    ols      expo         0
+    ## mean   -337.338970 -211.91820 -125.42077 identity    ols      expo         1
+    ## stdErr    6.548355   14.35328   19.26152 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
     ## 
     ## 
-    ## >> Max runs: 500  -- Tolerance: 0.05 
+    ## >> Max runs: 200  -- Tolerance: 0.05 
     ## 
     ## >> Parameter Pearson product-moment correlations:
 
@@ -152,5 +153,5 @@ summary(mod)
 
 Additional principles guiding the development of **TEfits**:
 
--   Reliance only on base R (dependencies are few and optional: **psych**, **MASS**)
+-   Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**)
 -   Good things come to those who wait: Speed is nice, but robustness is better.

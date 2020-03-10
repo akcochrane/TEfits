@@ -46,7 +46,8 @@ An example of fitting a given model to subsets of data (e.g., individual partici
 dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 mod <- TEfitAll(dat[,c('response','trial_number')], 
-             groupingVar = dat$group)
+             groupingVar = dat$group,
+             groupingVarName = 'Participant')
 plot(mod)
 
 summary(mod)
@@ -54,5 +55,5 @@ summary(mod)
 
 Additional principles guiding the development of **TEfits**:
 
-- Reliance only on base R (dependencies are few and optional: **psych**, **MASS**)
+- Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**)
 - Good things come to those who wait: Speed is nice, but robustness is better.

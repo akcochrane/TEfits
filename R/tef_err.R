@@ -110,7 +110,14 @@ tef_err <- function(y,yHat,errFun,curDat=NA){
                                BS=curDat$bs_param,
                                NDT=curDat$ndt_param,
                                Bias=curDat$bias_param)
-            # cat(err,'\n')
+           # cat(err,'\n')
+         }
+         ,phs_dr={
+           # in Sims notation, alpha = BS, tau = NDT, eta = DR, DR ~ data
+           cat('PHS UNIMPLEMENTED. . . .')
+           rhat_rt  <- NDT+ (BS/(dr_Intercept+dr_x*x))*tanh(BS*(dr_Intercept+dr_x*x))
+           rhat_acc <- lapseRate/2 + (1-lapseRate)*
+             (1/(1+exp(-2*BS*(dr_Intercept+dr_x*x))))
          }
   )
   if(is.infinite(err)){err <- 1E12}
