@@ -29,7 +29,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
   modList <- tef_getBounds(modList=modList,whichPnames=whichPnames,linkFunX=linkFunX)
 
-  use_optim_bounds <- length(grep('+',modList$covarTerms,fixed=T))==0
+  use_optim_bounds <-F #  length(grep('+',modList$covarTerms,fixed=T))==0
 
   replTry <- function(modList=modList){
 
@@ -50,11 +50,12 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     names(guesses) <- modList$guessNames
     # preRunTime <- Sys.time()
 
-
-    suppressWarnings({
+    # suppressWarnings
+    {
 
         if(use_optim_bounds){
-         try({ curFit <- optim(guesses,fn=tef_fitErr,
+         try({
+           curFit <- optim(guesses,fn=tef_fitErr,
                           varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                           errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
                           y_lim=modList$y_lim,rate_lim=modList$rate_lim,
@@ -67,10 +68,9 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                           upper = modList$parLims$parMax,
                           lower = modList$parLims$parMin,
                           method='L-BFGS-B', # use this or BFGS; go back to NM if poor performance
-                          control=list(relTol=1E-3
-                                       ,maxit=100
-                          )
-          )},silent=T)
+                          control=list(maxit=100)
+          )
+           },silent=modList$quietErrs)
         }else{try({
         curFit <- optim(guesses,fn=tef_fitErr,
                         varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
@@ -83,12 +83,11 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         thresh_fun = thresh_fun,
                         paramTerms = paramTerms,
                          method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
-                        control=list(relTol=1E-3
-                                     ,maxit=100
-                                     )
+                        control=list(maxit=100)
         )
       },silent = modList$quietErrs)}
-    })
+
+    }
     # cat('\n',names(guesses),'\n',guesses,'--',curFit$value)
     # print(Sys.time()-preRunTime)
     if(exists('curFit')){
@@ -133,23 +132,26 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     sumTries <- sumTries+nPerRep
   }
 
+
+
   if(!converged && !modList$suppressWarnings){cat('\nWarning: model did not converge at tol =',modList$convergeTol,'. Consider respecifying, allowing more runs, or increasing the convergence tolerance.\n')}
 
   bestFit <- as.numeric(bestFits[1,])
 
-  ## ## ##
-  # ensure that the reported error is the actual [unpenalized] error
-  bestFit[1] <- tef_fitErr(bestFit[2:length(bestFit)],
-  varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
-  errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
-  y_lim=modList$y_lim,rate_lim=modList$rate_lim,
-  shape_lim=modList$shape_lim,
-  penalizeMean = c(F,mean(nullYhat,na.rm=T)),
-  penalizeRate = F,
-  parLims=modList$parLims,
-  thresh_fun = thresh_fun,
-  paramTerms = paramTerms)
-  ## ## ##
+# ## ##
+# ensure that the reported error is the actual [unpenalized] error
+bestFit[1] <- tef_fitErr(bestFit[2:length(bestFit)],
+varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
+errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
+y_lim=modList$y_lim,rate_lim=modList$rate_lim,
+shape_lim=modList$shape_lim,
+penalizeMean = c(F,mean(nullYhat,na.rm=T)),
+penalizeRate = F,
+parLims=modList$parLims,
+thresh_fun = thresh_fun,
+paramTerms = paramTerms)
+## ## ##
+
 
   names(bestFit) <- c('err',modList[[whichPnames]])
 
@@ -162,6 +164,8 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     (bestFit['pRate_0']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])<.01 ||
     (bestFit['pRate_0']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])>.99
   ){cat('\nYour rate is very close to the boundary. Consider penalizing the likelihood.')}}
+
+
 
   bestFit <- list(value=bestFit[1],par=bestFit[2:length(bestFit)],converged=converged,runs = sumTries)
 

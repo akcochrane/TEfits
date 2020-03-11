@@ -61,11 +61,12 @@ tef_getTermsExpo <- function(modList,pPrefix){
   ## ##
   # if(pPrefix=='p'){ ## ## only if this is the parameter of interest # why??
   # for(curFix in modList$pFix){ #why?
-    if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[grep('Asym',names(modList$pFix))]}
-    if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[grep('Start',names(modList$pFix))]}
-    if(any(grep('Rate',names(modList$pFix)))){datTerms$pR <- modList$pFix[grep('Rate',names(modList$pFix))]}
+    if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[[grep('Asym',names(modList$pFix))]]}
+    if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[[grep('Start',names(modList$pFix))]]}
+    if(any(grep('Rate',names(modList$pFix)))){datTerms$pR <- modList$pFix[[grep('Rate',names(modList$pFix))]]}
   # }
     # }
+
 
   return(datTerms)
 

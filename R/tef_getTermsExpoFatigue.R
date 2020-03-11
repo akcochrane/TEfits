@@ -109,9 +109,9 @@ tef_getTermsExpoFatigue <- function(modList,pPrefix){
     if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[grep('Asym',names(modList$pFix))]}
     if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[grep('Start',names(modList$pFix))]}
     if(any(grep('Rate',names(modList$pFix)))){datTerms$pR <- modList$pFix[grep('Rate',names(modList$pFix))]}
-    if(any(grep('FatigueAsym',names(modList$pFix)))){datTerms$pFatigueAsym <- modList$pFix[grep('FatigueAsym',names(modList$pFix))]}
-    if(any(grep('FatigueTime',names(modList$pFix)))){datTerms$pFatigueTime <- modList$pFix[grep('FatigueTime',names(modList$pFix))]}
-    if(any(grep('FatigueHWHM',names(modList$pFix)))){datTerms$pFatigueHWHM <- modList$pFix[grep('FatigueHWHM',names(modList$pFix))]}
+    if(any(grep('FatigueAsym',names(modList$pFix)))){datTerms$pFatigueAsym <- modList$pFix[[grep('FatigueAsym',names(modList$pFix))]]}
+    if(any(grep('FatigueTime',names(modList$pFix)))){datTerms$pFatigueTime <- modList$pFix[[grep('FatigueTime',names(modList$pFix))]]}
+    if(any(grep('FatigueHWHM',names(modList$pFix)))){datTerms$pFatigueHWHM <- modList$pFix[[grep('FatigueHWHM',names(modList$pFix))]]}
   }
   # }
 

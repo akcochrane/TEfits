@@ -80,11 +80,11 @@ tef_getTermsExpoBlock <- function(modList,pPrefix){
 
   if(pPrefix=='p'){ ## ## only if this is the parameter of interest
     for(curFix in modList$pFix){
-      if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[grep('Asym',names(modList$pFix))]}
-      if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[grep('Start',names(modList$pFix))]}
-      if(any(grep('Rate',names(modList$pFix)))){datTerms$pR <- modList$pFix[grep('Rate',names(modList$pFix))]}
-      if(any(grep('BlScale',names(modList$pFix)))){datTerms$pBS <- modList$pFix[grep('BlScale',names(modList$pFix))]}
-      if(any(grep('BlRate',names(modList$pFix)))){datTerms$pBR <- modList$pFix[grep('BlRate',names(modList$pFix))]}
+      if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[[grep('Asym',names(modList$pFix))]]}
+      if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[[grep('Start',names(modList$pFix))]]}
+      if(any(grep('Rate',names(modList$pFix)))){datTerms$pR <- modList$pFix[[grep('Rate',names(modList$pFix))]]}
+      if(any(grep('BlScale',names(modList$pFix)))){datTerms$pBS <- modList$pFix[[grep('BlScale',names(modList$pFix))]]}
+      if(any(grep('BlRate',names(modList$pFix)))){datTerms$pBR <- modList$pFix[[grep('BlRate',names(modList$pFix))]]}
     }
   }
 

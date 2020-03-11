@@ -65,10 +65,10 @@ tef_getTermsExpoDouble <- function(modList,pPrefix){
 
   if(pPrefix=='p'){ ## ## only if this is the parameter of interest
     for(curFix in modList$pFix){
-      if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[grep('Asym',names(modList$pFix))]}
-      if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[grep('Start',names(modList$pFix))]}
-      if(any(grep('RateA',names(modList$pFix)))){datTerms$pRa <- modList$pFix[grep('RateA',names(modList$pFix))]}
-      if(any(grep('RateB',names(modList$pFix)))){datTerms$pRb <- modList$pFix[grep('RateB',names(modList$pFix))]}
+      if(any(grep('Asym',names(modList$pFix)))){datTerms$pA <- modList$pFix[[grep('Asym',names(modList$pFix))]]}
+      if(any(grep('Start',names(modList$pFix)))){datTerms$pS <- modList$pFix[[grep('Start',names(modList$pFix))]]}
+      if(any(grep('RateA',names(modList$pFix)))){datTerms$pRa <- modList$pFix[[grep('RateA',names(modList$pFix))]]}
+      if(any(grep('RateB',names(modList$pFix)))){datTerms$pRb <- modList$pFix[[grep('RateB',names(modList$pFix))]]}
     }
   }
 

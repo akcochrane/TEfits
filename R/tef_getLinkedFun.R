@@ -148,7 +148,6 @@ tef_getLinkedFun <- function(modList){
     ## ## note differences from changefun: (a) "threshold" is "rate" (b) exp term should be (a/b)^c but Gold Law Connolly Bennur 2010 say (a/b)*c
   }
 
-
   if(modList$linkFun$link=='d_prime'){ #### #### ## BARELY TESTED
 
     if(exists('max_d_prime',modList$linkFun)){

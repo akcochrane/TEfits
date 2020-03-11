@@ -135,7 +135,7 @@
 #'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(rate_lim=c(2,4)))
 #'
 #'  ## Remove the constraint that the time-evolving fit values should have the same mean as the null fit values:
-#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeMean))
+#'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeMean=F))
 #'
 #'  ## If rate parameter is hitting the boundary, try imposing a slight penalization for extreme rate values:
 #'   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(penalizeRate=T))
@@ -218,8 +218,7 @@ TEfit <- function(varIn,
 
   modList$times['before_vars2forms'] <- Sys.time() - modList$times['start']
   modList <- tef_vars2forms(modList)
-  # print(modList$covarTerms)
-  # print(modList$evalFun)
+
   #### #### ## NEEDS TO BE error checked.
   if(modList$stepwise_asym){
     if(nrow(modList$varIn)>20){ ## fit stable asymptote to the last 20% (at least 4 obs)

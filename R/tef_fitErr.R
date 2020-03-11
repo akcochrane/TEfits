@@ -28,9 +28,16 @@ tef_fitErr <- function(guesses,varIn,pNames,evalFun,errFun,respVar,linkFunX=NA,
   colnames(guessDat) <- pNames
 
   # cat(guesses,'\n')
+
+  # cat(evalFun)
+
   ## generate the model predictions
   curDat <- data.frame(varIn,guessDat)
   yHat <- eval(expr=evalFun,env=curDat)
+
+  # cat(' >.yhat: ',yHat[1:2],' .< ')
+ # cat(guessDat[1:2,])
+ #  cat(as.character(evalFun),'\n')
 
   if(sum(is.na(yHat))>sum(is.na(curDat[,respVar]))){ # check for more predicted NAs than original NAs
     err <- 1E15}else{
@@ -61,8 +68,6 @@ tef_fitErr <- function(guesses,varIn,pNames,evalFun,errFun,respVar,linkFunX=NA,
       if(max_yHat > y_lim[2] || min_yHat < y_lim[1]){err <- 1E15} # check for prediction outside of Y boundaries
       if(any(guesses<parLims$parMin) || any(guesses>parLims$parMax)){err <- 1E15}
 
-
-
       if(penalizeMean[1]){err <- err*(1+(penalizeMean[2]-mean(yHat,na.rm=T))^2)} # err * 1 (as long as mean of yhat = mean of null model)
 
 
@@ -75,10 +80,12 @@ tef_fitErr <- function(guesses,varIn,pNames,evalFun,errFun,respVar,linkFunX=NA,
             err <- 1E15
           }
         }
-        err <- tef_checkPars(err,guesses,curDat,pNames,evalVun,errFun,respVar,linkFunX,
+        err <- tef_checkPars(err,guesses,curDat,pNames,evalFun,errFun,respVar,linkFunX,
                              y_lim,rate_lim,shape_lim,penalizeRate,paramTerms,guessGroups=NA)
       }
     } # close "too many NAs" if statement
+
+
   return(err)
 
 }

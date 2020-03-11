@@ -25,9 +25,11 @@ tef_checkPars <- function(err,guesses,curDat,pNames,evalFun,errFun,respVar,linkF
   ### cycle through the parameter terms and check for the relevant limits for each
   #### (asymptote and start compared to y_lim, rate compared to rate_lim, and shape compared to shape_lim)
   if (exists('thresh_covars',paramTerms)){paramTerms <- paramTerms$thresh_covars}
+
   for (curCovar in names(paramTerms)){
     paramMinMax <- fivenum(eval(formula(paste('~',paramTerms[curCovar]))[[2]],
                                 envir=curDat))[c(1,5)] # get minimum and maximum predicted values for the parameter
+
     ########%#
     # as yet unused:'pBS','pFatigueTime','pFatigueHWHM'
     ########%#

@@ -4,42 +4,41 @@
 #'
 #' @export
 #'
-tef_vars2forms <- function(modList){
-  ## ## >> need to modularize this, and have it interact with the link fun: <<<
 
+tef_vars2forms <- function(modList){
   # # set up covariates
   {
-  if(dim(modList$varIn)[2] >2){
-    modList$covars <- names(modList$varIn)[3:ncol(modList$varIn)]
-  }
+    if(dim(modList$varIn)[2] >2){
+      modList$covars <- names(modList$varIn)[3:ncol(modList$varIn)]
+    }
 
-  if(exists('blockTimeVar',modList)){
-    modList$covars <- modList$covars[modList$covars!=modList$blockTimeVar]
-  }
+    if(exists('blockTimeVar',modList)){
+      modList$covars <- modList$covars[modList$covars!=modList$blockTimeVar]
+    }
 
-  if(modList$linkFun$link=='d_prime'){
-    modList$covars <- modList$covars[modList$covars!= modList$linkFun$presence]
-  }
+    if(modList$linkFun$link=='d_prime'){
+      modList$covars <- modList$covars[modList$covars!= modList$linkFun$presence]
+    }
 
-  if(modList$linkFun$link=='logit'){
-    if(!exists('logistX',modList$linkFun)){cat('\nYou need to define a logistX for your logit link')}
-    modList$covars <- modList$covars[modList$covars!= modList$linkFun$logistX]
-  }
+    if(modList$linkFun$link=='logit'){
+      if(!exists('logistX',modList$linkFun)){cat('\nYou need to define a logistX for your logit link')}
+      modList$covars <- modList$covars[modList$covars!= modList$linkFun$logistX]
+    }
 
-  if(modList$linkFun$link=='weibull'){
-    if(!exists('weibullX',modList$linkFun)){cat('\nYou need to define a weibullX for your weibull link')}
-    modList$covars <- modList$covars[modList$covars!= modList$linkFun$weibullX]
-  }
+    if(modList$linkFun$link=='weibull'){
+      if(!exists('weibullX',modList$linkFun)){cat('\nYou need to define a weibullX for your weibull link')}
+      modList$covars <- modList$covars[modList$covars!= modList$linkFun$weibullX]
+    }
 
-  ##
-  ## ##
-  ## ## ##
-  # define your change function:
-  modList <-  tef_getLinkedFun(modList)
-}
+    ##
+    ## ##
+    ## ## ##
+    # define your change function:
+    modList <-  tef_getLinkedFun(modList)
+  }
   if(nchar(modList$explicit)>0){
     modList$modl_fun <- as.formula(modList$explicit)
-}
+  }
 
   # # get your data and parameter names out
   if (length(modList$modl_fun) == 2L) {
