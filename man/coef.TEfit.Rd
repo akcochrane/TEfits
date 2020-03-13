@@ -12,3 +12,7 @@
 \description{
 Extract coefficients from a TEfit model
 }
+\examples{
+\dontrun{coef(model_fit_by_TEfit)}
+
+}

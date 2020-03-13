@@ -10,6 +10,9 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{simulate(model_fit_by_TEfit)}
+#'
 simulate.TEfit <- function(model_in,nsim=100,newdata=data.frame(),toPlot=F){
 
 require(psych)

@@ -26,3 +26,7 @@
 Plot predicted values of a TEfit model. Predictions are thresholds, if relevant;
 otherwise they are overall model predictions
 }
+\examples{
+\dontrun{plot(model_fit_by_TEfit)}
+
+}

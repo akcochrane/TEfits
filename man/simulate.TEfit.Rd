@@ -19,3 +19,7 @@
 \description{
 Requires the $psych$ and $MASS$ packages.
 }
+\examples{
+\dontrun{simulate(model_fit_by_TEfit)}
+
+}

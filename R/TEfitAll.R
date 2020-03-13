@@ -1,24 +1,17 @@
 
 #' Fit several time-evolving regression models
 #'
-#' A wrapper for fitting a TEfit model to the data
+#' A wrapper for fitting a \code{\link{TEfit}} model to the data
 #' for every unique value of groupingVar. Defaults to
 #' returning a list including two summaries and all models; returning
 #' only a summary is also an option. Arguments (except groupingvar, a grouping vector)
-#' are identical to, and are passed directly to, TEfit().
+#' are identical to, and are passed directly to, \code{\link{TEfit}}.
 #'
-#' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
+#' @inheritParams TEfit
 #' @param groupingVar Variable (e.g., participant ID) with which to separate TEfit models. Length must be nrows(varIn)
 #' @param groupingVarName Name of grouping var
 #' @param returnAll Logical. Return only a summary (when T), or that summary plus every model, in a list (when F)
 #' @param progressDot If TRUE, prints a dot after each group fit
-#' @param linkFun A list defining a link function (i.e., 'identity', 'Quick', or 'logistic')
-#' @param errFun  A string defining an error function (e.g., 'ols', 'logcosh', 'exgauss'). Full description {here}
-#' @param changeFun A string defining the functional form of change (e.g., 'expo', 'power', 'weibull')
-#' @param bootPars A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.
-#' @param blockTimeVar A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)
-#' @param covarTerms {{description}}
-#' @param control A list of model parameters. Use tef_control() to generate.
 #'
 #' @export
 #'

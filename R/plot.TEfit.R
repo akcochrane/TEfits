@@ -14,6 +14,9 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{plot(model_fit_by_TEfit)}
+#'
 plot.TEfit <- function(TEs3,plot_title='',xlabel='',ylabel='',sub_title='',ymin=NA,ymax=NA){
 
   if(nchar(plot_title)==0){

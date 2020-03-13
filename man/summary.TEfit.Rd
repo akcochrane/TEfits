@@ -23,3 +23,7 @@ difference is calculated bewteen each of these CI values and the overall fit val
 differences are divided by qnorm(.975) and averaged in order to get the pseudo-SE, the
 pseudo standard deviation of the parameter expected value.
 }
+\examples{
+\dontrun{summary(model_fit_by_TEfit)}
+
+}

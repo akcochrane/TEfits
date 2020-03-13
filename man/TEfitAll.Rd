@@ -21,9 +21,9 @@ TEfitAll(varIn, groupingVar, groupingVarName = "grouping_var",
 
 \item{progressDot}{If TRUE, prints a dot after each group fit}
 
-\item{linkFun}{A list defining a link function (i.e., 'identity', 'Quick', or 'logistic')}
+\item{linkFun}{A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')}
 
-\item{errFun}{A string defining an error function (e.g., 'ols', 'logcosh', 'exgauss'). Full description {here}}
+\item{errFun}{A string defining an error function (e.g., 'ols', 'logcosh', 'bernoulli').}
 
 \item{changeFun}{A string defining the functional form of change (e.g., 'expo', 'power', 'weibull')}
 
@@ -31,14 +31,14 @@ TEfitAll(varIn, groupingVar, groupingVarName = "grouping_var",
 
 \item{blockTimeVar}{A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)}
 
-\item{covarTerms}{{{description}}}
+\item{covarTerms}{An optional list of logical vectors indicating whether parameters should vary by covariates. See examples.}
 
-\item{control}{A list of model parameters. Use tef_control() to generate.}
+\item{control}{A list of model parameters. Use of tef_control() is highly recommended.}
 }
 \description{
-A wrapper for fitting a TEfit model to the data
+A wrapper for fitting a \code{\link{TEfit}} model to the data
 for every unique value of groupingVar. Defaults to
 returning a list including two summaries and all models; returning
 only a summary is also an option. Arguments (except groupingvar, a grouping vector)
-are identical to, and are passed directly to, TEfit().
+are identical to, and are passed directly to, \code{\link{TEfit}}.
 }

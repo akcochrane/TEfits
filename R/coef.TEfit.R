@@ -4,6 +4,9 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{coef(model_fit_by_TEfit)}
+#'
 coef.TEfit <- function(TEs3){
   parVals <- data.frame(Estimate=round(TEs3$model$par,3))
 

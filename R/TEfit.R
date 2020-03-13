@@ -1,22 +1,23 @@
 
 #' Fit a time-evolving model (nonlinear regression by minimizing error)
 #'
-#' This is the primary function for the TEfits package. Fits a
+#' This is the primary function for the \code{TEfits} package. Fits a
 #' time-evolving regression model. Many options are available for
 #' various error functions, functional forms of change,
 #' nested timescales, bootstrapping/subsampling/cross-validation, and so on.
 #' Various handy S3 methods are available, such as
-#' plot(), summary(), coef(), and simulate()
+#' \code{plot}, \code{summary},
+#' \code{coef}, and \code{simulate}.
 #'
 #'
 #'TEfit defines a nonlinear regression model and re-fits that model
-#'using `optim()` numerous times, with random starting values, until
+#'using \code{optim()} numerous times, with random starting values, until
 #'the highest-likelihood fitting runs also have parameters very similar to
 #'one another (i.e., SD less than the convergence criterion). Runs are
 #'implemented in batches of 10.
 #'
 #' Bootstrapping or subsampling is specified as follows:
-#' `bootPars=list(nBoots=##,bootPercent=##,bootTries=##)`.
+#' \code{bootPars=list(nBoots=##,bootPercent=##,bootTries=##)}.
 #' nBoots refers to the number of times the model is re-fit on resampled data,
 #' bootPercent is the proportion (between 0 and 1) of the data resampled, and
 #' bootTries is the number of optimization runs attempted on each subsample.
@@ -59,7 +60,9 @@
 #' Output errors [and BIC, etc.].
 #'
 #'
-#' `plot()`, `summary()`, `simulate()`, and `coef()` methods are defined for the TEfit class.
+#' \code{\link{plot.TEfit}}, \code{\link{summary.TEfit}},
+#' \code{\link{coef.TEfit}}, and \code{\link{simulate.TEfit}}
+#' methods are defined for the TEfit class.
 #'
 #' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param linkFun A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')

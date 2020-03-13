@@ -15,6 +15,9 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{summary(model_fit_by_TEfit)}
+#'
 summary.TEfit <- function(TEs3,printOutput=T){
   ### ###
 
