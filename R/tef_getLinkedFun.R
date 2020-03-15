@@ -113,7 +113,7 @@ tef_getLinkedFun <- function(modList){
     }else{fitThresh <- modList$linkFun$fitThresh <- .75}
 
     expBase <- round(
-      uniroot(function(expBase) fitThresh-(yIntercept+((1-yIntercept)-lapseRate)*(1-expBase^(-1))),c(.0001,1000))$root
+      uniroot(function(expBase) fitThresh-(yIntercept+((rhAsymptote-yIntercept)-lapseRate)*(1-expBase^(-1))),c(.0001,1000))$root
       ,4)
 
     modList$covarTerms <- tef_getDatTerms(modList,pPrefix='thresh',whichChange=modList$changeFun)
