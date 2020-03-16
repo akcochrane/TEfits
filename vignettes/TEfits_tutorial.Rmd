@@ -1,0 +1,58 @@
+---
+title: "TEfit tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TEfit tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup,echo=F}
+library(TEfits)
+```
+
+One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). Because the task is novel to them and difficult, it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
+
+As a rough simulation of one participants' data, we will generate by-trial accuracies that linear increase over the first 40 trials and then are stable in the last 40 trials
+
+```{r simulate_data}
+set.seed(111)
+
+dat <- data.frame(
+  accuracy = c(
+    rbinom(40,6,seq(.4,.75,length.out = 40)),
+    rbinom(40,6,.75)
+  )/6,
+  trial_number = 1:80
+)
+```
+
+The typical analytical approach would be to find the average accuracy (`r mean(dat$accuracy)`). One alternative would be to remove some early set of trials (e.g., 20) as so-called "practice" and average the remaining trials (`r mean(dat$accuracy[21:80])`).
+
+This latter method implicitly acknowledges the possibility of nonstationarity in the measure of interst (accuracy), but it addresses the issue by arbitrarily reducing the amount of data being considered. Alternatively, if the asymptotic accuracy is desired, `TEfits` can be used to fit a time-evolving model and find the asymptotic accuracy:
+
+```{r TEfit_simple}
+m_simple <- TEfit(dat[,c('accuracy','trial_number')])
+
+m_simple$model$par['pAsym']
+```
+
+A more general summary can be viewed:
+
+```{r TEfit_simple_summary}
+summary(m_simple)
+```
+
+A plot can also be viewed:
+
+```{r TEfit_simple_plot}
+plot(m_simple)
+```
+
