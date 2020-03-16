@@ -69,7 +69,7 @@
 #' @param errFun  A string defining an error function (e.g., 'ols', 'logcosh', 'bernoulli').
 #' @param changeFun A string defining the functional form of change (e.g., 'expo', 'power', 'weibull')
 #' @param bootPars A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.
-#' @param blockTimeVar A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)
+#' @param blockTimeVar A vector defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)
 #' @param covarTerms An optional list of logical vectors indicating whether parameters should vary by covariates. See examples.
 #' @param control A list of model parameters. Use of tef_control() is highly recommended.
 

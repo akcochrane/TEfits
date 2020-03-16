@@ -25,7 +25,7 @@ timeVar_origin <- min(modList$varIn[,modList$timeVar],na.rm=T)
 
   if(modList$changeFun=='expo_block'){
     change_fun <-  paste0('((',covarVects$pA,')+((',covarVects$pS,')-(',covarVects$pA,'))*',
-                          modList$expBase,'^((',timeVar_origin,'-',modList$timeVar,')/(',mFit$modList$rate_lim[1],'+',
+                          modList$expBase,'^((',timeVar_origin,'-',modList$timeVar,')/(',modList$rate_lim[1],'+',
                           modList$rateBase,'^(',covarVects$pR,')))*',
                           '(1+',covarVects$pBS,'*',modList$expBase,'^((',timeVar_origin,'-',
                           modList$blockTimeVar,')/(',
