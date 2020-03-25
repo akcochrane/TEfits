@@ -18,9 +18,11 @@ knitr::opts_chunk$set(
 library(TEfits)
 ```
 
+# Example: Memory span
+
 One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). Because the task is novel to them and difficult, it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
 
-As a rough simulation of one participants' data, we will generate by-trial accuracies that linear increase over the first 40 trials and then are stable in the last 40 trials
+As a rough simulation of one participants' data, we will generate by-trial accuracies that linearly increase over the first 40 trials and then are stable in the last 40 trials
 
 ```{r simulate_data}
 set.seed(111)
@@ -36,6 +38,8 @@ dat <- data.frame(
 
 The typical analytical approach would be to find the average accuracy (`r mean(dat$accuracy)`). One alternative would be to remove some early set of trials (e.g., 20) as so-called "practice" and average the remaining trials (`r mean(dat$accuracy[21:80])`).
 
+## Fitting a time-evolving mean accuracy
+
 This latter method implicitly acknowledges the possibility of nonstationarity in the measure of interst (accuracy), but it addresses the issue by arbitrarily reducing the amount of data being considered. Alternatively, if the asymptotic accuracy is desired, `TEfits` can be used to fit a time-evolving model and find the asymptotic accuracy:
 
 ```{r TEfit_simple}
@@ -50,9 +54,68 @@ A more general summary can be viewed:
 summary(m_simple)
 ```
 
+`Call` shows the equation that was fit in the model
+
+`Converged` indicates whether the model converged, as measured by similar parameter values being found by the optimization runs with the 10 lowest errors. This is a heuristic, and should ideally be corroborated with parameter distributions from bootstrapped fits.
+
+`Fit Values` prints the fit parameter values.
+
+`Goodness-of-fit` prints several fit indices (e.g., the `err` and `BIC` of the best fit). Also printed are the corresponding fit indices for the null model (i.e., the model that is not time-evolving). The row name indicates the error function (e.g., `ols` or `logcosh`).
+
+`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`.
+
 A plot can also be viewed:
 
-```{r TEfit_simple_plot}
+```{r TEfit_simple_plot, fig.height=5, fig.width=6}
 plot(m_simple)
 ```
 
+## Adjusting the model to better fit the data: Error function
+
+By default `TEfit` minimizes the sum of squared error (`ols`) between model predictions and the response variable. This allows a fit of the conditional mean of the response variable, and it is directly comparable to "normal" methods of linear regression (e.g., `lm`). However, analysts' knowledge about their data may allow for more specific choices. For example, when considering accuracy on a memory span task, this accuracy is bounded at 0 and 1 (i.e., 0% and 100%). A `bernoulli` error function is therefore appropriate whereas an `ols` error function is not (e.g., due to skewed residuals and the ability to evaluate the error at predictions above 1 or below 0). The previous model can be fit using a `bernoulli` error function instead:
+
+```{r TEfit_bernoulli, message=FALSE, warning=FALSE}
+m_bernoulli <- TEfit(dat[,c('accuracy','trial_number')],errFun = 'bernoulli')
+
+```
+```{r TEfit_bernoulli_summary}
+summary(m_bernoulli, printOutput = F)[c("param_vals",'GoF')]
+```
+
+Note the different scale of error values here, when using the negative log likelihood of the `bernoulli` distribution, as compared to the `ols` fit.
+
+## Beyond point estimates: Bootstrapped fits
+
+Parameter distributions can be described by resampling the data with replacement and fitting the model to each dataset (see `?tef_bootList`). Here we will use 50 resamples for the sake of speed; using fewer than 500 for final inferences is not recommended, and an order of magnitude higher may be necessary if categorical decisions (e.g., parameter "significance") are near decision threshold values.
+
+```{r TEfit_bootstrap, message=FALSE, warning=FALSE}
+m_bootstrap <- TEfit(dat[,c('accuracy','trial_number')],
+                     errFun = 'bernoulli',
+                     bootPars = tef_bootList(resamples = 50))
+
+```
+```{r TEfit_bootstrap_summary, fig.height=5, fig.width=6}
+summary(m_bootstrap)
+plot(m_bootstrap)
+```
+
+Relative to the previous model additional information is provided regarding .025 and .975 quantiles of parameter estimates as well as the pseudo standard error (assuming that CI came from normal distribution; see `?summary.TEfit`). Three new outputs are also included which should be somewhat self-explanatory: `Percent of resamples predicting an increase in values` and `Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1` both aid in interpreting the strength of time-evolving trends. `Bootstrapped parameter correlations` provides a glimpse at the dimensionality of the parameterization.
+
+## Adjusting the model to better fit the data: Limiting parameter values
+
+If we imagine that our working memory task involves 9 possible options with replacement (e.g., the numerals 1 through 9), we know that the guessing rate is 1/9. As with the `bernoulli` distributional information that can be incorporated into a TEfits model, *a priori* bounds to predicted values can be incorporated. If accuracies are theoretically unable to fall below 1/9 or above 1 we can re-fit the previous model with this information.
+
+```{r TEfit_bounded, message=FALSE, warning=FALSE}
+m_bounded <- TEfit(dat[,c('accuracy','trial_number')],
+                   errFun = 'bernoulli',
+                   bootPars = tef_bootList(resamples = 50),
+                   control = tef_control(y_lim = c(1/9,1))
+                   )
+
+```
+```{r TEfit_bounded_summary, fig.height=5, fig.width=6}
+summary(m_bounded, printOutput = F)[c("param_vals",'GoF')]
+plot(m_bounded)
+```
+
+Given the current dataset this should not make much of a difference. However, *a priori* prediction bounds can often provide powerful theory-based constraints on parameters.

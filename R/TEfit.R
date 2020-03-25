@@ -17,8 +17,8 @@
 #'implemented in batches of 10.
 #'
 #' Bootstrapping or subsampling is specified as follows:
-#' \code{bootPars=list(nBoots=##,bootPercent=##,bootTries=##)}.
-#' nBoots refers to the number of times the model is re-fit on resampled data,
+#' \code{bootPars=tef_bootList(resamples = 0, bootPercent = 1, bootTries = 20)}.
+#' resamples refers to the number of times the model is re-fit on resampled data,
 #' bootPercent is the proportion (between 0 and 1) of the data resampled, and
 #' bootTries is the number of optimization runs attempted on each subsample.
 #' bootPercent of 1, the default, implements resampling with replacement (bootstrapping).
@@ -109,7 +109,7 @@
 #' m <- TEfit(dat[,c('respVar','timeVar','covar1','covar2')],covarTerms=list(pStart=c(F,T),pRate=c(T,T),pAsym=c(T,F)))
 #'
 #' ## 50 bootstrapped fits:
-#'  m <- TEfit(dat[,c('respVar','timeVar')],bootPars=list(nBoots=50))
+#'  m <- TEfit(dat[,c('respVar','timeVar')],bootPars=tef_bootList(resamples=50))
 #'  summary(m)
 #' # view a plot of the model, with CI bands:
 #' plot(m)
@@ -117,7 +117,7 @@
 #' . <- simulate(m,toPlot=T)
 #'
 #'  ## 50 random-subsample 80/20 cross-validation fits:
-#'  m <- TEfit(dat[,c('respVar','timeVar')],bootPars=list(nBoots=50,bootPercent=.8))
+#'  m <- TEfit(dat[,c('respVar','timeVar')],bootPars=tef_bootList(resamples=50,bootPercent=.8))
 #'  summary(m)
 #'
 #'  ## ## ## control parameters:
@@ -159,7 +159,7 @@ TEfit <- function(varIn,
                   linkFun = list(link='identity'),
                   errFun = 'ols',
                   changeFun = 'expo',
-                  bootPars = list(nBoots = 0, bootTries = 0, bootPercent=0),
+                  bootPars = tef_bootList(),
                   blockTimeVar = NULL,
                   covarTerms = list(),
                   control=tef_control()
@@ -380,7 +380,7 @@ TEfit <- function(varIn,
         psych::r.test(nrow(na.omit(modList$varIn)),
                       abs(bestFit$conditional_independence$rawSpearman),
                       abs(bestFit$conditional_independence$modelConditionalSpearman))$p
-      rownames(bestFit$conditional_independence) <- paste0('Nonindependence between ',modList$respVar,' and ',modList$timeVar,':')
+      rownames(bestFit$conditional_independence) <- paste0(modList$respVar,' ~ ',modList$timeVar,':')
     },silent=T)
 
     ## <><> for sigmoid links, find the threshold

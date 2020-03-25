@@ -29,7 +29,7 @@ TEfitAll(varIn, groupingVar, groupingVarName = "grouping_var",
 
 \item{bootPars}{A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.}
 
-\item{blockTimeVar}{A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)}
+\item{blockTimeVar}{A string identifying which covariate is the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)}
 
 \item{covarTerms}{An optional list of logical vectors indicating whether parameters should vary by covariates. See examples.}
 

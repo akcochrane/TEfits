@@ -5,9 +5,8 @@
 \title{Fit a time-evolving model (nonlinear regression by minimizing error)}
 \usage{
 TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
-  changeFun = "expo", bootPars = list(nBoots = 0, bootTries = 0,
-  bootPercent = 0), blockTimeVar = NULL, covarTerms = list(),
-  control = tef_control())
+  changeFun = "expo", bootPars = tef_bootList(), blockTimeVar = NULL,
+  covarTerms = list(), control = tef_control())
 }
 \arguments{
 \item{varIn}{Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.}
@@ -20,7 +19,7 @@ TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
 
 \item{bootPars}{A list defining the details for bootstrapped fits. Defaults to no bootstrapping. Necessary for estimates of uncertainty around fits and for covariance between parameters.}
 
-\item{blockTimeVar}{A string defining the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)}
+\item{blockTimeVar}{A string identifying which covariate is the time points of sub-scales (e.g., "blocks" of times within the overall timescale of data collection)}
 
 \item{covarTerms}{An optional list of logical vectors indicating whether parameters should vary by covariates. See examples.}
 
@@ -43,8 +42,8 @@ one another (i.e., SD less than the convergence criterion). Runs are
 implemented in batches of 10.
 
 Bootstrapping or subsampling is specified as follows:
-\code{bootPars=list(nBoots=##,bootPercent=##,bootTries=##)}.
-nBoots refers to the number of times the model is re-fit on resampled data,
+\code{bootPars=tef_bootList(resamples = 0, bootPercent = 1, bootTries = 20)}.
+resamples refers to the number of times the model is re-fit on resampled data,
 bootPercent is the proportion (between 0 and 1) of the data resampled, and
 bootTries is the number of optimization runs attempted on each subsample.
 bootPercent of 1, the default, implements resampling with replacement (bootstrapping).
@@ -122,7 +121,7 @@ plot(m)
 m <- TEfit(dat[,c('respVar','timeVar','covar1','covar2')],covarTerms=list(pStart=c(F,T),pRate=c(T,T),pAsym=c(T,F)))
 
 ## 50 bootstrapped fits:
- m <- TEfit(dat[,c('respVar','timeVar')],bootPars=list(nBoots=50))
+ m <- TEfit(dat[,c('respVar','timeVar')],bootPars=tef_bootList(resamples=50))
  summary(m)
 # view a plot of the model, with CI bands:
 plot(m)
@@ -130,7 +129,7 @@ plot(m)
 . <- simulate(m,toPlot=T)
 
  ## 50 random-subsample 80/20 cross-validation fits:
- m <- TEfit(dat[,c('respVar','timeVar')],bootPars=list(nBoots=50,bootPercent=.8))
+ m <- TEfit(dat[,c('respVar','timeVar')],bootPars=tef_bootList(resamples=50,bootPercent=.8))
  summary(m)
 
  ## ## ## control parameters:
