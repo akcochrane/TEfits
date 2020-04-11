@@ -15,7 +15,7 @@
 #'
 #' @export
 #'
-TEfitAll1 <- function(varIn,
+TEfitAll <- function(varIn,
                      groupingVar,
                      groupingVarName = 'grouping_var',
                      returnAll=T,

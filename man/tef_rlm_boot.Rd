@@ -2,7 +2,7 @@
 % Please edit documentation in R/tef_rlm_boot.R
 \name{tef_rlm_boot}
 \alias{tef_rlm_boot}
-\title{Bootstrapped MASS::rlm}
+\title{Bootstrapped robust linear model}
 \usage{
 tef_rlm_boot(formIn, datIn, nBoot = 500, useLM = F)
 }
