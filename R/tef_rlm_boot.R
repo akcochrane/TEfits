@@ -1,6 +1,6 @@
 
 
-#' Bootstrapped MASS::rlm
+#' Bootstrapped robust linear model
 #'
 #' Run a \code{MASS::rlm} model \code{nBoot} times, then include the bootstrapped parameter estimates
 #' (and summary of quantiles thereof) in the rlm output. Also includes out-of-sample
@@ -49,7 +49,7 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
     fitReg <- rlm}
 
   m <- suppressWarnings({fitReg(formIn,datIn,maxit=1E4)})
-
+  m$call <- match.call()
 
   ## bootstrapped fit:
   {
@@ -164,8 +164,6 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
     m$results <- formattedResults
   }
 
-
   return(m)
-
 
 }

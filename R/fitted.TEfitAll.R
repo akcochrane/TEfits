@@ -8,7 +8,7 @@
 #'
 fitted.TEfitAll <- function(TEs3s){
   # loop through the fits, get the predVals, and calculate the mean/SE
-  allPreds <- matrix(NA,length(TEs3s$allFitList),nrow(TEs3s$allFitList[[1]]$data)*5) ## make it plenty big for varieties of sizes
+  allPreds <- matrix(NA,length(TEs3s$allFitList),nrow(TEs3s$allFitList[[1]]$data)*10) ## make it plenty big for varieties of sizes
   maxTime <- 0
   for (curGroup in 1:length(TEs3s$allFitList)){
     curFit <- TEs3s$allFitList[[curGroup]]

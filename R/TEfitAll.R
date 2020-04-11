@@ -15,22 +15,23 @@
 #'
 #' @export
 #'
-TEfitAll <- function(varIn,
+TEfitAll1 <- function(varIn,
                      groupingVar,
                      groupingVarName = 'grouping_var',
                      returnAll=T,
                      progressDot=T,
-                  linkFun = list(link='identity'),
-                  errFun = 'ols',
-                  changeFun = 'expo',
-                  bootPars = list(nBoots = 0, bootTries = 0, bootPercent=0),
-                  blockTimeVar = NULL,
-                  covarTerms = list(),
-                  control=tef_control()
+                     linkFun = list(link='identity'),
+                     errFun = 'ols',
+                     changeFun = 'expo',
+                     bootPars = list(nBoots = 0, bootTries = 0, bootPercent=0),
+                     blockTimeVar = NULL,
+                     covarTerms = list(),
+                     control=tef_control()
 ){
 
   TEFitList <- list()
   TEFit_group <- data.frame()
+  fit_data <- data.frame()
 
   for(curGroup in unique(groupingVar)){
     TEFitList[[length(TEFitList)+1]] <- TEfit(
@@ -53,13 +54,14 @@ TEfitAll <- function(varIn,
 
     TEFit_group <- rbind(TEFit_group,c(
       summLine,
-    TEFitList[[length(TEFitList)]]$model$GoF,
-    linkFun=linkFun$link,errFun=errFun,changeFun=changeFun,
-    converged=TEFitList[[length(TEFitList)]]$model$converged,
-    pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
+      TEFitList[[length(TEFitList)]]$model$GoF,
+      linkFun=linkFun$link,errFun=errFun,changeFun=changeFun,
+      converged=TEFitList[[length(TEFitList)]]$model$converged,
+      pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
     ))
-
     rownames(TEFit_group)[nrow(TEFit_group)] <- curGroup
+
+    fit_data <- rbind(fit_data,TEFitList[[length(TEFitList)]]$data)
 
     if(progressDot){cat('. ')}
 
@@ -72,7 +74,7 @@ TEfitAll <- function(varIn,
       TEFitSummary <- cbind(TEFitSummary,
                             c(mean(TEFit_group[,curCol]),
                               sd(TEFit_group[,curCol])/sqrt(nrow(TEFit_group)))
-                            )
+      )
     }else(TEFitSummary <- cbind(TEFitSummary,unique(TEFit_group[,curCol])))
   }
   rownames(TEFitSummary) <- TEFitSummary$summaryStat
@@ -85,21 +87,12 @@ TEfitAll <- function(varIn,
 
 
 
-if(returnAll){
-  outList <- list(fitSummary=TEFitSummary ,allFits = TEFit_group,allFitList = TEFitList)# return everything that was calculated
-  class(outList) <- 'TEfitAll'
-  return(outList)
-}else(return(TEFit_group)) # return only the by-groupVar fits
-}
 
-if(F){
-library(TEfits)
-d <- data.frame(y=c(seq(0,3,length=25),rep(3,length=25),
-                    seq(0,4,length=25),rep(4,length=25),
-                    seq(1,3,length=25),rep(3,length=25)
-                    )+rnorm(150)+3,
-                x =c(1:50,1:50,1:50),
-                sID = c(rep(c('a','b','c'),each=50)))
-m <- TEfitAll(d[,1:2],d[,3],bootPars=list(nBoots=20,bootPercent=.8),errFun='logcosh')
-summary(m)
+
+  if(returnAll){
+    outList <- list(fitSummary=TEFitSummary ,allFits = TEFit_group,allFitList = TEFitList,data=fit_data)# return everything that was calculated
+
+    class(outList) <- 'TEfitAll'
+    return(outList)
+  }else(return(TEFit_group)) # return only the by-groupVar fits
 }
