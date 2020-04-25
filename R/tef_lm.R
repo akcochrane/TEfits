@@ -1,16 +1,16 @@
 
 #' Robust linear model with nonlinear time predictor
-#' 
-#' Fit a linear model or robust linear model with time as a covariate, 
+#'
+#' Fit a linear model or robust linear model with time as a covariate,
 #' while estimating the shape of the nonlinear interpolation between starting and ending time.
 #' First resamples data with replacement 100 times, and each time estimates the best-shaped curve to interpolate
 #' between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 #' Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 #' interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
 #' offset magnitude 0). Last uses this transformed time variable in a \code{rlm} or \code{lm} model
-#' 
-#' 
-#' Rate is parameterized as a time constant, or the amount of time it takes for half of change to occur. 
+#'
+#'
+#' Rate is parameterized as a time constant, or the amount of time it takes for half of change to occur.
 #' The value of rate has a lower bound of
 #' the .0333 quantile of the time variable (i.e., 7/8 of change happens in the first 10% of time) and an upper bound of the
 #' .333 quantile of the time variable (i.e., 7/8 of change takes 100% of the time to happen). These bounds provide
@@ -22,7 +22,6 @@
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should MASS::rlm() be used?
 #'
-#' @return
 #' @export
 #'
 #' @examples
@@ -42,38 +41,38 @@
 #' plot(datIn[,c('trialNum','resp')])
 #' lines(datIn$trialNum,fitted(m_lm),col='blue')
 #' lines(datIn$trialNum,fitted(m_rlm),col='red')
-#' 
+#'
 tef_lm <- function(formIn,datIn,timeVar,robust=F){
-  
+
   if(F){
     dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
     dat$typpe <- sample(c('a','b'),200,replace = T)
     dat[dat$typpe=='b','resp'] <- dat[dat$typpe=='b','resp'] + 1
     dat$typpe[4:5] <- NA
-    # m_lm <- tef_lm(resp ~ trialNum*typpe,dat,'trialNum')   
-    # m_rlm <- tef_lm(resp ~ trialNum*typpe,dat,'trialNum',robust=T)   
-    
+    # m_lm <- tef_lm(resp ~ trialNum*typpe,dat,'trialNum')
+    # m_rlm <- tef_lm(resp ~ trialNum*typpe,dat,'trialNum',robust=T)
+
     datIn <- dat
     formIn <- resp ~ trialNum*typpe
 
-    
+
     # Last uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
     # bootstrapped parameter coefficients and out-of-sample prediction.
-    
+
     # param nBoot Number of bootstrapped models to fit after estimated rate [time constant]
   }
-  
+
   fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
     fitData[,fitTimeVar] <- 2^((1-fitData[,fitTimeVar])/rate)
     if(robust){ modErr <- sum(MASS::rlm(fitFormula,fitData)$residuals^2,na.rm=T) # minimize error (SSE)
     }else{modErr <- 1-summary(lm(fitFormula,fitData))$r.squared} # minimize error (1-rSquared)
-    
+
     return(modErr)
   }
-  
+
   bootRate <- replicate(100,{
     curDat <- datIn[sample(nrow(datIn),replace = T),]
-    
+
     curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
      curFit <- optimize(fitRateLM,
                   interval=quantile(curDat[,timeVar],c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
@@ -86,24 +85,24 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F){
     curFit
   }
   )
-  
+
   datIn[,timeVar] <- 2^((1-datIn[,timeVar])/median(bootRate))
 
-  
+
   ### ### still needs to be implemented: isn't playing will with interactions? covariates?
   # if(robust){modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot)
   # }else{modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot,useLM=T)}
-  
+
   if(robust){modOut <- MASS::rlm(formIn,datIn)
   }else{modOut <- lm(formIn,datIn)}
-  
+
   modOut$rate <- median(bootRate)
   modOut$bootRate <- bootRate
-  
+
   modOut$transformed_time <- datIn[,timeVar]
-  
+
   modOut$call <- formula(deparse(formIn))
-  
+
   return(modOut)
 }
 
