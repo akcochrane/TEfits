@@ -21,6 +21,7 @@
 #' @param datIn model data, as in lm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should MASS::rlm() be used?
+#' @param fixRate If numeric, use this as a rate parameter [50% time constant] rather than estimating it (e.g., to improve reproducibility)
 #'
 #' @export
 #'
@@ -42,7 +43,7 @@
 #' lines(datIn$trialNum,fitted(m_lm),col='blue')
 #' lines(datIn$trialNum,fitted(m_rlm),col='red')
 #'
-tef_lm <- function(formIn,datIn,timeVar,robust=F){
+tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA){
 
   if(F){
     dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
@@ -62,6 +63,8 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F){
     # param nBoot Number of bootstrapped models to fit after estimated rate [time constant]
   }
 
+
+  if(!is.numeric(fixRate)){
   fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
     fitData[,fitTimeVar] <- 2^((1-fitData[,fitTimeVar])/rate)
     if(robust){ modErr <- sum(MASS::rlm(fitFormula,fitData)$residuals^2,na.rm=T) # minimize error (SSE)
@@ -85,8 +88,10 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F){
     curFit
   }
   )
+  fixRate <- median(bootRate)
+  }
 
-  datIn[,timeVar] <- 2^((1-datIn[,timeVar])/median(bootRate))
+  datIn[,timeVar] <- 2^((1-datIn[,timeVar])/fixRate)
 
 
   ### ### still needs to be implemented: isn't playing will with interactions? covariates?
@@ -96,8 +101,8 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F){
   if(robust){modOut <- MASS::rlm(formIn,datIn)
   }else{modOut <- lm(formIn,datIn)}
 
-  modOut$rate <- median(bootRate)
-  modOut$bootRate <- bootRate
+  modOut$rate <- fixRate
+  try({modOut$bootRate <- bootRate},silent = T)
 
   modOut$transformed_time <- datIn[,timeVar]
 
