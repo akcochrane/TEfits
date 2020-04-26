@@ -64,7 +64,7 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA){
   }
 
 
-  if(!is.numeric(fixRate)){
+  if(!is.numeric(fixRate)){suppressWarnings({
   fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
     fitData[,fitTimeVar] <- 2^((1-fitData[,fitTimeVar])/rate)
     if(robust){ modErr <- sum(MASS::rlm(fitFormula,fitData)$residuals^2,na.rm=T) # minimize error (SSE)
@@ -89,7 +89,7 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA){
   }
   )
   fixRate <- median(bootRate)
-  }
+  })}
 
   datIn[,timeVar] <- 2^((1-datIn[,timeVar])/fixRate)
 
