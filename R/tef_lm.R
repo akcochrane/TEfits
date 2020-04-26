@@ -15,13 +15,15 @@
 #' the .0333 quantile of the time variable (i.e., 7/8 of change happens in the first 10% of time) and an upper bound of the
 #' .333 quantile of the time variable (i.e., 7/8 of change takes 100% of the time to happen). These bounds provide
 #' some robustness in estimates of asympototic effects (i.e., "controlling for time") as well as initial effects
-#' (i.e., "time-related starting offset").
+#' (i.e., "time-related starting offset"). Last uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
+#' bootstrapped parameter coefficients and out-of-sample prediction.
 #'
 #' @param formIn model formula, as in lm()
 #' @param datIn model data, as in lm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should MASS::rlm() be used?
 #' @param fixRate If numeric, use this as a rate parameter [50% time constant] rather than estimating it (e.g., to improve reproducibility)
+#' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated
 #'
 #' @export
 #'
@@ -43,7 +45,7 @@
 #' lines(datIn$trialNum,fitted(m_lm),col='blue')
 #' lines(datIn$trialNum,fitted(m_rlm),col='red')
 #'
-tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA){
+tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 200){
 
   if(F){
     dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
@@ -57,10 +59,9 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA){
     formIn <- resp ~ trialNum*typpe
 
 
-    # Last uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
-    # bootstrapped parameter coefficients and out-of-sample prediction.
 
-    # param nBoot Number of bootstrapped models to fit after estimated rate [time constant]
+
+    #
   }
 
 
@@ -95,11 +96,11 @@ tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA){
 
 
   ### ### still needs to be implemented: isn't playing will with interactions? covariates?
-  # if(robust){modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot)
-  # }else{modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot,useLM=T)}
+  if(robust){modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot)
+  }else{modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot,useLM=T)}
 
-  if(robust){modOut <- MASS::rlm(formIn,datIn)
-  }else{modOut <- lm(formIn,datIn)}
+  # if(robust){modOut <- MASS::rlm(formIn,datIn)
+  # }else{modOut <- lm(formIn,datIn)}
 
   modOut$rate <- fixRate
   try({modOut$bootRate <- bootRate},silent = T)

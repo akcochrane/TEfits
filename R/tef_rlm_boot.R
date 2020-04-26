@@ -9,7 +9,7 @@
 #'
 #' Wraps rlm() and then bootstraps [fits models to datasets sampled with replacement]
 #' that model \code{nBoot} times. Then fits models to
-#' nBoot random 80 percent of data and tests the delta R-squared of each parameter
+#' nBoot random 80 percent of data and tests the delta R-squared of each numeric or logical parameter
 #' when predicting the out-of-sample 20 percent. An augmented \code{rlm} object is returned that includes
 #' several new items: \code{$bootSummary}, \code{$boots} (all bootstrapped parameters),
 #' \code{$bootQs} (quantiles
@@ -93,7 +93,7 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
 
       dRsq <- c(fullMod = (sse_raw-sse_fullMod)/sse_raw)
 
-      parNames <- names(m$coefficients)[2:length(names(m$coefficients))]
+      parNames <- attr(terms(m),'term.labels')
 
       if(length(parNames)>1){tilde<- '~'}else{tilde <- '~ 1'}
       for (dropVar in 1:length(parNames)){
@@ -132,32 +132,37 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
       curECDF <- ecdf(m$boots[, curCoef])
       outDF[curCoef, "bootP"] <- min(curECDF(0),
                                      1 - curECDF(0)) * 2
-    }
-    outDF[, c(1, 2, 4, 5)] <- signif(outDF[, c(1, 2, 4, 5)],
-                                     2)
+    } ; rm(curCoef)
+    outDF[, c(1, 2, 4, 5)] <- signif(outDF[, c(1, 2, 4, 5)], 2)
     outDF[, 3] <- round(outDF[, 3], 2)
     outDF[, 6] <- round(outDF[, 6], 3)
-    outDF$dRsq_oos <- round(m$dRsqQs['50%',],4)
+
     outDF$dRsq_oos[1] <- NA
+    for(curCoef in colnames(m$dRsqQs)){
+    if(any(rownames(outDF)==curCoef)){
+    outDF[curCoef,'dRsq_oos'] <- round(m$dRsqQs['50%',curCoef],4)}}
+
     comment(outDF) <- paste('Summary of rlm_boot. The first 3 columns are from the standard rlm fit.',
                             'ci025 and ci975 are the 2.5% and 97.5% quantiles of parameter estimates to bootstrapped fits.',
                             'BootP indicates the quantile (calculated from the parameter distributions) associated with a',
                             '0 slope for a given parameter, multiplied by 2 to imitate a conventional 2-tailed p value.',
-                            'dRsq_oos is the median out-of-sample prediction error reduction when including a',
+                            'dRsq_oos is, for numeric predictors, the median out-of-sample prediction error reduction when including a',
                             'given parameter in the full model. This is calculated as a proportional',
                             'reduction of squared error in out-of-sample prediction',
                             'relative to a model including all parameters except the specific parameter in question. ')
 
-    m$bootSummary <-outDF
+    m$bootSummary <- outDF
 
     formattedResults <- c()
     if(useLM){bname='Estimate'}else{bname='Value'}
     for (curCoef in 1:ncol(m$boots)) {
       coefName <- colnames(m$boots)[curCoef]
+
+      if(is.na(outDF[coefName,c('dRsq_oos')])){dr2str <- ''}else{dr2str <- paste(', dR^2^~oos~ =',outDF[coefName,c('dRsq_oos')])}
+
       formattedResults <- c(formattedResults,
                             paste0('*b* = ',outDF[coefName,bname],', CI = [',
-                                   paste(outDF[coefName,c('ci025','ci975')],collapse=','),'], dR^2^~oos~ = ',
-                                   outDF[coefName,c('dRsq_oos')])
+                                   paste(outDF[coefName,c('ci025','ci975')],collapse=','),']',dr2str)
       )
     }
     names(formattedResults) <- colnames(m$boots)

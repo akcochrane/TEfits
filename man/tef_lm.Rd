@@ -4,7 +4,7 @@
 \alias{tef_lm}
 \title{Robust linear model with nonlinear time predictor}
 \usage{
-tef_lm(formIn, datIn, timeVar, robust = F, fixRate = NA)
+tef_lm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 200)
 }
 \arguments{
 \item{formIn}{model formula, as in lm()}
@@ -16,6 +16,8 @@ tef_lm(formIn, datIn, timeVar, robust = F, fixRate = NA)
 \item{robust}{Logical. Should MASS::rlm() be used?}
 
 \item{fixRate}{If numeric, use this as a rate parameter [50% time constant] rather than estimating it (e.g., to improve reproducibility)}
+
+\item{nBoot}{Number of bootstrapped models to fit after rate [time constant] has been estimated}
 }
 \description{
 Fit a linear model or robust linear model with time as a covariate,
@@ -32,7 +34,8 @@ The value of rate has a lower bound of
 the .0333 quantile of the time variable (i.e., 7/8 of change happens in the first 10% of time) and an upper bound of the
 .333 quantile of the time variable (i.e., 7/8 of change takes 100% of the time to happen). These bounds provide
 some robustness in estimates of asympototic effects (i.e., "controlling for time") as well as initial effects
-(i.e., "time-related starting offset").
+(i.e., "time-related starting offset"). Last uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
+bootstrapped parameter coefficients and out-of-sample prediction.
 }
 \examples{
 dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))

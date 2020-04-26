@@ -24,7 +24,7 @@ using \code{nBoot}>2000 (or even much higher) is recommended.
 \details{
 Wraps rlm() and then bootstraps [fits models to datasets sampled with replacement]
 that model \code{nBoot} times. Then fits models to
-nBoot random 80 percent of data and tests the delta R-squared of each parameter
+nBoot random 80 percent of data and tests the delta R-squared of each numeric or logical parameter
 when predicting the out-of-sample 20 percent. An augmented \code{rlm} object is returned that includes
 several new items: \code{$bootSummary}, \code{$boots} (all bootstrapped parameters),
 \code{$bootQs} (quantiles
