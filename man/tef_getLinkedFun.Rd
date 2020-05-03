@@ -10,5 +10,5 @@ tef_getLinkedFun(modList)
 \item{modList}{List of TEfit model details}
 }
 \description{
-This function also calculates default rate and [weibull] shape bounds
+\code{\link{TEfit}} internal. This function also calculates default rate and [weibull] shape bounds.
 }

@@ -1,6 +1,6 @@
-
-
 #' Calculate error for TEFit::tef_fitErr
+#'
+#' \code{\link{TEfit}} internal
 #'
 #' @param y Actual response variable values
 #' @param yHat Predicted response variabel values

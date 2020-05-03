@@ -12,5 +12,5 @@ tef_changeFun(modList, covarVects)
 \item{covarVects}{Vectors of covariate(s) for each model parameter}
 }
 \description{
-Construct the right hand side of the equation for a TEfit
+\code{\link{TEfit}} internal
 }

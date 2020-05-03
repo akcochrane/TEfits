@@ -2,23 +2,31 @@
 #' Linear mixed-effects model with nonlinear time random effects
 #'
 #' Fits a \code{lme4::lmer} linear mixed-effects model with the random effects of
-#' \code{timeVar} for each level of \code{groupingVar}.
+#' \code{timeVar} for each level of \code{groupingVar}. Provides estimates of time-related change
+#' (i.e., attempts to answer the question "how different was the start than the end?").
 #'
 #' First uses \code{\link{TElm}} to find a rate parameter for each level of \code{groupingVar}. These
 #' rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
 #' saturating variable (see \code{\link{TElm}}). After finding bivariate rate parameters using \code{\link{TElm}},
 #' \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
-#' \code{lmer} model. Random effects and rate estimates may be unstable, and optimization may take
-#' a very long time to run. The primary purpose of this function is to allow for by-\code{groupingVar}
-#' detrending of time-related changes in data (i.e., to estimate and test fixed effects at asymptotic time).
-#' If reliable by-\code{groupingVar} parameters are desired, it is highly recommended to use
-#' \code{TEfit} or \code{TEfitAll}.
+#' \code{lmer} model.
 #'
 #' May be used, with \code{onlyGroupMods=T}, as a wrapper for \code{\link{TElm}} in order to simply
 #' fit bivariate \code{response~time} models and extract the corresponding transformed time variable.
 #'
-#' Note that the \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
-#' (e.g., \code{(time_variable | grouping_variable)}).
+#' @note
+#' Random effects and rate estimates may be unstable, and optimization may take
+#' a very long time to run. The primary purpose of this function is to allow for by-\code{groupingVar}
+#' detrending of time-related changes in data (i.e., to estimate and test fixed effects at asymptotic time,
+#' or to estimate and test the magnitude of time-related effects).
+#' If reliable by-\code{groupingVar} parameters are desired, it is highly recommended to use
+#' \code{\link{TEfit}} or \code{\link{TEfitAll}}.
+#'
+#' The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
+#' (e.g., \code{(time_variable | grouping_variable)})
+#'
+#' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
+#' Here it is not.
 #'
 #' @param formIn model formula, as in \code{lmer}
 #' @param dat model data, as in \code{lmer}

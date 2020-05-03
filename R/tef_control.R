@@ -1,18 +1,21 @@
 #' Get control parameters for a TEfit model
 #'
-#' @param quietErrs ..
-#' @param suppressWarnings ..
-#' @param modList ..
-#' @param y_lim ..
-#' @param rate_lim ..
-#' @param expBase ..
-#' @param rateBase ..
-#' @param pFix ..
-#' @param penalizeMean ..
-#' @param penalizeRate ..
-#' @param convergeTol ..
-#' @param stepwise_asym ..
-#' @param explicit ..
+#' \code{\link{TEfit}} internal
+#'
+#' @param quietErrs         logical. Should errors be printed to the Console?
+#' @param suppressWarnings  logical. Should warnings be printed to the Console?
+#' @param y_lim             Numeric vector of length 2. Lower and upper bounds of permitted predicted values.
+#' @param rate_lim          Numeric vector of length 2. Lower and upper bounds of permitted rate values [log time constants].
+#' @param shape_lim         Numeric vector of length 2. Lower and upper bounds of permitted shape parameter values (i.e., for Weibull).
+#' @param expBase           For change functions with an exponential component, what should the base of the exponent be?
+#' @param rateBase          What should the base of the rate exponent be?
+#' @param pFix              Named numeric vector allowing specific parameters to be fixed to a constant (i.e., not estimated)
+#' @param penalizeMean      Logical. Should the time-evolving model be penalized if the mean of the time-evolving predicted values diverges from the mean of the null [non-time-evolving] predicted values?
+#' @param penalizeRate      Logical. Should the time-evolving model be penalized if the rate parameter is very near a boundary?
+#' @param convergeTol       Convergence is extremely roughly defined in \code{TEfits} as the SD of the same estimated parameter on different runs with relatively low error. What should this SD be?
+#' @param stepwise_asym     Logical. If a function will saturate by the end of the measurement time, this option allows the asymptote to be estimated from this time period (i.e., as stationary).
+#' @param explicit          Character. Rather than using any of the pre-defined change or link functions, enter the specific function you want to test.
+#' @param nTries            Numeric. What is the maximum number of optimization runs that should be attempted?
 #'
 #' @export
 #'

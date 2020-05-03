@@ -8,15 +8,20 @@
 #' Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 #' interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
 #' offset magnitude 0). Last uses this transformed time variable in a \code{rlm} or \code{lm} model
+#' (i.e., attempts to answer the question "how different was the start than the end?").
 #'
 #'
 #' Rate is parameterized as a time constant, or the amount of time it takes for half of change to occur.
 #' The value of rate has a lower bound of
-#' the .0333 quantile of the time variable (i.e., 7/8 of change happens in the first 10% of time) and an upper bound of the
-#' .333 quantile of the time variable (i.e., 7/8 of change takes 100% of the time to happen). These bounds provide
+#' the .0333 quantile of the time variable (i.e., 87.5\% of change happens in the first 10\% of time) and an upper bound of the
+#' .333 quantile of the time variable (i.e., 87.5\% of change takes 100\% of the time to happen). These bounds provide
 #' some robustness in estimates of asympototic effects (i.e., "controlling for time") as well as initial effects
-#' (i.e., "time-related starting offset"). Last uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
+#' (i.e., "time-related starting offset"). Uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
 #' bootstrapped parameter coefficients and out-of-sample prediction.
+#'
+#' @note
+#' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
+#' Here it is not.
 #'
 #' @param formIn model formula, as in lm()
 #' @param datIn model data, as in lm()

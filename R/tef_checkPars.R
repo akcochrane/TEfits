@@ -1,5 +1,7 @@
 #' Check for bound hitting and other undesireable outcomes within an optim() call
 #'
+#' TEfits internal
+#'
 #' @param err Error
 #' @param guesses Parameter values
 #' @param curDat Data being fit

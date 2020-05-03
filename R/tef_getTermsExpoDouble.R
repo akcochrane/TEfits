@@ -1,6 +1,6 @@
 #' Construct parameter terms for the double-rate change function
 #'
-#' NOTE: test more thoroughly.
+#' \code{\link{TEfit}} internal.
 #'
 #' @param modList List of TEfit model details
 #' @param pPrefix prefix for parameters (e.g., p or thresh)

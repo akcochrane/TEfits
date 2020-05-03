@@ -21,11 +21,12 @@ tef_fitAll2brms(TEs3s, nIter = 2000, nChains = 3, nCores = 2,
 \item{prior_dispersion}{This number, multiplied by the SD of each TEfitAll parameter, is used as the prior SD for that parameter.}
 }
 \value{
-A \code{brms} nonlinear mixed-effects model object.
+A \code{\link[brms]{brms}} nonlinear mixed-effects model object.
 }
 \description{
-Passes a TEfitAll model to [hierarchical nonlinear Bayesian] fitting using the
-brms package. Note that, due to the extensive time needed to fit brms models,
+Passes a TEfitAll model to [nonlinear mixed-effects Bayesian] fitting using the
+\code{\link[brms]{brms}} package. Note that, due to the extensive time needed to
+fit \code{\link[brms]{brms}} models,
 this function is even less tested than most functions in the TEfits package.
 }
 \details{
@@ -33,4 +34,7 @@ TEfitAll 'bernoulli' models are fit using either 'bernoulli' or 'Beta' response
 distributions in brms, depending on whether the TEfitAll distribution is
 binary. TEfitAll 'logcosh' models are fit using a 'asym_laplace' response distribution
 in brms.
+}
+\note{
+Under development. Partial functionality.
 }

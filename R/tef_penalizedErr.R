@@ -1,5 +1,6 @@
 #' Penalize error for being close to a boundary
 #'
+#' \code{\link{TEfit}} internal.
 #' Formally, `pErr=Err/dbeta(par,dbeta_penalty,dbeta_penalty)` when Err is positive, where
 #' par is the (often rate) parameter normalized between 0 [lower bound] and 1 [upper bound]
 #'

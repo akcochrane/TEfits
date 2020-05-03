@@ -12,5 +12,5 @@ tef_getTermsWeibull(modList, pPrefix)
 \item{pPrefix}{prefix for parameters}
 }
 \description{
-Internal to TEfits.
+\code{\link{TEfit}} internal.
 }

@@ -2,7 +2,7 @@
 
 #' Gets link for for TEFit
 #'
-#' This function also calculates default rate and [weibull] shape bounds
+#' \code{\link{TEfit}} internal. This function also calculates default rate and [weibull] shape bounds.
 #'
 #' @param modList List of TEfit model details
 #'

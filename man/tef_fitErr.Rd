@@ -38,5 +38,5 @@ tef_fitErr(guesses, varIn, pNames, evalFun, errFun, respVar,
 \item{paramTerms}{the terms for parameters}
 }
 \description{
-This function should be in a state of constant improvement for speeding.
+\code{\link{TEfit}} internal.
 }

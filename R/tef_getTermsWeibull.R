@@ -1,6 +1,6 @@
 #' Define the terms for a Weibull change function
 #'
-#' Internal to TEfits.
+#' \code{\link{TEfit}} internal.
 #'
 #' @param modList TEfit modList
 #' @param pPrefix prefix for parameters

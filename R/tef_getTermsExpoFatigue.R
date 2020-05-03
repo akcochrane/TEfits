@@ -2,7 +2,7 @@
 
 #' Define a time-dependent change function
 #'
-#' Internal to TEfits. Exponential change followed by logistic decay.
+#' \code{\link{TEfit}} internal. Experimental. Exponential change followed by logistic decay.
 #'
 #' @param modList TEfit modList
 #' @param pPrefix parameter prefix

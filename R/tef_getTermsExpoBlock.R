@@ -1,7 +1,7 @@
 
 #' Construct parameter terms for the exponential+blocks change function
 #'
-#' pBlScale indicates the warping of distance-to-asymptote based on block trial number.
+#' \code{\link{TEfit}} internal. pBlScale indicates the warping of distance-to-asymptote based on block trial number.
 #'
 #' @param modList List of TEfit model details
 #' @param pPrefix prefix for parameters (e.g., p or thresh)

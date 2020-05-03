@@ -2,7 +2,7 @@
 
 #' Calculate the Wiener negative log likelihood of a vector of data using a vector of drift rates.
 #'
-#' Within a TEfit call, errFun='wiener_df' is likely to be extremely slow, e.g., 70 seconds per run.
+#' \code{\link{TEfit}} internalWithin a TEfit call, errFun='wiener_df' is likely to be extremely slow, e.g., 70 seconds per run.
 #'
 #' @param dat Vector of data (e.g., RT). Hitting upper bound must be positively signed; hitting lower bound must be negatively signed.
 #' @param DR Vector of drift rates. Must be the same length as dat.

@@ -10,5 +10,5 @@ tef_vars2forms(modList)
 \item{modList}{List of TEfit model details}
 }
 \description{
-Get the TEfit model formula
+\code{\link{TEfit}} internal
 }

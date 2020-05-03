@@ -2,7 +2,7 @@
 
 #' Define a time-dependent change function
 #'
-#' Internal to TEfits. Note that, despite the name, this is the getterms function for  *both* exponential and power [3-parameter] change functions
+#' \code{\link{TEfit}} internal. Note that, despite the name, this is the getterms function for  *both* exponential and power [3-parameter] change functions
 #'
 #' @param modList TEfit modList
 #' @param pPrefix parameter prefix

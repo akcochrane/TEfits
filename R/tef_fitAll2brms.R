@@ -1,8 +1,9 @@
 
 #' Refit a TEfitAll model with brms
 #'
-#' Passes a TEfitAll model to [hierarchical nonlinear Bayesian] fitting using the
-#' brms package. Note that, due to the extensive time needed to fit brms models,
+#' Passes a TEfitAll model to [nonlinear mixed-effects Bayesian] fitting using the
+#' \code{\link[brms]{brms}} package. Note that, due to the extensive time needed to
+#' fit \code{\link[brms]{brms}} models,
 #' this function is even less tested than most functions in the TEfits package.
 #'
 #' TEfitAll 'bernoulli' models are fit using either 'bernoulli' or 'Beta' response
@@ -17,7 +18,10 @@
 #' @param errFun the error function to use. Defaults to the same as the TEfitAll model, if possible.
 #' @param prior_dispersion This number, multiplied by the SD of each TEfitAll parameter, is used as the prior SD for that parameter.
 #'
-#' @return A \code{brms} nonlinear mixed-effects model object.
+#' @note
+#' Under development. Partial functionality.
+#'
+#' @return A \code{\link[brms]{brms}} nonlinear mixed-effects model object.
 #'
 #' @export
 tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA,prior_dispersion=2){

@@ -14,6 +14,6 @@ tef_getBounds(modList, whichPnames = "pNames", linkFunX = NA)
 \item{linkFunX}{If applicable, the variable along which the link function varies}
 }
 \description{
-Future versions will systematize this more thoroughly.
+\code{\link{TEfit}} internal. Future versions will systematize this more thoroughly.
 The core idea, though, is to allow variation in the starting points for optimization runs.
 }

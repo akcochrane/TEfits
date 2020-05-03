@@ -12,5 +12,5 @@ tef_getTermsExpoFatigue(modList, pPrefix)
 \item{pPrefix}{parameter prefix}
 }
 \description{
-Internal to TEfits. Exponential change followed by logistic decay.
+\code{\link{TEfit}} internal. Experimental. Exponential change followed by logistic decay.
 }

@@ -12,5 +12,5 @@ tef_getTermsPower4(modList, pPrefix)
 \item{pPrefix}{parameter prefix}
 }
 \description{
-Internal to TEfits. 4-parameter power function.
+\code{\link{TEfit}} internal. 4-parameter power function.
 }

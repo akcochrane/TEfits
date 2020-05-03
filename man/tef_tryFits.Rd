@@ -14,6 +14,9 @@ tef_tryFits(modList, whichPnames = "pNames", whichFun = "evalFun")
 \item{whichFun}{Used to distinguish between the TE and null models.}
 }
 \description{
+\code{\link{TEfit}} internal
+}
+\details{
 This function takes a modList, formats things for tef_fitErr(),
 and uses optim() to find many fits of the modList. Then all of the
 fits are compared in order to determine which are best and whether the

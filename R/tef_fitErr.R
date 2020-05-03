@@ -1,6 +1,6 @@
 #' Calculate the error of data, given the model and certain parameters
 #'
-#' This function should be in a state of constant improvement for speeding.
+#' \code{\link{TEfit}} internal.
 #'
 #' @param guesses proposed parameter values
 #' @param varIn Data to be fit

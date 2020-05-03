@@ -1,8 +1,8 @@
 #' For a TEfit model, use a change function to gt the appropriate RHS terms
 #'
-#' Internal to TEfits
+#' \code{\link{TEfit}} internal.
 #'
-#' @param modList List of TEfit model details
+#' @param modList List of \code{\link{TEfit}} internal model details
 #' @param pPrefix parameter prefix (e.g., p or thresh)
 #' @param whichChange current change function to use
 #'

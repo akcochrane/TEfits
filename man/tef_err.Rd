@@ -16,5 +16,5 @@ tef_err(y, yHat, errFun, curDat = NA)
 \item{curDat}{Data input. Only really relevant when calculating a full likelihood function and needing info beyond yHat}
 }
 \description{
-Calculate error for TEFit::tef_fitErr
+\code{\link{TEfit}} internal
 }

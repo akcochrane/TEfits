@@ -20,7 +20,7 @@ library(TEfits)
 
 # Example: Memory span
 
-One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). Because the task is novel to them and difficult, it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
+One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). The task is novel to them and difficult, and it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
 
 As a rough simulation of one participants' data, we will generate by-trial accuracies that linearly increase over the first 40 trials and then are stable in the last 40 trials
 
@@ -40,7 +40,7 @@ The typical analytical approach would be to find the average accuracy (`r mean(d
 
 ## Fitting a time-evolving mean accuracy
 
-This latter method implicitly acknowledges the possibility of nonstationarity in the measure of interst (accuracy), but it addresses the issue by arbitrarily reducing the amount of data being considered. Alternatively, if the asymptotic accuracy is desired, `TEfits` can be used to fit a time-evolving model and find the asymptotic accuracy:
+This latter method implicitly acknowledges the possibility of nonstationarity in the measure of interest (accuracy), but it addresses the issue by arbitrarily reducing the amount of data being considered. Alternatively, if the asymptotic accuracy is desired, `TEfits` can be used to fit a time-evolving model and find the asymptotic accuracy:
 
 ```{r TEfit_simple}
 m_simple <- TEfit(dat[,c('accuracy','trial_number')])
@@ -62,7 +62,7 @@ summary(m_simple)
 
 `Goodness-of-fit` prints several fit indices (e.g., the `err` and `BIC` of the best fit). Also printed are the corresponding fit indices for the null model (i.e., the model that is not time-evolving). The row name indicates the error function (e.g., `ols` or `logcosh`).
 
-`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`.
+`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`. If the `tseries` package is installed, the p-value from `kpss.test` of stationarity will also be included
 
 A plot can also be viewed:
 

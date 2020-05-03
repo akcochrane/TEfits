@@ -1,6 +1,6 @@
 #' Define parameter boundaries and guessing ranges
 #'
-#' Future versions will systematize this more thoroughly.
+#' \code{\link{TEfit}} internal. Future versions will systematize this more thoroughly.
 #' The core idea, though, is to allow variation in the starting points for optimization runs.
 #'
 #'

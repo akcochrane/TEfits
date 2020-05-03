@@ -11,32 +11,34 @@ tef_control(quietErrs = F, suppressWarnings = F, nTries = 200,
   explicit = "")
 }
 \arguments{
-\item{quietErrs}{..}
+\item{quietErrs}{logical. Should errors be printed to the Console?}
 
-\item{suppressWarnings}{..}
+\item{suppressWarnings}{logical. Should warnings be printed to the Console?}
 
-\item{y_lim}{..}
+\item{nTries}{Numeric. What is the maximum number of optimization runs that should be attempted?}
 
-\item{rate_lim}{..}
+\item{y_lim}{Numeric vector of length 2. Lower and upper bounds of permitted predicted values.}
 
-\item{expBase}{..}
+\item{rate_lim}{Numeric vector of length 2. Lower and upper bounds of permitted rate values [log time constants].}
 
-\item{rateBase}{..}
+\item{shape_lim}{Numeric vector of length 2. Lower and upper bounds of permitted shape parameter values (i.e., for Weibull).}
 
-\item{pFix}{..}
+\item{expBase}{For change functions with an exponential component, what should the base of the exponent be?}
 
-\item{penalizeMean}{..}
+\item{rateBase}{What should the base of the rate exponent be?}
 
-\item{penalizeRate}{..}
+\item{pFix}{Named numeric vector allowing specific parameters to be fixed to a constant (i.e., not estimated)}
 
-\item{convergeTol}{..}
+\item{penalizeMean}{Logical. Should the time-evolving model be penalized if the mean of the time-evolving predicted values diverges from the mean of the null [non-time-evolving] predicted values?}
 
-\item{stepwise_asym}{..}
+\item{penalizeRate}{Logical. Should the time-evolving model be penalized if the rate parameter is very near a boundary?}
 
-\item{explicit}{..}
+\item{convergeTol}{Convergence is extremely roughly defined in \code{TEfits} as the SD of the same estimated parameter on different runs with relatively low error. What should this SD be?}
 
-\item{modList}{..}
+\item{stepwise_asym}{Logical. If a function will saturate by the end of the measurement time, this option allows the asymptote to be estimated from this time period (i.e., as stationary).}
+
+\item{explicit}{Character. Rather than using any of the pre-defined change or link functions, enter the specific function you want to test.}
 }
 \description{
-Get control parameters for a TEfit model
+\code{\link{TEfit}} internal
 }

@@ -1,5 +1,7 @@
 #' Fit a TE model
 #'
+#' \code{\link{TEfit}} internal
+#'
 #' This function takes a modList, formats things for tef_fitErr(),
 #' and uses optim() to find many fits of the modList. Then all of the
 #' fits are compared in order to determine which are best and whether the

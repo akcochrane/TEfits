@@ -12,5 +12,5 @@ tef_getTermsExpoDouble(modList, pPrefix)
 \item{pPrefix}{prefix for parameters (e.g., p or thresh)}
 }
 \description{
-NOTE: test more thoroughly.
+\code{\link{TEfit}} internal.
 }

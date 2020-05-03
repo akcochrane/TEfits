@@ -7,12 +7,12 @@
 tef_getDatTerms(modList, pPrefix, whichChange = "expo")
 }
 \arguments{
-\item{modList}{List of TEfit model details}
+\item{modList}{List of \code{\link{TEfit}} internal model details}
 
 \item{pPrefix}{parameter prefix (e.g., p or thresh)}
 
 \item{whichChange}{current change function to use}
 }
 \description{
-Internal to TEfits
+\code{\link{TEfit}} internal.
 }

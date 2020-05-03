@@ -38,5 +38,5 @@ tef_checkPars(err, guesses, curDat, pNames, evalFun, errFun, respVar,
 \item{guessGroups}{deprecated}
 }
 \description{
-Check for bound hitting and other undesireable outcomes within an optim() call
+TEfits internal
 }

@@ -12,5 +12,5 @@ tef_getTermsExpoBlock(modList, pPrefix)
 \item{pPrefix}{prefix for parameters (e.g., p or thresh)}
 }
 \description{
-pBlScale indicates the warping of distance-to-asymptote based on block trial number.
+\code{\link{TEfit}} internal. pBlScale indicates the warping of distance-to-asymptote based on block trial number.
 }

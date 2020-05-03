@@ -13,6 +13,10 @@
 #' @param returnAll Logical. Return only a summary (when T), or that summary plus every model, in a list (when F)
 #' @param progressDot If TRUE, prints a dot after each group fit
 #'
+#' @seealso
+#' \code{\link{TEfit}} for fitting a single model;
+#' \code{\link{tef_fitAll2brms}} to re-fit the TEfitAll output using \code{\link[brms]{brms}}
+#'
 #' @export
 #'
 TEfitAll <- function(varIn,

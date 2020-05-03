@@ -1,5 +1,7 @@
 #' Get the TEfit model formula
 #'
+#' \code{\link{TEfit}} internal
+#'
 #' @param modList List of TEfit model details
 #'
 #' @export

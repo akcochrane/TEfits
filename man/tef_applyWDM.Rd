@@ -18,7 +18,7 @@ tef_applyWDM(dat, DR, BS, NDT, Bias = 0.5)
 \item{Bias}{Bias parameter. Positive scalar.}
 }
 \description{
-Within a TEfit call, errFun='wiener_df' is likely to be extremely slow, e.g., 70 seconds per run.
+\code{\link{TEfit}} internalWithin a TEfit call, errFun='wiener_df' is likely to be extremely slow, e.g., 70 seconds per run.
 }
 \examples{
 dat <- c(-1,1,-.5,.5)

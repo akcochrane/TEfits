@@ -2,7 +2,7 @@
 
 #' Define a time-dependent change function
 #'
-#' Internal to TEfits. 4-parameter power function.
+#' \code{\link{TEfit}} internal. 4-parameter power function.
 #'
 #' @param modList TEfit modList
 #' @param pPrefix parameter prefix

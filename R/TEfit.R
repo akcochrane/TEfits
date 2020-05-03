@@ -10,58 +10,89 @@
 #' \code{coef}, and \code{simulate}.
 #'
 #'
-#'TEfit defines a nonlinear regression model and re-fits that model
-#'using \code{optim} numerous times, with random starting values, until
-#'the highest-likelihood fitting runs also have parameters very similar to
-#'one another (i.e., SD less than the convergence criterion). Runs are
-#'implemented in batches of 10.
+#' TEfit defines a nonlinear regression model and re-fits that model
+#' using \code{optim} numerous times, with random starting values, until
+#' the highest-likelihood fitting runs also have parameters very similar to
+#' one another (i.e., SD less than the convergence criterion). Runs are
+#' implemented in batches of 10.
 #'
-#' Bootstrapping or subsampling is specified as follows:
+#' Bootstrapping or subsampling is specified as
 #' \code{bootPars=tef_bootList(resamples = 0, bootPercent = 1, bootTries = 20)}.
-#' resamples refers to the number of times the model is re-fit on resampled data,
-#' bootPercent is the proportion (between 0 and 1) of the data resampled, and
-#' bootTries is the number of optimization runs attempted on each subsample.
-#' bootPercent of 1, the default, implements resampling with replacement (bootstrapping).
-#' bootPercent less than 1 implements resampling without replacement, fitting
+#' \code{resamples} refers to the number of times the model is re-fit on resampled data,
+#' \code{bootPercent} is the proportion (between 0 and 1) of the data resampled, and
+#' \code{bootTries} is the number of optimization runs attempted on each subsample.
+#' \code{bootPercent} of 1, the default, implements resampling with replacement (bootstrapping).
+#' \code{bootPercent} less than 1 implements resampling without replacement, fitting
 #' the model to that subsample, and evaluation of the fit values on the
-#' left-out subsample (i.e., cross-validation). bootTries defaults to the minimum (10).
+#' left-out subsample (i.e., cross-validation). \code{bootTries} defaults to a very small number (20).
 #'
-#'Currently supported likelihood functions are
-#'Sum of Squared Error ('ols'),
-#'Root Mean Square Error ('rmse'),
-#'Log-Hyperbolic-Cosine ('logcosh'),
-#'Ex-Gaussian ('exGauss_mu' or 'exGauss_tau'; tau is recommended),
-#'Bernoulli ('bernoulli'),
+#'Currently supported \strong{error functions} are:
+#'\itemize{
+#'\item{\code{ols}, i.e. \code{sum((y-yHat)^2)} -- sum of squared error}
+#'\item{\code{rmse}, i.e. \code{sqrt(mean((y-yHat)^2))} -- root mean squared error}
+#'\item{\code{logcosh}, i.e. \code{sum(log(cosh(y-yHat)))} -- log-hyperbolic-cosine}
+#'\item{\code{bernoulli}, i.e. \code{-sum(y*log(yHat) + (1-y)*log(1-yHat))} -- Bernoulli [binary binomial]}
+#'\item{\code{exGauss_mu}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=yHat,sigma=sigma_param,tau=tau_param)))} --
+#'ex-Gaussian distribution with time-evolving change in the Gaussian mean parameter}
+#'\item{\code{exGauss_tau}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=mu_param,sigma=sigma_param,tau=yHat)))} --
+#'ex-Gaussian distribution with time-evolving change in the tau parameter}
+#'}
 #'
-#'Currently supported link functions are
-#' \code{identity} or \code{logit} or \code{weibull} or \code{d_prime}. Logistic is parameterized
-#' such that change could occur in the threshold value (by default) and/or
-#' the bias value (defaults to constant). Lapse rate defaults to .005
-#' and threshold defaults to .75. Weibull is paramaterized such that change occurs in
-#' the threshold value (by default .75), the lapse rate defaults to .005, and the
-#' y-intercept defaults to .5.
-#' For the d-prime link a \code{presence} variable is included, the pFA and pH are
+#'Currently supported \strong{link functions} are:
+#' \itemize{
+#' \item{\code{identity} -- implemented by \code{linkFun=list(link='identity')} --
+#' Default. The predicted values of the time-evolving function are the predicted
+#' values of the model.}
+#'
+#' \item{\code{logit} -- implemented by
+#' \code{linkFun=list(link='logit',logistX='variableName',
+#' threshChange=T,biasChange=F,fitThresh=.75,lapseRate=.005)}
+#' -- The predicted values of the time-evolving function are threshold values
+#' of \code{logistX} (by default) and/or
+#' the bias value (defaults to constant). \code{link} and \code{logistX} are required.
+#' Other parameters have default values
+#' (i.e., modelled value of the outcome variable [\code{fitThresh}],
+#' offset of the predicted values to prevent a pathological error calculation [\code{lapseRate}])
+#' }
+#' \item{\code{weibull} -- implemented by
+#' \code{linkFun=list(link='weibull',weibullX='variableName',
+#' fitThresh=.75,yIntercept=.5,rhAsymptote=1,lapseRate=.005)}
+#' -- The predicted values of the time-evolving function are threshold values
+#' of \code{weibullX}.
+#' \code{link} and \code{weibullX} are required. Other parameters
+#' have default values
+#' (i.e., modelled value of the outcome variable [\code{fitThresh}],
+#' value of the outcome variable at weibullX==0 [\code{yIntercept}],
+#' value of the outcome variable at weibullX==Inf [\code{rhAsymptote}],
+#' offset of the predicted values to prevent a pathological error calculation [\code{lapseRate}])
+#' .}
+#' \item{\code{d_prime} -- implemented by
+#' \code{linkFun=list(link='weibull',presence='variableName',
+#' max_d_prime=5,smooth_hwhm=3)}
+#' -- \code{link} and \code{presence} are required, \code{max_d_prime}
+#' and \code{smooth_hwhm} have default values. The pFA and pH are
 #' first calculated using a windowed average of stimulus-present or
 #' stimulus-absent trials (penalized to bound the max d-prime), then calculating the
-#' by-timepoint d-prime, then fitting that d-prime as the response variable. See
-#' \code{\link{tef_acc2dprime}} and \code{\link{tef_runningMean}} for details about the intermediate steps.
+#' by-timepoint d-prime, then fitting that d-prime as the response variable using an identity link. See
+#' \code{\link{tef_acc2dprime}} and \code{\link{tef_runningMean}} for details about the intermediate steps.}
+#' }
 #'
-#' Currently supported change functions are
-#' 3-parameter exponential ('expo'; start, [inverse] rate, and asymptote),
-#' blocked 3-parameter exponential ('expo_block'),
-#' double exponential ('expo_double'),
-#' 3-parameter power ('power'; start, [inverse] rate, and asymptote),
-#' 4-parameter power ('power'; start, [inverse] rate, asymptote, and "previous learning time"),
-#' 4-parameter weibull ('weibull'; start, [inverse] rate, asymptote, and shape).
+#' Currently supported \strong{change functions} are:
+#' \itemize{
+#' \item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote)}
+#' \item{\code{expo_block} -- 3-parameter exponential (start, [inverse] rate, and asymptote)
+#' plus 2-paramter multiplicative changes on timescales that are a subset of the whole}
+#' \item{\code{expo_double} -- 4-parameter exponential (start, two equally weighted [inverse] rates, and asymptote)}
+#' \item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote)}
+#' \item{\code{power4} -- 4-parameter power (start, [inverse] rate, asymptote, and "previous learning time")}
+#' \item{\code{expo} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape)}
+#' }
 #'
+#' @note
 #' By default, the mean of the time-evolving model's fit values should be very similar to the mean of the null fit values.
-#' This is implemented by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
+#' This is enforced by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
 #' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 #' constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
-#'
-#' \code{\link{plot.TEfit}}, \code{\link{summary.TEfit}},
-#' \code{\link{coef.TEfit}}, and \code{\link{simulate.TEfit}}
-#' methods are defined for the TEfit class.
 #'
 #' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param linkFun A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')
@@ -81,6 +112,15 @@
 #' \item{\code{modList}}{List of model details}
 #' \item{\code{bootList}}{\emph{(if relevant)} List of bootstrapped \code{TEfit} models.}
 #' }
+#'
+#' @seealso
+#' For interpreting model outputs: \code{\link{plot.TEfit}}; \code{\link{summary.TEfit}};
+#' \code{\link{coef.TEfit}}; \code{\link{simulate.TEfit}}
+#'
+#' \code{\link{TEfitAll}} for fitting a set of \code{TEfit} models.
+#'
+#' For including a nonlinear time predictor in [generalized] linear regression frameworks:
+#' \code{\link{TElm}}; \code{\link{TEglm}}; \code{\link{TElmem}}; \code{\link{TEglmem}}
 #'
 #' @export
 #'

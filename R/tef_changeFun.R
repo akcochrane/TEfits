@@ -1,5 +1,7 @@
 #' Construct the right hand side of the equation for a TEfit
 #'
+#' \code{\link{TEfit}} internal
+#'
 #' @param modList List of TEfit model details
 #' @param covarVects Vectors of covariate(s) for each model parameter
 #'
