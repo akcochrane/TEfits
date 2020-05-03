@@ -6,17 +6,20 @@ Data is described, interpreted, and tested using indices such as d prime, mean, 
 
 The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
-``` r
-dat <- data.frame(response=log(2:31),trial_number=1:30)
-mod <- TEfit(dat[,c('response','trial_number')])
+Simple model of exponential change
+==================================
 
-plot(mod,plot_title='Time-evolving fit of artificial data')
+``` r
+dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
+mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
+
+plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 ```
 
 ![](README_files/figure-markdown_github/simple_model-1.png)
 
 ``` r
-summary(mod)
+summary(mod_simple)
 ```
 
     ## 
@@ -44,20 +47,23 @@ summary(mod)
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
 
+Bootstrapped model with Bernoulli error function
+================================================
+
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
 ``` r
 dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
-mod <- TEfit(dat[,c('response','trial_number')], 
+mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=list(nBoots=40))
-plot(mod,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
+plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 ```
 
 ![](README_files/figure-markdown_github/model_boot-1.png)
 
 ``` r
-summary(mod)
+summary(mod_boot)
 ```
 
     ## 
@@ -67,19 +73,19 @@ summary(mod)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.999 1.000    0.000
-    ## pRate     2.736 2.644 2.823    0.046
-    ## pStart    0.231 0.200 0.268    0.017
+    ## pAsym     1.000 0.999 1.000    0.000
+    ## pRate     2.739 2.643 2.811    0.043
+    ## pStart    0.231 0.192 0.261    0.018
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42353 16.83409     3   30 37.05066 37.06937 -0.01871292
+    ##              err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
+    ## bernoulli 13.423 16.83409     3   30 37.04959 37.06937 -0.01978472
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.04605117
+    ## response ~ trial_number:          -1              -0.03581758
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.04605117                  0
+    ## response ~ trial_number:                 0.03581758                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -88,18 +94,21 @@ summary(mod)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate   err
-    ## pAsym   1.000 -0.164 -0.317 0.036
-    ## pStart -0.164  1.000  0.516 0.728
-    ## pRate  -0.317  0.516  1.000 0.183
-    ## err     0.036  0.728  0.183 1.000
+    ##         pAsym pStart pRate   err
+    ## pAsym   1.000 -0.042 0.047 0.140
+    ## pStart -0.042  1.000 0.534 0.572
+    ## pRate   0.047  0.534 1.000 0.417
+    ## err     0.140  0.572 0.417 1.000
+
+Fitting multiple models
+=======================
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
 ``` r
 dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
-mod <- TEfitAll(dat[,c('response','trial_number')], 
+mod_4group <- TEfitAll(dat[,c('response','trial_number')], 
              groupingVar = dat$group,
              groupingVarName = 'Participant')
 ```
@@ -112,13 +121,13 @@ mod <- TEfitAll(dat[,c('response','trial_number')],
 Note the warnings regarding rate parameters; identifiability is a major concern in nonlinear models, and `TEfits` attempts to notify the user of potentially problematic situations.
 
 ``` r
-plot(mod)
+plot(mod_4group)
 ```
 
 ![](README_files/figure-markdown_github/plot_model_groups-1.png)
 
 ``` r
-summary(mod)
+summary(mod_4group)
 ```
 
     ## 
@@ -126,15 +135,15 @@ summary(mod)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14926962 0.01635836 3.83345076
-    ## stdErr 0.03930414 0.01064225 0.02424881
+    ## mean   0.14923576 0.01637255 3.83353884
+    ## stdErr 0.03933493 0.01060696 0.02427162
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.006644e-04 0.03071614     3   30 1691.5175 1.110223e-16 0.97597732
-    ## stdErr 6.864606e-05 0.01187769     0    0  653.1361 1.110223e-16 0.01661788
-    ##               BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.31985 -211.91820 -125.40165 identity    ols      expo         1
-    ## stdErr    6.54315   14.35328   19.26057 identity    ols      expo         0
+    ## mean   3.005902e-04 0.03071614     3   30 1692.1560 1.110223e-16 0.97598308
+    ## stdErr 6.864459e-05 0.01187769     0    0  653.4481 1.110223e-16 0.01661414
+    ##              BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
+    ## mean   -337.3290 -211.91820 -125.41080 identity    ols      expo         1
+    ## stdErr    6.5464   14.35328   19.26195 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -145,11 +154,27 @@ summary(mod)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.757
-    ## pStart  1.000  1.000 -0.761
-    ## pRate  -0.757 -0.761  1.000
+    ## pAsym   1.000  1.000 -0.756
+    ## pStart  1.000  1.000 -0.763
+    ## pRate  -0.756 -0.763  1.000
+
+Using a more typical regression framework
+=========================================
+
+In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in blue on top of the `mod_simple` results.
+
+``` r
+mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
+
+plot(mod_simple)
+
+lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
+```
+
+![](README_files/figure-markdown_github/TErlm-1.png)
 
 Additional principles guiding the development of **TEfits**:
+============================================================
 
--   Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**)
+-   Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
 -   Good things come to those who wait: Speed is nice, but robustness is better.

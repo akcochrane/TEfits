@@ -16,28 +16,34 @@ Data is described, interpreted, and tested using indices such as d prime, mean, 
 
 The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
+# Simple model of exponential change
+
 ```{r simple_model, message=FALSE, warning=FALSE}
 
-dat <- data.frame(response=log(2:31),trial_number=1:30)
-mod <- TEfit(dat[,c('response','trial_number')])
+dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
+mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
 
-plot(mod,plot_title='Time-evolving fit of artificial data')
+plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 
-summary(mod)
+summary(mod_simple)
 ```
+
+# Bootstrapped model with Bernoulli error function
 
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
 ```{r model_boot, message=FALSE, warning=FALSE}
 
 dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
-mod <- TEfit(dat[,c('response','trial_number')], 
+mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=list(nBoots=40))
-plot(mod,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
+plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 
-summary(mod)
+summary(mod_boot)
 ```
+
+# Fitting multiple models
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
@@ -45,7 +51,7 @@ An example of fitting a given model to subsets of data (e.g., individual partici
 
 dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
-mod <- TEfitAll(dat[,c('response','trial_number')], 
+mod_4group <- TEfitAll(dat[,c('response','trial_number')], 
              groupingVar = dat$group,
              groupingVarName = 'Participant')
 
@@ -56,12 +62,25 @@ and `TEfits` attempts to notify the user of potentially problematic situations.
 
 ```{r plot_model_groups}
 
-plot(mod)
+plot(mod_4group)
 
-summary(mod)
+summary(mod_4group)
 ```
 
-Additional principles guiding the development of **TEfits**:
+# Using a more typical regression framework
 
-- Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**)
+In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in blue on top of the `mod_simple` results.
+
+```{r TErlm}
+mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
+
+plot(mod_simple)
+
+lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
+```
+
+
+# Additional principles guiding the development of **TEfits**:
+
+- Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
 - Good things come to those who wait: Speed is nice, but robustness is better.
