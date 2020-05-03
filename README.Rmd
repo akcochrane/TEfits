@@ -41,15 +41,20 @@ summary(mod)
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
-```{r model_groups, message=FALSE, warning=FALSE,echo=F}
+```{r model_groups, message=FALSE, warning=FALSE}
 
 dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 mod <- TEfitAll(dat[,c('response','trial_number')], 
              groupingVar = dat$group,
              groupingVarName = 'Participant')
+
 ```
-```{r print_model_groups}
+
+Note the warnings regarding rate parameters; identifiability is a major concern in nonlinear models, 
+and `TEfits` attempts to notify the user of potentially problematic situations.
+
+```{r plot_model_groups}
 
 plot(mod)
 

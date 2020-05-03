@@ -67,13 +67,13 @@ summary(mod)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.733 2.659 2.811    0.039
-    ## pStart    0.230 0.175 0.254    0.020
+    ## pAsym     0.999 0.999 1.000    0.000
+    ## pRate     2.736 2.644 2.823    0.046
+    ## pStart    0.231 0.200 0.268    0.017
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42328 16.83409     3   30 37.05016 37.06937 -0.01921487
+    ## bernoulli 13.42353 16.83409     3   30 37.05066 37.06937 -0.01871292
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
@@ -88,24 +88,34 @@ summary(mod)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate    err
-    ## pAsym   1.000  0.110 -0.011  0.061
-    ## pStart  0.110  1.000  0.586  0.290
-    ## pRate  -0.011  0.586  1.000 -0.021
-    ## err     0.061  0.290 -0.021  1.000
+    ##         pAsym pStart  pRate   err
+    ## pAsym   1.000 -0.164 -0.317 0.036
+    ## pStart -0.164  1.000  0.516 0.728
+    ## pRate  -0.317  0.516  1.000 0.183
+    ## err     0.036  0.728  0.183 1.000
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
+
+``` r
+dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
+
+mod <- TEfitAll(dat[,c('response','trial_number')], 
+             groupingVar = dat$group,
+             groupingVarName = 'Participant')
+```
 
     ## 
     ## Your rate is very close to the boundary. Consider penalizing the likelihood.. 
     ## Your rate is very close to the boundary. Consider penalizing the likelihood.. 
     ## Your rate is very close to the boundary. Consider penalizing the likelihood.. .
 
+Note the warnings regarding rate parameters; identifiability is a major concern in nonlinear models, and `TEfits` attempts to notify the user of potentially problematic situations.
+
 ``` r
 plot(mod)
 ```
 
-![](README_files/figure-markdown_github/print_model_groups-1.png)
+![](README_files/figure-markdown_github/plot_model_groups-1.png)
 
 ``` r
 summary(mod)
@@ -116,15 +126,15 @@ summary(mod)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14920954 0.01639722 3.83349020
-    ## stdErr 0.03935343 0.01059216 0.02425303
+    ## mean   0.14926962 0.01635836 3.83345076
+    ## stdErr 0.03930414 0.01064225 0.02424881
     ## 
-    ##                 err    nullErr nPars nObs     Fval         Pval   Rsquared
-    ## mean   3.005902e-04 0.03071614     3   30 1691.907 1.110223e-16 0.97598289
-    ## stdErr 6.864833e-05 0.01187769     0    0  653.177 1.110223e-16 0.01661562
-    ##                BIC    nullBIC  deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.328495 -211.91820 -125.4103 identity    ols      expo         1
-    ## stdErr    6.544946   14.35328   19.2603 identity    ols      expo         0
+    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
+    ## mean   3.006644e-04 0.03071614     3   30 1691.5175 1.110223e-16 0.97597732
+    ## stdErr 6.864606e-05 0.01187769     0    0  653.1361 1.110223e-16 0.01661788
+    ##               BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
+    ## mean   -337.31985 -211.91820 -125.40165 identity    ols      expo         1
+    ## stdErr    6.54315   14.35328   19.26057 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -135,9 +145,9 @@ summary(mod)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.759
-    ## pStart  1.000  1.000 -0.766
-    ## pRate  -0.759 -0.766  1.000
+    ## pAsym   1.000  1.000 -0.757
+    ## pStart  1.000  1.000 -0.761
+    ## pRate  -0.757 -0.761  1.000
 
 Additional principles guiding the development of **TEfits**:
 
