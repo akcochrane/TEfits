@@ -71,20 +71,25 @@ summary(mod_4group)
 
 In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in blue on top of the `mod_simple` results, with clearly near-identical fits.
 
-```{r TErlm}
+```{r TElm}
 mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
 lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
 
-cat('TElm parameter estimates:')
-c(coef(mod_lm),log2(mod_lm$rate))
-
-cat('TEfit parameter estimates:')
-c(coef(mod_simple))
 ```
 
+TElm parameter estimates:
+
+`r  data.frame(t(c(coef(mod_lm),rate=log2(mod_lm$rate))))`
+
+TEfit parameter estimates:
+
+`r data.frame(t(coef(mod_simple)))`
+
+Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides 
+start as an offset from asymptote (ie., `Intercept`).
 
 # Additional principles guiding the development of **TEfits**:
 

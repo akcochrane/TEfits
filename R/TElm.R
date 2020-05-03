@@ -23,6 +23,10 @@
 #' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
 #' Here it is not.
 #'
+#' @seealso
+#' \code{\link{TElmem}} for mixed-effects extension of \code{TElm};
+#' \code{\link{TEglm}} for genralized extension of \code{TElm}
+#'
 #' @param formIn model formula, as in lm()
 #' @param datIn model data, as in lm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
