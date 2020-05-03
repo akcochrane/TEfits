@@ -82,11 +82,11 @@ lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
 
 TElm parameter estimates:
 
-`r  data.frame(t(c(coef(mod_lm),rate=log2(mod_lm$rate))))`
+`r  knitr::kable(round(data.frame(t(c(coef(mod_lm),rate=log2(mod_lm$rate)))),3))`
 
 TEfit parameter estimates:
 
-`r data.frame(t(coef(mod_simple)))`
+`r knitr::kable(round(data.frame(t(coef(mod_simple))),3))`
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides 
 start as an offset from asymptote (ie., `Intercept`).
