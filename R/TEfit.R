@@ -55,9 +55,9 @@
 #' 4-parameter weibull ('weibull'; start, [inverse] rate, asymptote, and shape).
 #'
 #' By default, the mean of the time-evolving model's fit values should be very similar to the mean of the null fit values.
-#' This implemented by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
+#' This is implemented by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
 #' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
-#' constrain model predictions to a "sane" range. This constraint can be removed with `control=tef_control(penalizeMean=F)`.
+#' constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
 #'
 #' \code{\link{plot.TEfit}}, \code{\link{summary.TEfit}},
 #' \code{\link{coef.TEfit}}, and \code{\link{simulate.TEfit}}
@@ -173,57 +173,58 @@ TEfit <- function(varIn,
                   control=tef_control()
 ){
 
-  # to do:
-  # # ensure, for expo_bl, that threshBlScale is bounded to positive reals (right?)
-
   modList <- list()
   modList$times <- c()
   modList$times['start'] <- Sys.time()
 
-  ### ##
-  ## ## ##
-  ### ##
+  ## ## ## ## ## ## ## ## ##
+  ## ## >arguments:
+  {
+    modList$linkFun <- linkFun
+    modList$errFun <- errFun
+    modList$changeFun <- changeFun
+    modList$bootPars <- bootPars
+    modList$blockTimeVar <- blockTimeVar
+    modList$covarTerms <- covarTerms
 
-  # # # #  arguments:
+    modList$varIn <- varIn
+    # # add in trial num, if needed
+    if(is.vector(modList$varIn)){
+      modList$varIn <- data.frame(y=modList$varIn,timeVar=1:length(modList$varIn))
+    }
+  }## ## ##
+  ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
-  modList$linkFun <- linkFun
-  modList$errFun <- errFun
-  modList$changeFun <- changeFun
-  modList$bootPars <- bootPars
-  modList$blockTimeVar <- blockTimeVar
-  modList$covarTerms <- covarTerms
-
-  modList$varIn <- varIn
-  # # add in trial num, if needed
-  if(is.vector(modList$varIn)){
-    modList$varIn <- data.frame(y=modList$varIn,timeVar=1:length(modList$varIn))
+  ## ## ## ## ## ## ## ## ##
+  ## ## >control arguments:
+  {
+    if(length(control) < length(tef_control())){cat('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
+    modList$convergeTol <- control$convergeTol
+    modList$nTries      <- control$nTries
+    modList$y_lim       <- control$y_lim
+    modList$rate_lim    <- control$rate_lim
+    modList$shape_lim   <- control$shape_lim
+    modList$expBase     <- control$expBase
+    modList$rateBase    <- control$rateBase
+    modList$pFix        <- control$pFix
+    modList$stepwise_asym<- control$stepwise_asym
+    modList$penalizeRate<- control$penalizeRate
+    modList$penalizeMean<- control$penalizeMean
+    modList$explicit    <- control$explicit
+    modList$quietErrs   <- control$quietErrs
+    modList$suppressWarnings<-control$suppressWarnings
   }
+  ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
-  # # # # control arguments:
-  if(length(control) < 14){cat('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
-
-  modList$convergeTol <- control$convergeTol
-  modList$nTries      <- control$nTries
-  modList$y_lim       <- control$y_lim
-  modList$rate_lim    <- control$rate_lim
-  modList$shape_lim   <- control$shape_lim
-  modList$expBase     <- control$expBase
-  modList$rateBase    <- control$rateBase
-  modList$pFix        <- control$pFix
-  modList$stepwise_asym<- control$stepwise_asym
-  modList$penalizeRate<- control$penalizeRate
-  modList$penalizeMean<- control$penalizeMean
-  modList$explicit    <- control$explicit
-  modList$quietErrs   <- control$quietErrs
-  modList$suppressWarnings<-control$suppressWarnings
-
-  # # name your response variable and your time variable
+  ## ## ## ## ## ## ## ## ##
+  ## ## >name your response variable and your time variable
   modList$respVar <- colnames(modList$varIn)[1]
   modList$timeVar <- colnames(modList$varIn)[2]
 
   if(max(xtabs(~modList$varIn[,1]),na.rm=T)/dim(na.omit(modList$varIn))[1]>.9){
     cat('\nWARNING: Your response variable has few unique values. You may not be able to estimate a time-evolving function.\n')
   }
+  ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
   if(modList$errFun=='bernoulli'){
     modList$y_lim[1] <- max(modList$y_lim[1],0)
@@ -233,6 +234,8 @@ TEfit <- function(varIn,
   modList$times['before_vars2forms'] <- Sys.time() - modList$times['start']
   modList <- tef_vars2forms(modList)
 
+  ## ## ## ## ## ## ## ## ##
+  ## ## > stepwise asymptote option
   #### #### ## NEEDS TO BE error checked.
   if(modList$stepwise_asym){
     if(nrow(modList$varIn)>20){ ## fit stable asymptote to the last 20% (at least 4 obs)
@@ -255,7 +258,6 @@ TEfit <- function(varIn,
   modList$times['vars2forms'] <- Sys.time() - sum(modList$times)
 
 
-  # if(printEquation){print(modList$evalFun)}
   #### FIT NULL MODEL, CAN GET PARAMETER GUESSES FROM HERE
   ### ### ### CAN ALSO DO THINGS LIKE REDUCTION TO 2D SEARCH,
   # # # # NULL LL VALUES, NULL PREDICTED VALUES, ETC
@@ -286,14 +288,15 @@ TEfit <- function(varIn,
   ##
 
   nObs <- length(na.omit(modList$varIn[,1]))
+
+  ## ## ## ## ## ## ## ## ##
+  ## ## >Get goodness-of-fit metrics
   bestFit$GoF <- data.frame(
     err = bestFit$value
     ,nullErr = as.numeric(nullFit$value)
     ,nPars = length(bestFit$par)
     ,nObs = nObs
   )
-
-
   rownames(bestFit$GoF) <- modList$errFun
 
   if(modList$errFun == 'ols'){
@@ -330,8 +333,10 @@ TEfit <- function(varIn,
     bestFit$GoF$nullBIC <- nullFit$value + length(nullFit$par)*log(nObs)
     bestFit$GoF$deltaBIC <- bestFit$GoF$BIC - bestFit$GoF$nullBIC
   }
+  ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
-  ## ## ## Resampled fits
+  ## ## ## ## ## ## ## ## ##
+  ## ## >Run resampled fits
   if(modList$bootPars$nBoots > 0){
     bootList <- tef_bootFits(modList)
     if(bootList$bootPercent<1){
@@ -345,9 +350,11 @@ TEfit <- function(varIn,
       bestFit$GoF$oosDeltaErr <- bestFit$GoF$oosErr-bestFit$GoF$nullErr
     }
     modList$times['bootFits'] <- Sys.time() - sum(modList$times)
-  }
+  } ## ## ##
+  ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
-  ## everything beyond here is getting fit vals,  etc.
+  ## ## ## ## ## ## ## ## ##
+  ## everything beyond here is getting fit vals, plots, etc.
   {
     parDat <- as.data.frame(matrix(bestFit$par[1:length(modList$pNames)],dim(modList$varIn)[1],length(modList$pNames),byrow=T))
     colnames(parDat) <- modList$pNames
@@ -452,10 +459,12 @@ TEfit <- function(varIn,
     if(modList$bootPars$nBoots > 0){
       modList$times['mean_per_boot'] <- modList$times['bootFits']/modList$bootPars$nBoots
     }
-  }
+  } ## ##
+  ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
+  ## ## ## ## ## ## ## ## ##
+  ## Wrap things up and return them
   modList$times <- round(modList$times[2:length(modList$times)],4)
-
   outData <- data.frame(bestFit$fullDat,fitVals=bestFit$fitVals)
 
   if(exists('bootList')){
