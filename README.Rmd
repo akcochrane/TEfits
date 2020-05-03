@@ -69,7 +69,7 @@ summary(mod_4group)
 
 # Using a more typical regression framework
 
-In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in blue on top of the `mod_simple` results.
+In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in blue on top of the `mod_simple` results, with clearly near-identical fits.
 
 ```{r TErlm}
 mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
@@ -77,6 +77,12 @@ mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 plot(mod_simple)
 
 lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
+
+cat('TElm parameter estimates:')
+c(coef(mod_lm),log2(mod_lm$rate))
+
+cat('TEfit parameter estimates:')
+c(coef(mod_simple))
 ```
 
 
