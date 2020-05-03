@@ -1,6 +1,6 @@
 #' Generalized linear mixed-effects model with nonlinear time random effects
 #'
-#' Fits a \code{lme4::glmer} generalized linear mixed-effects model with the random effects of
+#' Fits a \code{\link[lme4]{glmer}} generalized linear mixed-effects model with the random effects of
 #' \code{timeVar} for each level of \code{groupingVar}.
 #'
 #' First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}. These
@@ -26,6 +26,15 @@
 #' @param family model family, as in \code{glmer}
 #' @param onlyGroupMods IF TRUE, returns only the by-\code{groupingVar} fits from \code{TElm}
 #' @param nRuns Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})
+#'
+#' @return
+#' A list including:
+#' \describe{
+#' \item{\code{glmerMod}}{\code{\link[lme4]{glmer}} model fit with transformed time variable}
+#' \item{\code{rates}}{Named vector of rates [\emph{50-percent-of-change time constants}]}
+#' \item{\code{timeDat}}{Data frame with original and transformed time variable}
+#' \item{\code{groupMods}}{List of fit \code{\link{TEglm}} models, and the corresponding transformed time variable and named vector of rates}
+#' }
 #'
 #' @export
 #'

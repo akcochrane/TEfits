@@ -25,6 +25,16 @@ TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
 
 \item{control}{A list of model parameters. Use of tef_control() is highly recommended.}
 }
+\value{
+A \code{TEfit} S3 object including:
+\describe{
+\item{\code{model}}{The best fit of parameters to the dataset, along with associated items such as tests of goodness-of-fit and nonstationarity}
+\item{\code{nullFit}}{The best fit of a model that does not change over time, but otherwise uses the same parameterization as \code{model}}
+\item{\code{data}}{Data frame of the input variables fit by the model, with the additiona of fit values}
+\item{\code{modList}}{List of model details}
+\item{\code{bootList}}{\emph{if relevant} List of bootstrapped \code{TEfit} models.}
+}
+}
 \description{
 This is the primary function for the \code{TEfits} package. Fits a
 time-evolving regression model. Many options are available for
@@ -36,7 +46,7 @@ Various handy S3 methods are available, such as
 }
 \details{
 TEfit defines a nonlinear regression model and re-fits that model
-using \code{optim()} numerous times, with random starting values, until
+using \code{optim} numerous times, with random starting values, until
 the highest-likelihood fitting runs also have parameters very similar to
 one another (i.e., SD less than the convergence criterion). Runs are
 implemented in batches of 10.
@@ -69,7 +79,7 @@ For the d-prime link a \code{presence} variable is included, the pFA and pH are
 first calculated using a windowed average of stimulus-present or
 stimulus-absent trials (penalized to bound the max d-prime), then calculating the
 by-timepoint d-prime, then fitting that d-prime as the response variable. See
-\code{\link{tef_acc2dprime}} and \code{tef_runningMean} for details about the intermediate steps.
+\code{\link{tef_acc2dprime}} and \code{\link{tef_runningMean}} for details about the intermediate steps.
 
 Currently supported change functions are
 3-parameter exponential ('expo'; start, [inverse] rate, and asymptote),

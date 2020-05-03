@@ -27,8 +27,16 @@
 #' @param onlyGroupMods IF TRUE, returns only the by-\code{groupingVar} fits from \code{\link{TElm}}
 #' @param nRuns Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})
 #'
-#' @export
+#' @return
+#' A list including:
+#' \describe{
+#' \item{\code{lmerMod}}{\code{\link[lme4]{lmer}} model fit with transformed time variable}
+#' \item{\code{rates}}{Named vector of rates [\emph{50-percent-of-change time constants}]}
+#' \item{\code{timeDat}}{Data frame with original and transformed time variable}
+#' \item{\code{groupMods}}{List of fit \code{\link{TElm}} models, and the corresponding transformed time variable and named vector of rates}
+#' }
 #'
+#' @export
 TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 5){
   require(lme4)
   origTime <-   dat[,timeVar]

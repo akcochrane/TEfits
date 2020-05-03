@@ -22,8 +22,17 @@ TEglmem(formIn, dat, timeVar, groupingVar, family = gaussian,
 
 \item{nRuns}{Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})}
 }
+\value{
+A list including:
+\describe{
+\item{\code{glmerMod}}{\code{\link[lme4]{glmer}} model fit with transformed time variable}
+\item{\code{rates}}{Named vector of rates [\emph{50-percent-of-change time constants}]}
+\item{\code{timeDat}}{Data frame with original and transformed time variable}
+\item{\code{groupMods}}{List of fit \code{\link{TEglm}} models, and the corresponding transformed time variable and named vector of rates}
+}
+}
 \description{
-Fits a \code{lme4::glmer} generalized linear mixed-effects model with the random effects of
+Fits a \code{\link[lme4]{glmer}} generalized linear mixed-effects model with the random effects of
 \code{timeVar} for each level of \code{groupingVar}.
 }
 \details{
