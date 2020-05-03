@@ -38,9 +38,11 @@ summary(mod)
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:           1               0.03537264
+    ## response ~ trial_number:          -1               0.03537264
     ##                          proportionalSpearmanChange pValSpearmanChange
     ## response ~ trial_number:                 0.03537264                  0
+    ##                          pval_KPSS_null pval_KPSS_model
+    ## response ~ trial_number:          < .01            > .1
 
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
@@ -66,39 +68,33 @@ summary(mod)
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
     ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.739 2.666 2.816    0.038
-    ## pStart    0.231 0.197 0.271    0.019
+    ## pRate     2.733 2.659 2.811    0.039
+    ## pStart    0.230 0.175 0.254    0.020
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42297 16.83409     3   30 37.04953 37.06937 -0.01984416
+    ## bernoulli 13.42328 16.83409     3   30 37.05016 37.06937 -0.01921487
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:           1              -0.03581758
+    ## response ~ trial_number:          -1              -0.04605117
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.03581758                  0
+    ## response ~ trial_number:                 0.04605117                  0
+    ##                          pval_KPSS_null pval_KPSS_model
+    ## response ~ trial_number:          < .01            > .1
     ## 
     ## >> Percent of resamples predicting an increase in values: 100 
     ## 
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.004 0.010 0.051
-    ## pStart 0.004  1.000 0.569 0.693
-    ## pRate  0.010  0.569 1.000 0.136
-    ## err    0.051  0.693 0.136 1.000
+    ##         pAsym pStart  pRate    err
+    ## pAsym   1.000  0.110 -0.011  0.061
+    ## pStart  0.110  1.000  0.586  0.290
+    ## pRate  -0.011  0.586  1.000 -0.021
+    ## err     0.061  0.290 -0.021  1.000
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
-
-``` r
-dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
-
-mod <- TEfitAll(dat[,c('response','trial_number')], 
-             groupingVar = dat$group,
-             groupingVarName = 'Participant')
-```
 
     ## 
     ## Your rate is very close to the boundary. Consider penalizing the likelihood.. 
@@ -109,7 +105,7 @@ mod <- TEfitAll(dat[,c('response','trial_number')],
 plot(mod)
 ```
 
-![](README_files/figure-markdown_github/model_groups-1.png)
+![](README_files/figure-markdown_github/print_model_groups-1.png)
 
 ``` r
 summary(mod)
@@ -120,15 +116,15 @@ summary(mod)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14919414 0.01644929 3.83352692
-    ## stdErr 0.03932505 0.01059440 0.02427479
+    ## mean   0.14920954 0.01639722 3.83349020
+    ## stdErr 0.03935343 0.01059216 0.02425303
     ## 
-    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.006041e-04 0.03071614     3   30 1691.9220 1.110223e-16 0.97598073
-    ## stdErr 6.866233e-05 0.01187769     0    0  653.1973 1.110223e-16 0.01661775
-    ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.327754 -211.91820 -125.40955 identity    ols      expo         1
-    ## stdErr    6.545863   14.35328   19.26125 identity    ols      expo         0
+    ##                 err    nullErr nPars nObs     Fval         Pval   Rsquared
+    ## mean   3.005902e-04 0.03071614     3   30 1691.907 1.110223e-16 0.97598289
+    ## stdErr 6.864833e-05 0.01187769     0    0  653.177 1.110223e-16 0.01661562
+    ##                BIC    nullBIC  deltaBIC  linkFun errFun changeFun converged
+    ## mean   -337.328495 -211.91820 -125.4103 identity    ols      expo         1
+    ## stdErr    6.544946   14.35328   19.2603 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -139,9 +135,9 @@ summary(mod)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.757
-    ## pStart  1.000  1.000 -0.762
-    ## pRate  -0.757 -0.762  1.000
+    ## pAsym   1.000  1.000 -0.759
+    ## pStart  1.000  1.000 -0.766
+    ## pRate  -0.759 -0.766  1.000
 
 Additional principles guiding the development of **TEfits**:
 
