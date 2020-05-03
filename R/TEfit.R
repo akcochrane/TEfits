@@ -34,17 +34,17 @@
 #'Bernoulli ('bernoulli'),
 #'
 #'Currently supported link functions are
-#' "identity" or "logit" or "weibull" or "d_prime." Logistic is parameterized
+#' \code{identity} or \code{logit} or \code{weibull} or \code{d_prime}. Logistic is parameterized
 #' such that change could occur in the threshold value (by default) and/or
 #' the bias value (defaults to constant). Lapse rate defaults to .005
 #' and threshold defaults to .75. Weibull is paramaterized such that change occurs in
 #' the threshold value (by default .75), the lapse rate defaults to .005, and the
 #' y-intercept defaults to .5.
-#' For the d-prime link a *presence* variable is included, the pFA and pH are
+#' For the d-prime link a \code{presence} variable is included, the pFA and pH are
 #' first calculated using a windowed average of stimulus-present or
 #' stimulus-absent trials (penalized to bound the max d-prime), then calculating the
 #' by-timepoint d-prime, then fitting that d-prime as the response variable. See
-#' 'tef_acc2dprime()' and 'tef_runningMean()' for details about the intermediate steps.
+#' \code{\link{tef_acc2dprime}} and \code{tef_runningMean} for details about the intermediate steps.
 #'
 #' Currently supported change functions are
 #' 3-parameter exponential ('expo'; start, [inverse] rate, and asymptote),
@@ -54,11 +54,10 @@
 #' 4-parameter power ('power'; start, [inverse] rate, asymptote, and "previous learning time"),
 #' 4-parameter weibull ('weibull'; start, [inverse] rate, asymptote, and shape).
 #'
-#' By default, during fitting the fits' errors are penalized multiplicatively by 1 + the square of the difference
+#' By default, the mean of the time-evolving model's fit values should be very similar to the mean of the null fit values.
+#' This implemented by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
 #' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 #' constrain model predictions to a "sane" range. This constraint can be removed with `control=tef_control(penalizeMean=F)`.
-#' Output errors [and BIC, etc.].
-#'
 #'
 #' \code{\link{plot.TEfit}}, \code{\link{summary.TEfit}},
 #' \code{\link{coef.TEfit}}, and \code{\link{simulate.TEfit}}
@@ -327,11 +326,11 @@ TEfit <- function(varIn,
   if(modList$bootPars$nBoots > 0){
     bootList <- tef_bootFits(modList)
     if(bootList$bootPercent<1){
-      oosErrMean <- mean(bootList$bootFits$err_oos_mean)
+      oosErrMedian <- median(bootList$bootFits$err_oos_mean)
       if(modList$errFun == 'rmse'){     ## this is already normalized for nObs
-        bestFit$GoF$oosErr <- oosErrMean
+        bestFit$GoF$oosErr <- oosErrMedian
       }else{        ## this needs to be normalized for nObs
-        bestFit$GoF$oosErr <- oosErrMean*nObs
+        bestFit$GoF$oosErr <- oosErrMedian*nObs
       }
       # bestFit$GoF$oosBIC <- oosErr*2 + length(modList$pNames)*log(nObs)
       bestFit$GoF$oosDeltaErr <- bestFit$GoF$oosErr-bestFit$GoF$nullErr
@@ -364,12 +363,13 @@ TEfit <- function(varIn,
 
     ## ## ## Get residuals
     bestFit$model_residuals <- bestFit$fitVals -  modList$varIn[,modList$respVar]
+    modList$null_residuals  <- modList$nullYhat-  modList$varIn[,modList$respVar]
 
     ## <><> PROBLEMATIC FOR WEIBULL AND LOGIT -- NEED TO JUST HAVE A SEPARATE TRACK FOR THEM.
 
     ## ## residual vs raw correlation:
     bestFit$conditional_independence <- data.frame(
-      rawSpearman = cor(modList$varIn[,modList$respVar],modList$varIn[,modList$timeVar],use='complete.obs',method='spearman'),
+      rawSpearman = cor(modList$null_residuals,modList$varIn[,modList$timeVar],use='complete.obs',method='spearman'),
       modelConditionalSpearman = cor(bestFit$model_residuals,modList$varIn[,modList$timeVar],use='complete.obs',method='spearman')
     )
     bestFit$conditional_independence$proportionalSpearmanChange <-
@@ -380,8 +380,28 @@ TEfit <- function(varIn,
         psych::r.test(nrow(na.omit(modList$varIn)),
                       abs(bestFit$conditional_independence$rawSpearman),
                       abs(bestFit$conditional_independence$modelConditionalSpearman))$p
-      rownames(bestFit$conditional_independence) <- paste0(modList$respVar,' ~ ',modList$timeVar,':')
+
     },silent=T)
+
+    ## ## if they have the tseries package, then get the null and model residuals' KPSS p values:
+    try({
+      suppressWarnings({
+        null_kpss_p <- tseries::kpss.test(na.omit(modList$null_residuals)[sort(na.omit(modList$varIn[,modList$timeVar]))]
+                                          ,null='Level')$p.value
+        modl_kpss_p <- tseries::kpss.test(na.omit(bestFit$model_residuals)[sort(na.omit(modList$varIn[,modList$timeVar]))]
+                                          ,null='Level')$p.value
+      })
+
+      if(null_kpss_p == .01){null_kpss_p <- '< .01'}
+      if(modl_kpss_p == .01){modl_kpss_p <- '< .01'}
+      if(null_kpss_p == .1){null_kpss_p <- '> .1'}
+      if(modl_kpss_p == .1){modl_kpss_p <- '> .1'}
+
+      bestFit$conditional_independence$pval_KPSS_null  <- null_kpss_p
+      bestFit$conditional_independence$pval_KPSS_model <- modl_kpss_p
+
+    },silent=T)
+    rownames(bestFit$conditional_independence) <- paste0(modList$respVar,' ~ ',modList$timeVar,':')
 
     ## <><> for sigmoid links, find the threshold
     if(modList$linkFun$link=='logit' || modList$linkFun$link=='weibull'){

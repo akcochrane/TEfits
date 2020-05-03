@@ -5,7 +5,7 @@
 \title{Refit a TEfitAll model with brms}
 \usage{
 tef_fitAll2brms(TEs3s, nIter = 2000, nChains = 3, nCores = 2,
-  errFun = NA)
+  errFun = NA, prior_dispersion = 2)
 }
 \arguments{
 \item{TEs3s}{TEfitAll model}
@@ -17,6 +17,11 @@ tef_fitAll2brms(TEs3s, nIter = 2000, nChains = 3, nCores = 2,
 \item{nCores}{number of cores}
 
 \item{errFun}{the error function to use. Defaults to the same as the TEfitAll model, if possible.}
+
+\item{prior_dispersion}{This number, multiplied by the SD of each TEfitAll parameter, is used as the prior SD for that parameter.}
+}
+\value{
+A \code{brms} nonlinear mixed-effects model object.
 }
 \description{
 Passes a TEfitAll model to [hierarchical nonlinear Bayesian] fitting using the

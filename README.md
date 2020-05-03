@@ -20,7 +20,7 @@ summary(mod)
 ```
 
     ## 
-    ## >> Call: response~(pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate)))
+    ## >> Call: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Converged: TRUE 
     ## 
@@ -37,14 +37,10 @@ summary(mod)
     ## ols -146.0724
     ## 
     ## >> Test of change in nonindependence:
-    ##                                                    rawSpearman
-    ## Nonindependence between response and trial_number:           1
-    ##                                                    modelConditionalSpearman
-    ## Nonindependence between response and trial_number:               0.03537264
-    ##                                                    proportionalSpearmanChange
-    ## Nonindependence between response and trial_number:                 0.03537264
-    ##                                                    pValSpearmanChange
-    ## Nonindependence between response and trial_number:                  0
+    ##                          rawSpearman modelConditionalSpearman
+    ## response ~ trial_number:           1               0.03537264
+    ##                          proportionalSpearmanChange pValSpearmanChange
+    ## response ~ trial_number:                 0.03537264                  0
 
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
@@ -63,29 +59,25 @@ summary(mod)
 ```
 
     ## 
-    ## >> Call: response~(pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate)))
+    ## >> Call: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Converged: TRUE 
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.981 1.000    0.005
-    ## pRate     2.716 2.506 2.827    0.082
-    ## pStart    0.228 0.163 0.286    0.031
+    ## pAsym     1.000 0.999 1.000    0.000
+    ## pRate     2.739 2.666 2.816    0.038
+    ## pStart    0.231 0.197 0.271    0.019
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42459 16.83409     3   30 37.05277 37.06937 -0.01660093
+    ## bernoulli 13.42297 16.83409     3   30 37.04953 37.06937 -0.01984416
     ## 
     ## >> Test of change in nonindependence:
-    ##                                                    rawSpearman
-    ## Nonindependence between response and trial_number:           1
-    ##                                                    modelConditionalSpearman
-    ## Nonindependence between response and trial_number:              -0.05806452
-    ##                                                    proportionalSpearmanChange
-    ## Nonindependence between response and trial_number:                 0.05806452
-    ##                                                    pValSpearmanChange
-    ## Nonindependence between response and trial_number:                  0
+    ##                          rawSpearman modelConditionalSpearman
+    ## response ~ trial_number:           1              -0.03581758
+    ##                          proportionalSpearmanChange pValSpearmanChange
+    ## response ~ trial_number:                 0.03581758                  0
     ## 
     ## >> Percent of resamples predicting an increase in values: 100 
     ## 
@@ -93,10 +85,10 @@ summary(mod)
     ## 
     ## >> Bootstrapped parameter correlations:
     ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.427 0.558 0.035
-    ## pStart 0.427  1.000 0.687 0.313
-    ## pRate  0.558  0.687 1.000 0.178
-    ## err    0.035  0.313 0.178 1.000
+    ## pAsym  1.000  0.004 0.010 0.051
+    ## pStart 0.004  1.000 0.569 0.693
+    ## pRate  0.010  0.569 1.000 0.136
+    ## err    0.051  0.693 0.136 1.000
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
@@ -124,19 +116,19 @@ summary(mod)
 ```
 
     ## 
-    ## >> Call: response ~ (pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate)))
+    ## >> Call: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922726 0.01639034 3.83366632
-    ## stdErr 0.03933408 0.01060454 0.02431467
+    ## mean   0.14919414 0.01644929 3.83352692
+    ## stdErr 0.03932505 0.01059440 0.02427479
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
-    ## stdErr 6.864644e-05 0.01187769     0    0  653.4848 1.110223e-16 0.01661145
+    ## mean   3.006041e-04 0.03071614     3   30 1691.9220 1.110223e-16 0.97598073
+    ## stdErr 6.866233e-05 0.01187769     0    0  653.1973 1.110223e-16 0.01661775
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.338970 -211.91820 -125.42077 identity    ols      expo         1
-    ## stdErr    6.548355   14.35328   19.26152 identity    ols      expo         0
+    ## mean   -337.327754 -211.91820 -125.40955 identity    ols      expo         1
+    ## stdErr    6.545863   14.35328   19.26125 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -148,8 +140,8 @@ summary(mod)
 
     ##         pAsym pStart  pRate
     ## pAsym   1.000  1.000 -0.757
-    ## pStart  1.000  1.000 -0.763
-    ## pRate  -0.757 -0.763  1.000
+    ## pStart  1.000  1.000 -0.762
+    ## pRate  -0.757 -0.762  1.000
 
 Additional principles guiding the development of **TEfits**:
 

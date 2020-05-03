@@ -15,20 +15,22 @@
 #' @param nChains number of chains
 #' @param nCores number of cores
 #' @param errFun the error function to use. Defaults to the same as the TEfitAll model, if possible.
+#' @param prior_dispersion This number, multiplied by the SD of each TEfitAll parameter, is used as the prior SD for that parameter.
+#'
+#' @return A \code{brms} nonlinear mixed-effects model object.
 #'
 #' @export
-#'
-tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
+tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA,prior_dispersion=2){
 
   # TO DO:
   # # make groupingVar actually have a name
   # # customization? (err, etc?)
   # # should have argument brmList=list(iter=2000,chains=0,fixefVars=NA)
-  # # what returns?
 
   library(brms)
   # par_lims <- TEs3s$allFitList[[1]]$modList$parLims
-  pars <- TEs3s$allFitList[[1]]$modList$pNames
+  pars_orig <- TEs3s$allFitList[[1]]$modList$pNames
+  pars <- gsub('_','',pars_orig)
 
   groupingVarName <- attr(TEs3s$fitSummary,'grouping_var')
 
@@ -38,18 +40,23 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
       rownames(TEs3s$allFits)[curGroup]
     varIn <- rbind(varIn,subDat)}
 
-  brmForm <- brmsformula(TEs3s$allFitList[[1]]$modList$modl_fun
-                         ,as.formula(paste(paste(pars,collapse='+'),'~(1||',groupingVarName,')'))
-                         ,nl=T)
+    brmForm <- brmsformula(as.formula(paste(
+      TEs3s$allFitList[[1]]$modList$respVar,'~',
+      gsub('_','',as.character(TEs3s$allFitList[[1]]$modList$modl_fun)[[3]])
+    ))
+    ,as.formula(paste(paste(pars,collapse='+'),'~(1||',groupingVarName,')'))
+    ,nl=T)
 
   ## make priors (better to have normal guided by TEfit result and bounded by par_lims)
   se2sd <- sqrt(length(TEs3s$allFitList))
-  brmPriors <- set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars[1]],',',TEs3s$fitSummary['stdErr',pars[1]]*se2sd*2,')'),
+  brmPriors <- set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars_orig[1]],',',
+                                TEs3s$fitSummary['stdErr',pars_orig[1]]*se2sd*prior_dispersion,')'),
                          nlpar=pars[1] ## ,ub=par_lims$parMax[1],lb=par_lims$parMin[1]
   ) ; if(length(pars)>1){
     for(curPar in 2:length(pars)){
       brmPriors <- brmPriors+
-        set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars[curPar]],',',TEs3s$fitSummary['stdErr',pars[curPar]]*se2sd*2,')'),
+        set_prior(paste0('normal(',TEs3s$fitSummary['mean',pars_orig[curPar]],',',
+                         TEs3s$fitSummary['stdErr',pars_orig[curPar]]*se2sd*prior_dispersion,')'),
                   nlpar=pars[curPar] ## ,ub=par_lims$parMax[curPar],lb=par_lims$parMin[curPar]
         )
     }}
@@ -76,7 +83,7 @@ tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA){
     else{
       if(!all(unique(na.omit(varIn[,1]))[1:2]==c(0,1))){
         cat('edge correction [.0001] was applied and a beta response distribution was used.')
-        varIn[,1] <- (x*.9998)+.0001
+        varIn[,1] <- (varIn[,1]*.9998)+.0001
 
         errorFun <- Beta(link = "identity")
       }

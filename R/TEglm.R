@@ -21,7 +21,7 @@
 #' @param datIn model data, as in glm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param family  passed to glm()
-#' @param fixRate If numeric, use this as a rate parameter [50% time constant] rather than estimating it (e.g., to improve reproducibility)
+#' @param fixRate If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #'
 #' @export
 #'
@@ -30,9 +30,8 @@
 #' m_glm <- tef_glm(resp ~ trialNum,dat,'trialNum',family=binomial)
 #' m_glm$rate # estimated half-of-change time constant
 #'
-tef_glm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
+TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
 
-  robust=F
   if(F){
     dat <- data.frame(trial_num = 1:200, respond = rbinom(200,1,rep(c(.3,.6,.7,.7),each=50)))
     dat$typpe <- sample(c('a','b'),200,replace = T)

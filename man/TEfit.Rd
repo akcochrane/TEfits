@@ -59,17 +59,17 @@ Ex-Gaussian ('exGauss_mu' or 'exGauss_tau'; tau is recommended),
 Bernoulli ('bernoulli'),
 
 Currently supported link functions are
-"identity" or "logit" or "weibull" or "d_prime." Logistic is parameterized
+\code{identity} or \code{logit} or \code{weibull} or \code{d_prime}. Logistic is parameterized
 such that change could occur in the threshold value (by default) and/or
 the bias value (defaults to constant). Lapse rate defaults to .005
 and threshold defaults to .75. Weibull is paramaterized such that change occurs in
 the threshold value (by default .75), the lapse rate defaults to .005, and the
 y-intercept defaults to .5.
-For the d-prime link a *presence* variable is included, the pFA and pH are
+For the d-prime link a \code{presence} variable is included, the pFA and pH are
 first calculated using a windowed average of stimulus-present or
 stimulus-absent trials (penalized to bound the max d-prime), then calculating the
 by-timepoint d-prime, then fitting that d-prime as the response variable. See
-'tef_acc2dprime()' and 'tef_runningMean()' for details about the intermediate steps.
+\code{\link{tef_acc2dprime}} and \code{tef_runningMean} for details about the intermediate steps.
 
 Currently supported change functions are
 3-parameter exponential ('expo'; start, [inverse] rate, and asymptote),
@@ -79,10 +79,10 @@ double exponential ('expo_double'),
 4-parameter power ('power'; start, [inverse] rate, asymptote, and "previous learning time"),
 4-parameter weibull ('weibull'; start, [inverse] rate, asymptote, and shape).
 
-By default, during fitting the fits' errors are penalized multiplicatively by 1 + the square of the difference
+By default, the mean of the time-evolving model's fit values should be very similar to the mean of the null fit values.
+This implemented by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
 between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 constrain model predictions to a "sane" range. This constraint can be removed with `control=tef_control(penalizeMean=F)`.
-Output errors [and BIC, etc.].
 
 \code{\link{plot.TEfit}}, \code{\link{summary.TEfit}},
 \code{\link{coef.TEfit}}, and \code{\link{simulate.TEfit}}

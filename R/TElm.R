@@ -22,10 +22,8 @@
 #' @param datIn model data, as in lm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should MASS::rlm() be used?
-#' @param fixRate If numeric, use this as a rate parameter [50% time constant] rather than estimating it (e.g., to improve reproducibility)
+#' @param fixRate If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated
-#'
-#' @export
 #'
 #' @examples
 #' dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
@@ -45,7 +43,8 @@
 #' lines(datIn$trialNum,fitted(m_lm),col='blue')
 #' lines(datIn$trialNum,fitted(m_rlm),col='red')
 #'
-tef_lm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 200){
+#' @export
+TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 200){
 
   if(F){
     dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
