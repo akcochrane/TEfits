@@ -1,14 +1,14 @@
 
 #' Refit a TEfitAll model with brms
 #'
-#' Passes a TEfitAll model to [nonlinear mixed-effects Bayesian] fitting using the
+#' Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using the
 #' \code{\link[brms]{brms}} package. Note that, due to the extensive time needed to
 #' fit \code{\link[brms]{brms}} models,
-#' this function is even less tested than most functions in the TEfits package.
+#' this function is less tested than most functions in the \code{TEfits} package.
 #'
-#' TEfitAll 'bernoulli' models are fit using either 'bernoulli' or 'Beta' response
-#' distributions in brms, depending on whether the TEfitAll distribution is
-#' binary. TEfitAll 'logcosh' models are fit using a 'asym_laplace' response distribution
+#' \code{TEfitAll} \code{bernoulli} models are fit using either \code{bernoulli} or \code{Beta} response
+#' distributions in \code{brms} depending on whether the \code{TEfitAll} distribution is
+#' binary. \code{TEfitAll} \code{logcosh} models are fit using a \code{asym_laplace} response distribution
 #' in brms.
 #'
 #' @param TEs3s TEfitAll model
