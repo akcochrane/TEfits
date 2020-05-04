@@ -38,7 +38,7 @@
 #' dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
 #' form <- resp ~ trialNum
 #'
-#' m_lm <- tef_lm(form,dat,'trialNum')
+#' m_lm <- tef_lm(form,dat, 'trialNum')
 #' summary(m_lm)
 #' m_lm$bootSummary
 #' m_lm$rate
