@@ -130,6 +130,7 @@ between the average of the model prediction and the average of the null [non-tim
 constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
 }
 \examples{
+\dontrun{
 ## example data:
 dat <- data.frame(timeVar = 1:50, respVar = c(seq(.3,.9,length=25),seq(.9,.91,length=25))+rep(c(0,.01),25),covar1=rep(c(1,2),25),covar2 = rep(c(-3,-1,0,2,5),10))
 
@@ -207,7 +208,7 @@ plot(m)
 
  ## Fix a parameter [asymptote] to 0.8:
   m <- TEfit(dat[,c('respVar','timeVar')],control=tef_control(pFix=list(pAsym=.8)))
-
+}
 }
 \seealso{
 For interpreting model outputs: \code{\link{plot.TEfit}}; \code{\link{summary.TEfit}};
