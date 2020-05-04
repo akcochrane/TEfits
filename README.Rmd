@@ -76,13 +76,13 @@ mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='cyan',lty=2)
+lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2)
 
 ```
 
 TElm parameter estimates:
 
-`r  knitr::kable(round(data.frame(t(c(coef(mod_lm),rate=log2(mod_lm$rate)))),3))`
+`r  knitr::kable(round(data.frame(t(c(coef(mod_lm),log2_rate=log2(mod_lm$rate)))),3))`
 
 TEfit parameter estimates:
 

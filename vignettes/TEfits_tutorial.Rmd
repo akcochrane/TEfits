@@ -58,7 +58,7 @@ summary(m_simple)
 
 `Converged` indicates whether the model converged, as measured by similar parameter values being found by the optimization runs with the 10 lowest errors. This is a heuristic, and should ideally be corroborated with parameter distributions from bootstrapped fits.
 
-`Fit Values` prints the fit parameter values.
+`Fit Values` prints the fit parameter values. In 3-parameter exponential change, `rate` is `log~2~` of the amount of time taken for 50% of change to occur
 
 `Goodness-of-fit` prints several fit indices (e.g., the `err` and `BIC` of the best fit). Also printed are the corresponding fit indices for the null model (i.e., the model that is not time-evolving). The row name indicates the error function (e.g., `ols` or `logcosh`).
 
