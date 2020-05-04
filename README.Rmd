@@ -76,7 +76,7 @@ mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
+lines(dat_simple$trial_number,fitted(mod_lm),col='blue',lty=2)
 
 ```
 
@@ -93,5 +93,5 @@ start as an offset from asymptote (ie., `Intercept`).
 
 # Additional principles guiding the development of **TEfits**:
 
-- Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
+- Reliance primarily on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
 - Good things come to those who wait: Speed is nice, but robustness is better.

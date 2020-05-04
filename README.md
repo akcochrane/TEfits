@@ -73,13 +73,13 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.999 1.000    0.000
-    ## pRate     2.735 2.665 2.797    0.034
-    ## pStart    0.231 0.159 0.265    0.027
+    ## pAsym     1.000 0.999 1.000    0.000
+    ## pRate     2.739 2.641 2.790    0.038
+    ## pStart    0.231 0.202 0.262    0.015
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42357 16.83409     3   30 37.05074 37.06937 -0.01863453
+    ## bernoulli 13.42316 16.83409     3   30 37.04991 37.06937 -0.01945741
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
@@ -94,11 +94,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate    err
-    ## pAsym   1.000 -0.160 -0.061 -0.259
-    ## pStart -0.160  1.000  0.394  0.417
-    ## pRate  -0.061  0.394  1.000 -0.077
-    ## err    -0.259  0.417 -0.077  1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000  0.038 0.072 -0.182
+    ## pStart  0.038  1.000 0.539  0.574
+    ## pRate   0.072  0.539 1.000  0.208
+    ## err    -0.182  0.574 0.208  1.000
 
 Fitting multiple models
 =======================
@@ -134,16 +134,16 @@ summary(mod_4group)
     ## >> Call: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
-    ##             pAsym     pStart     pRate
-    ## mean   0.14920550 0.01640607 3.8334270
-    ## stdErr 0.03934491 0.01060208 0.0242354
+    ##             pAsym     pStart      pRate
+    ## mean   0.14925673 0.01636549 3.83354754
+    ## stdErr 0.03934977 0.01059382 0.02427818
     ## 
     ##                 err    nullErr nPars nObs     Fval         Pval   Rsquared
-    ## mean   3.006008e-04 0.03071614     3   30 1691.856 1.110223e-16 0.97598373
-    ## stdErr 6.862637e-05 0.01187769     0    0  653.269 1.110223e-16 0.01661285
-    ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.326317 -211.91820 -125.40812 identity    ols      expo         1
-    ## stdErr    6.543702   14.35328   19.25993 identity    ols      expo         0
+    ## mean   3.005872e-04 0.03071614     3   30 1691.822 1.110223e-16 0.97598433
+    ## stdErr 6.863276e-05 0.01187769     0    0  653.144 1.110223e-16 0.01661368
+    ##               BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
+    ## mean   -337.32788 -211.91820 -125.40968 identity    ols      expo         1
+    ## stdErr    6.54363   14.35328   19.25928 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -154,9 +154,9 @@ summary(mod_4group)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.758
+    ## pAsym   1.000  1.000 -0.756
     ## pStart  1.000  1.000 -0.764
-    ## pRate  -0.758 -0.764  1.000
+    ## pRate  -0.756 -0.764  1.000
 
 Using a more typical regression framework
 =========================================
@@ -168,7 +168,7 @@ mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='blue')
+lines(dat_simple$trial_number,fitted(mod_lm),col='blue',lty=2)
 ```
 
 ![](README_files/figure-markdown_github/TElm-1.png)
@@ -177,7 +177,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.521|         -2.653|  2.865|
+|         3.531|         -2.657|  2.883|
 
 TEfit parameter estimates:
 
@@ -190,5 +190,5 @@ Note that `TEfit` provides start and asymptote parameters directly, while `TElm`
 Additional principles guiding the development of **TEfits**:
 ============================================================
 
--   Reliance only on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
+-   Reliance primarily on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
 -   Good things come to those who wait: Speed is nice, but robustness is better.
