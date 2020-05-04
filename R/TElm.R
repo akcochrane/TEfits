@@ -36,14 +36,13 @@
 #'
 #' @examples
 #' dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
-#' form <- resp ~ trialNum
 #'
-#' m_lm <- tef_lm(form,dat, 'trialNum')
+#' m_lm <- TElm(resp ~ trialNum,dat, 'trialNum')
 #' summary(m_lm)
 #' m_lm$bootSummary
 #' m_lm$rate
 #'
-#' m_rlm <- tef_lm(form,dat,'trialNum',robust=T)
+#' m_rlm <- TElm(resp ~ trialNum,dat,'trialNum',robust=T)
 #' summary(m_rlm)
 #' m_rlm$bootSummary
 #' m_rlm$rate

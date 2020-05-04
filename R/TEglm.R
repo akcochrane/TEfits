@@ -33,7 +33,7 @@
 #'
 #' @examples
 #' dat <- data.frame(trialNum = 1:200, resp = rbinom(200,1,log(11:210)/log(300)))
-#' m_glm <- tef_glm(resp ~ trialNum,dat,'trialNum',family=binomial)
+#' m_glm <- TEglm(resp ~ trialNum,dat,'trialNum',family=binomial)
 #' m_glm$rate # estimated half-of-change time constant
 #'
 TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
