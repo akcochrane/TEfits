@@ -50,7 +50,7 @@ summary(m_lm)
 m_lm$bootSummary
 m_lm$rate
 
-m_rlm <- TElm(resp ~ trialNum,dat,'trialNum',robust=T)
+m_rlm <- TElm(resp ~ trialNum,dat,'trialNum',robust=TRUE)
 summary(m_rlm)
 m_rlm$bootSummary
 m_rlm$rate
