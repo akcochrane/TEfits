@@ -74,18 +74,18 @@ summary(mod_boot)
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
     ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.739 2.641 2.790    0.038
-    ## pStart    0.231 0.202 0.262    0.015
+    ## pRate     2.739 2.636 2.833    0.050
+    ## pStart    0.231 0.198 0.270    0.018
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42316 16.83409     3   30 37.04991 37.06937 -0.01945741
+    ## bernoulli 13.42297 16.83409     3   30 37.04954 37.06937 -0.01983306
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.04605117
+    ## response ~ trial_number:          -1              -0.03581758
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.04605117                  0
+    ## response ~ trial_number:                 0.03581758                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -94,11 +94,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000  0.038 0.072 -0.182
-    ## pStart  0.038  1.000 0.539  0.574
-    ## pRate   0.072  0.539 1.000  0.208
-    ## err    -0.182  0.574 0.208  1.000
+    ##        pAsym pStart pRate   err
+    ## pAsym  1.000  0.033 0.207 0.041
+    ## pStart 0.033  1.000 0.774 0.778
+    ## pRate  0.207  0.774 1.000 0.505
+    ## err    0.041  0.778 0.505 1.000
 
 Fitting multiple models
 =======================
@@ -135,15 +135,15 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14925673 0.01636549 3.83354754
-    ## stdErr 0.03934977 0.01059382 0.02427818
+    ## mean   0.14921802 0.01638199 3.83339503
+    ## stdErr 0.03934048 0.01060369 0.02426378
     ## 
-    ##                 err    nullErr nPars nObs     Fval         Pval   Rsquared
-    ## mean   3.005872e-04 0.03071614     3   30 1691.822 1.110223e-16 0.97598433
-    ## stdErr 6.863276e-05 0.01187769     0    0  653.144 1.110223e-16 0.01661368
-    ##               BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.32788 -211.91820 -125.40968 identity    ols      expo         1
-    ## stdErr    6.54363   14.35328   19.25928 identity    ols      expo         0
+    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
+    ## mean   3.006115e-04 0.03071614     3   30 1692.2355 1.110223e-16 0.97597955
+    ## stdErr 6.866846e-05 0.01187769     0    0  653.5265 1.110223e-16 0.01661755
+    ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
+    ## mean   -337.328114 -211.91820 -125.40991 identity    ols      expo         1
+    ## stdErr    6.548287   14.35328   19.26385 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -154,9 +154,9 @@ summary(mod_4group)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.756
-    ## pStart  1.000  1.000 -0.764
-    ## pRate  -0.756 -0.764  1.000
+    ## pAsym   1.000  1.000 -0.755
+    ## pStart  1.000  1.000 -0.761
+    ## pRate  -0.755 -0.761  1.000
 
 Using a more typical regression framework
 =========================================
@@ -168,7 +168,7 @@ mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='blue',lty=2)
+lines(dat_simple$trial_number,fitted(mod_lm),col='cyan',lty=2)
 ```
 
 ![](README_files/figure-markdown_github/TElm-1.png)
@@ -177,7 +177,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.531|         -2.657|  2.883|
+|         3.516|         -2.651|  2.855|
 
 TEfit parameter estimates:
 
