@@ -2,18 +2,18 @@
 % Please edit documentation in R/TElm.R
 \name{TElm}
 \alias{TElm}
-\title{Robust linear model with nonlinear time predictor}
+\title{[Robust] linear model with nonlinear time predictor}
 \usage{
 TElm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 200)
 }
 \arguments{
-\item{formIn}{model formula, as in lm()}
+\item{formIn}{model formula, as in \code{lm()}}
 
-\item{datIn}{model data, as in lm()}
+\item{datIn}{model data, as in \code{lm()}}
 
 \item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed)}
 
-\item{robust}{Logical. Should MASS::rlm() be used?}
+\item{robust}{Logical. Should \code{\link[MASS]{rlm}} be used?}
 
 \item{fixRate}{If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
 
@@ -26,7 +26,7 @@ First resamples data with replacement 100 times, and each time estimates the bes
 between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
-offset magnitude 0). Last uses this transformed time variable in a \code{rlm} or \code{lm} model
+offset magnitude 0). Last uses this transformed time variable in a \code{\link{tef_rlm_boot}} [\code{rlm} or \code{lm}] model
 (i.e., attempts to answer the question "how different was the start than the end?").
 }
 \details{
@@ -35,11 +35,11 @@ The value of rate has a lower bound of
 the .0333 quantile of the time variable (i.e., 87.5\% of change happens in the first 10\% of time) and an upper bound of the
 .333 quantile of the time variable (i.e., 87.5\% of change takes 100\% of the time to happen). These bounds provide
 some robustness in estimates of asympototic effects (i.e., "controlling for time") as well as initial effects
-(i.e., "time-related starting offset"). Uses this transformed time variable in a \code{TEfits::tef_rlm_boot} model to estimate
+(i.e., "time-related starting offset"). Uses this transformed time variable in a \code{\link{tef_rlm_boot}} model to estimate
 bootstrapped parameter coefficients and out-of-sample prediction.
 }
 \note{
-In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
+In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is log2-transformed.
 Here it is not.
 }
 \examples{
@@ -60,4 +60,8 @@ plot(datIn[,c('trialNum','resp')])
 lines(datIn$trialNum,fitted(m_lm),col='blue')
 lines(datIn$trialNum,fitted(m_rlm),col='red')
 
+}
+\seealso{
+\code{\link{TElmem}} for mixed-effects extension of \code{TElm};
+\code{\link{TEglm}} for generalized extension of \code{TElm}
 }

@@ -7,34 +7,37 @@
 tef_rlm_boot(formIn, datIn, nBoot = 500, useLM = F)
 }
 \arguments{
-\item{formIn}{Model formula, as with lm() or rlm()}
+\item{formIn}{Model formula, as with \code{lm()} or \code{rlm()}}
 
-\item{datIn}{Data, as with lm() or rlm()}
+\item{datIn}{Data, as with \code{lm()} or \code{rlm()}}
 
 \item{nBoot}{Number of resamples [with replacement]}
 
-\item{useLM}{Override the standard MASS::rlm() implementation to use basic lm() instead}
+\item{useLM}{Override the standard \code{rlm()} implementation to use basic \code{lm()} instead}
 }
-\description{
-Run a \code{MASS::rlm} model \code{nBoot} times, then include the bootstrapped parameter estimates
-(and summary of quantiles thereof) in the rlm output. Also includes out-of-sample
-delta-R-squared. If parameter distributions are *anywhere near* decision thresholds,
-using \code{nBoot}>2000 (or even much higher) is recommended.
-}
-\details{
-Wraps rlm() and then bootstraps [fits models to datasets sampled with replacement]
-that model \code{nBoot} times. Then fits models to
-nBoot random 80 percent of data and tests the delta R-squared of each numeric or logical parameter
-when predicting the out-of-sample 20 percent. An augmented \code{rlm} object is returned that includes
+\value{
+An augmented \code{rlm} or \code{lm} object that includes
 several new items: \code{$bootSummary}, \code{$boots} (all bootstrapped parameters),
 \code{$bootQs} (quantiles
 of bootstrapped parameters), \code{$dRsq} (all out-of-sample proportional reduction of error),
 \code{$dRsqQs} (quantiles of out-of-sample proportional reduction of error),
 and \code{$results} (strings, formatted
-for RMarkdown, including whole-sample slope, bootstrapped CI, and median dRSq).
+for RMarkdown, including whole-sample slope, bootstrapped CI, and median out-of-sample dRSq).
 
 For an explanation specific objects see \code{comment(model$boots)},
 \code{comment(model$dRsq)}, or \code{comment(model$bootSummary)}.
+}
+\description{
+Run a \code{\link[MASS]{rlm}} model \code{nBoot} times, then include the bootstrapped parameter estimates
+(and summary of quantiles thereof) in the rlm output. Also includes out-of-sample
+delta-R-squared. If parameter distributions are *anywhere near* decision thresholds,
+using \code{nBoot}>2000 (or even much higher) is recommended.
+}
+\details{
+Wraps \code{rlm()} or \code{lm()} and then bootstraps [fits models to datasets sampled with replacement]
+that model \code{nBoot} times. Then fits models to
+nBoot random 80 percent of data and tests the delta R-squared of each numeric or logical parameter
+when predicting the out-of-sample 20 percent.
 }
 \examples{
 dat <- data.frame(x=rnorm(50))
