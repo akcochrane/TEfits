@@ -73,19 +73,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.745 2.672 2.808    0.035
-    ## pStart    0.234 0.206 0.274    0.017
+    ## pAsym     0.999 0.999 1.000    0.000
+    ## pRate     2.737 2.650 2.839    0.048
+    ## pStart    0.231 0.197 0.269    0.018
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42297 16.83409     3   30 37.04954 37.06937 -0.01983243
+    ## bernoulli 13.42337 16.83409     3   30 37.05033 37.06937 -0.01903874
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.08965517
+    ## response ~ trial_number:          -1              -0.04605117
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.08965517                  0
+    ## response ~ trial_number:                 0.04605117                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -95,10 +95,10 @@ summary(mod_boot)
     ## 
     ## >> Bootstrapped parameter correlations:
     ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.145 0.182 0.261
-    ## pStart 0.145  1.000 0.380 0.765
-    ## pRate  0.182  0.380 1.000 0.164
-    ## err    0.261  0.765 0.164 1.000
+    ## pAsym  1.000  0.310 0.373 0.229
+    ## pStart 0.310  1.000 0.829 0.740
+    ## pRate  0.373  0.829 1.000 0.554
+    ## err    0.229  0.740 0.554 1.000
 
 Fitting multiple models
 =======================
@@ -135,15 +135,15 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14925281 0.01637211 3.83353278
-    ## stdErr 0.03934306 0.01059987 0.02426971
+    ## mean   0.14923129 0.01638088 3.83346587
+    ## stdErr 0.03933887 0.01060213 0.02425942
     ## 
-    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.005698e-04 0.03071614     3   30 1691.9836 1.110223e-16 0.97598564
-    ## stdErr 6.863298e-05 0.01187769     0    0  653.2264 1.110223e-16 0.01661284
+    ##                 err    nullErr nPars nObs     Fval         Pval   Rsquared
+    ## mean   3.005789e-04 0.03071614     3   30 1692.257 1.110223e-16 0.97598123
+    ## stdErr 6.868056e-05 0.01187769     0    0  653.344 1.110223e-16 0.01661869
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.330087 -211.91820 -125.41189 identity    ols      expo         1
-    ## stdErr    6.544493   14.35328   19.25969 identity    ols      expo         0
+    ## mean   -337.332009 -211.91820 -125.41381 identity    ols      expo         1
+    ## stdErr    6.548621   14.35328   19.26292 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -154,21 +154,21 @@ summary(mod_4group)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.757
-    ## pStart  1.000  1.000 -0.764
-    ## pRate  -0.757 -0.764  1.000
+    ## pAsym   1.000  1.000 -0.755
+    ## pStart  1.000  1.000 -0.762
+    ## pRate  -0.755 -0.762  1.000
 
 Using a more typical regression framework
 =========================================
 
-In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in blue on top of the `mod_simple` results, with clearly near-identical fits.
+In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in green on top of the `mod_simple` results, with clearly near-identical fits.
 
 ``` r
 mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2)
+lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 ```
 
 ![](README_files/figure-markdown_github/TElm-1.png)
@@ -177,7 +177,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|  log2\_rate|
 |-------------:|--------------:|-----------:|
-|          3.54|          -2.66|       2.897|
+|         3.526|         -2.655|       2.873|
 
 TEfit parameter estimates:
 
