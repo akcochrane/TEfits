@@ -5,6 +5,7 @@
 #' @param ymin minimum y value
 #' @param ymax maximum y value
 #'
+#' @method plot TEfitAll
 #' @export
 #'
 plot.TEfitAll <- function(TEs3s,ymin=NA,ymax=NA){

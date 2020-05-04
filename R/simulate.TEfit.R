@@ -8,6 +8,7 @@
 #' @param newdata If desired, new data from which to generate values
 #' @param toPlot Logical, for plotting of values.
 #'
+#' @method simulate TEfit
 #' @export
 #'
 #' @examples

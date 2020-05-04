@@ -13,6 +13,7 @@
 #' @param TEs3 A fit TEfit model
 #' @param printOutput Print output to console (if T) or return a list of summary items (if F)
 #'
+#' @method summary TEfit
 #' @export
 #'
 #' @examples

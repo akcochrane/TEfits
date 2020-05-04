@@ -4,6 +4,7 @@
 #'
 #' @param TEs3s A set of models fit by TEfitAll()
 #'
+#' @method fitted TEfitAll
 #' @export
 #'
 fitted.TEfitAll <- function(TEs3s){

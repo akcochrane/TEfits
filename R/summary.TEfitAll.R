@@ -6,6 +6,7 @@
 #' @param printOutput Print output to console (if T) or return a list of summary items (if F)
 #' @param printAll Print grouping-level fits?
 #'
+#' @method summary TEfitAll
 #' @export
 #'
 

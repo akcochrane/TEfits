@@ -4,6 +4,7 @@
 #'
 #' @param modelIn A TEfit model
 #'
+#' @method residuals TEfit
 #' @export
 #'
 residuals.TEfit <- function(modelIn,toPlot=F){

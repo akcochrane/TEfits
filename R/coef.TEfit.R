@@ -2,6 +2,7 @@
 #'
 #' @param TEs3 A TEfit model, possibly with resampled parameters
 #'
+#' @method coef TEfit
 #' @export
 #'
 #' @examples
