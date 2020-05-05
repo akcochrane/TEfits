@@ -26,12 +26,8 @@
 #' @export
 tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA,prior_dispersion=2){
 
-  # TO DO:
-  # # make groupingVar actually have a name
-  # # customization? (err, etc?)
-  # # should have argument brmList=list(iter=2000,chains=0,fixefVars=NA)
 
-  library(brms)
+  require(brms)
   # par_lims <- TEs3s$allFitList[[1]]$modList$parLims
   pars_orig <- TEs3s$allFitList[[1]]$modList$pNames
   pars <- gsub('_','',pars_orig)
