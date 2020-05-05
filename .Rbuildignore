@@ -1,6 +1,4 @@
 ^doc$
 ^Meta$
 ^\.travis\.yml$
-^\.paper\.md$
 ^\.desktop\.ini$
-^\.references\.bib$
