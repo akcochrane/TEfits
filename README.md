@@ -2,7 +2,7 @@
 TEfits
 ======
 
-[![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
+[![DOI](https://zenodo.org/badge/225967950.svg)](https://zenodo.org/badge/latestdoi/225967950) [![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
 
 Overview to Time-Evolving fits
 ------------------------------
@@ -33,7 +33,7 @@ summary(mod_simple)
 ```
 
     ## 
-    ## >> Call: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
+    ## >> Formula: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Converged: TRUE 
     ## 
@@ -80,25 +80,25 @@ summary(mod_boot)
 ```
 
     ## 
-    ## >> Call: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
+    ## >> Formula: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Converged: TRUE 
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.740 2.660 2.810    0.038
-    ## pStart    0.231 0.194 0.261    0.017
+    ## pAsym     0.999 0.999 1.000    0.000
+    ## pRate     2.735 2.672 2.801    0.033
+    ## pStart    0.231 0.210 0.257    0.012
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42306 16.83409     3   30 37.04971 37.06937 -0.01965737
+    ## bernoulli 13.42358 16.83409     3   30 37.05076 37.06937 -0.01861105
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.03581758
+    ## response ~ trial_number:          -1              -0.04605117
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.03581758                  0
+    ## response ~ trial_number:                 0.04605117                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -107,11 +107,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000 -0.171 0.136 -0.315
-    ## pStart -0.171  1.000 0.406  0.702
-    ## pRate   0.136  0.406 1.000  0.052
-    ## err    -0.315  0.702 0.052  1.000
+    ##         pAsym pStart  pRate    err
+    ## pAsym   1.000  0.009  0.213 -0.060
+    ## pStart  0.009  1.000  0.477  0.510
+    ## pRate   0.213  0.477  1.000 -0.022
+    ## err    -0.060  0.510 -0.022  1.000
 
 Fitting multiple models
 -----------------------
@@ -146,19 +146,19 @@ summary(mod_4group)
 ```
 
     ## 
-    ## >> Call: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
+    ## >> Formula: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14925356 0.01634720 3.83357741
-    ## stdErr 0.03931318 0.01061323 0.02429374
+    ## mean   0.14923089 0.01639689 3.83340520
+    ## stdErr 0.03934536 0.01058507 0.02423948
     ## 
-    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.005669e-04 0.03071614     3   30 1692.2688 1.110223e-16 0.97598393
-    ## stdErr 6.865735e-05 0.01187769     0    0  653.3993 1.110223e-16 0.01661518
+    ##                 err    nullErr nPars nObs      Fval         Pval  Rsquared
+    ## mean   3.006328e-04 0.03071614     3   30 1692.0117 1.110223e-16 0.9759788
+    ## stdErr 6.865709e-05 0.01187769     0    0  653.4459 1.110223e-16 0.0166171
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.332229 -211.91820 -125.41403 identity    ols      expo         1
-    ## stdErr    6.547467   14.35328   19.26204 identity    ols      expo         0
+    ## mean   -337.324861 -211.91820 -125.40666 identity    ols      expo         1
+    ## stdErr    6.546535   14.35328   19.26293 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -170,8 +170,8 @@ summary(mod_4group)
 
     ##         pAsym pStart  pRate
     ## pAsym   1.000  1.000 -0.756
-    ## pStart  1.000  1.000 -0.763
-    ## pRate  -0.756 -0.763  1.000
+    ## pStart  1.000  1.000 -0.764
+    ## pRate  -0.756 -0.764  1.000
 
 Using a more common linear regression framework
 -----------------------------------------------
@@ -193,7 +193,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|  log2\_rate|
 |-------------:|--------------:|-----------:|
-|         3.516|         -2.651|       2.856|
+|         3.531|         -2.657|       2.883|
 
 TEfit parameter estimates:
 
