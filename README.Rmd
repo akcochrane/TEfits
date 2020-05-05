@@ -6,6 +6,8 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
+
 ```{r, include=FALSE}
 library(TEfits)
 ```
