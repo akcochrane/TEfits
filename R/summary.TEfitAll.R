@@ -29,7 +29,7 @@ summary.TEfitAll <- function(TEs3s,printOutput=T,printAll=F){
 
 if(printOutput){
   ### ### Start printing things:
-  cat('\n>> Call:',outList$model_formula)
+  cat('\n>> Formula:',outList$model_formula)
   cat('\n\n>> Overall effects:\n')
   print(outList$param_vals)
   cat('\n')

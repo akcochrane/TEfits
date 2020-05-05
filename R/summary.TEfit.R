@@ -43,7 +43,7 @@ summary.TEfit <- function(TEs3,printOutput=T){
 
   if(printOutput){
   ### ### Start printing things:
-  cat('\n>> Call:',outList$model_formula)
+  cat('\n>> Formula:',outList$model_formula)
   cat('\n\n>> Converged:',outList$convergence,'\n')
   if(!TEs3$model$converged){
     cat('>> Max runs:',TEs3$modList$nTries,' -- Tolerance:',TEs3$modList$convergeTol,'\n')
