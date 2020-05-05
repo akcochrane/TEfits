@@ -1,4 +1,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+TEfits
+======
+
 [![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
 
 Overview to Time-Evolving fits
@@ -75,19 +78,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.738 2.583 2.838    0.065
-    ## pStart    0.231 0.199 0.268    0.018
+    ## pAsym     0.999 0.995 1.000    0.001
+    ## pRate     2.736 2.659 2.789    0.033
+    ## pStart    0.231 0.194 0.264    0.018
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42287 16.83409     3   30 37.04933 37.06937 -0.02004317
+    ## bernoulli 13.42342 16.83409     3   30 37.05044 37.06937 -0.01893113
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.04249166
+    ## response ~ trial_number:          -1              -0.04605117
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.04249166                  0
+    ## response ~ trial_number:                 0.04605117                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -96,11 +99,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate   err
-    ## pAsym   1.000  0.055 -0.133 0.067
-    ## pStart  0.055  1.000  0.602 0.672
-    ## pRate  -0.133  0.602  1.000 0.171
-    ## err     0.067  0.672  0.171 1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000 -0.174 0.252 -0.432
+    ## pStart -0.174  1.000 0.607  0.557
+    ## pRate   0.252  0.607 1.000  0.051
+    ## err    -0.432  0.557 0.051  1.000
 
 Fitting multiple models
 =======================
@@ -137,15 +140,15 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14924515 0.01636518 3.83350220
-    ## stdErr 0.03929839 0.01062737 0.02425668
+    ## mean   0.14918646 0.01639920 3.83346113
+    ## stdErr 0.03935363 0.01058692 0.02424341
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.006041e-04 0.03071614     3   30 1692.0454 1.110223e-16 0.97597964
-    ## stdErr 6.867605e-05 0.01187769     0    0  653.2646 1.110223e-16 0.01661923
+    ## mean   3.006129e-04 0.03071614     3   30 1692.0521 1.110223e-16 0.97598182
+    ## stdErr 6.863798e-05 0.01187769     0    0  653.4765 1.110223e-16 0.01661394
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.328688 -211.91820 -125.41049 identity    ols      expo         1
-    ## stdErr    6.547315   14.35328   19.26239 identity    ols      expo         0
+    ## mean   -337.326137 -211.91820 -125.40794 identity    ols      expo         1
+    ## stdErr    6.545673   14.35328   19.26201 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -157,8 +160,8 @@ summary(mod_4group)
 
     ##         pAsym pStart  pRate
     ## pAsym   1.000  1.000 -0.757
-    ## pStart  1.000  1.000 -0.762
-    ## pRate  -0.757 -0.762  1.000
+    ## pStart  1.000  1.000 -0.764
+    ## pRate  -0.757 -0.764  1.000
 
 Using a more typical regression framework
 =========================================
@@ -179,7 +182,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|  log2\_rate|
 |-------------:|--------------:|-----------:|
-|         3.529|         -2.656|       2.878|
+|         3.512|          -2.65|       2.848|
 
 TEfit parameter estimates:
 
