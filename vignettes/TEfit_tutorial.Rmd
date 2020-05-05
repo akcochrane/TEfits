@@ -22,16 +22,15 @@ library(TEfits)
 
 One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). The task is novel to them and difficult, and it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
 
-As a rough simulation of one participants' data, we will generate by-trial accuracies that linearly increase over the first 40 trials and then are stable in the last 40 trials
+As a rough simulation of one participants' data, we will generate by-trial accuracies that exponentially increases from a starting point accuracy of .4 to an asymptotic accuracy of .9.
 
 ```{r simulate_data}
 set.seed(111)
 
 dat <- data.frame(
-  accuracy = c(
-    rbinom(40,6,seq(.4,.75,length.out = 40)),
-    rbinom(40,6,.75)
-  )/6,
+  accuracy = rbinom(80,6,
+           .9-.5*2^(-rnorm(80,1:80,3)/5) # exponential change from .4 to .9 with a rate [half-change time constant] of log2(5+1)=2.58
+           )/6,
   trial_number = 1:80
 )
 ```
@@ -44,7 +43,9 @@ This latter method implicitly acknowledges the possibility of nonstationarity in
 
 ```{r TEfit_simple}
 m_simple <- TEfit(dat[,c('accuracy','trial_number')])
+```
 
+```{r TEfit_simple_asymptote}
 m_simple$model$par['pAsym']
 ```
 
@@ -62,7 +63,7 @@ summary(m_simple)
 
 `Goodness-of-fit` prints several fit indices (e.g., the `err` and `BIC` of the best fit). Also printed are the corresponding fit indices for the null model (i.e., the model that is not time-evolving). The row name indicates the error function (e.g., `ols` or `logcosh`).
 
-`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`. If the `tseries` package is installed, the p-value from `kpss.test` of stationarity will also be included
+`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`. If the `tseries` package is installed, the p-value from `kpss.test` of stationarity will also be included.
 
 A plot can also be viewed:
 
@@ -72,7 +73,7 @@ plot(m_simple)
 
 ## Adjusting the model to better fit the data: Error function
 
-By default `TEfit` minimizes the sum of squared error (`ols`) between model predictions and the response variable. This allows a fit of the conditional mean of the response variable, and it is directly comparable to "normal" methods of linear regression (e.g., `lm`). However, analysts' knowledge about their data may allow for more specific choices. For example, when considering accuracy on a memory span task, this accuracy is bounded at 0 and 1 (i.e., 0% and 100%). A `bernoulli` error function is therefore appropriate whereas an `ols` error function is not (e.g., due to skewed residuals and the ability to evaluate the error at predictions above 1 or below 0). The previous model can be fit using a `bernoulli` error function instead:
+By default `TEfit` minimizes the sum of squared error (`ols`) between model predictions and the response variable. This allows a fit of the conditional mean of the response variable, and it is directly comparable to "normal" methods of linear regression (e.g., `lm`; see `?TElm`). However, analysts' knowledge about their data may allow for more specific choices. For example, when considering accuracy on a memory span task, this accuracy is bounded at 0 and 1 (i.e., 0% and 100%). A `bernoulli` error function is therefore appropriate whereas an `ols` error function is not (e.g., due to skewed residuals and the ability to evaluate the error at predictions above 1 or below 0). The previous model can be fit using a `bernoulli` error function instead:
 
 ```{r TEfit_bernoulli, message=FALSE, warning=FALSE}
 m_bernoulli <- TEfit(dat[,c('accuracy','trial_number')],errFun = 'bernoulli')

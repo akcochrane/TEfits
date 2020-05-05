@@ -40,4 +40,5 @@
 #'
 #' @docType package
 #' @name TEfits
+#' @aliases TEfits
 NULL

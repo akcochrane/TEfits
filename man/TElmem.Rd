@@ -29,7 +29,7 @@ A list including:
 }
 }
 \description{
-Fits a \code{lme4::lmer} linear mixed-effects model with the random effects of
+Fits a \code{\link[lme4]{lmer}} linear mixed-effects model with the random effects of
 \code{timeVar} for each level of \code{groupingVar}. Provides estimates of time-related change
 (i.e., attempts to answer the question "how different was the start than the end?").
 }
