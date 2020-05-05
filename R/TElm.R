@@ -47,9 +47,9 @@
 #' m_rlm$bootSummary
 #' m_rlm$rate
 #'
-#' plot(datIn[,c('trialNum','resp')])
-#' lines(datIn$trialNum,fitted(m_lm),col='blue')
-#' lines(datIn$trialNum,fitted(m_rlm),col='red')
+#' plot(dat[,c('trialNum','resp')])
+#' lines(dat$trialNum,fitted(m_lm),col='blue')
+#' lines(dat$trialNum,fitted(m_rlm),col='red')
 #'
 #' @export
 TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 200){
