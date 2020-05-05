@@ -1,4 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+[![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
+
 Overview to Time-Evolving fits
 ------------------------------
 
@@ -73,19 +75,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.999 1.000    0.000
-    ## pRate     2.737 2.650 2.839    0.048
-    ## pStart    0.231 0.197 0.269    0.018
+    ## pAsym     1.000 0.999 1.000    0.000
+    ## pRate     2.738 2.583 2.838    0.065
+    ## pStart    0.231 0.199 0.268    0.018
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42337 16.83409     3   30 37.05033 37.06937 -0.01903874
+    ## bernoulli 13.42287 16.83409     3   30 37.04933 37.06937 -0.02004317
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.04605117
+    ## response ~ trial_number:          -1              -0.04249166
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.04605117                  0
+    ## response ~ trial_number:                 0.04249166                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -94,11 +96,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.310 0.373 0.229
-    ## pStart 0.310  1.000 0.829 0.740
-    ## pRate  0.373  0.829 1.000 0.554
-    ## err    0.229  0.740 0.554 1.000
+    ##         pAsym pStart  pRate   err
+    ## pAsym   1.000  0.055 -0.133 0.067
+    ## pStart  0.055  1.000  0.602 0.672
+    ## pRate  -0.133  0.602  1.000 0.171
+    ## err     0.067  0.672  0.171 1.000
 
 Fitting multiple models
 =======================
@@ -135,15 +137,15 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14923129 0.01638088 3.83346587
-    ## stdErr 0.03933887 0.01060213 0.02425942
+    ## mean   0.14924515 0.01636518 3.83350220
+    ## stdErr 0.03929839 0.01062737 0.02425668
     ## 
-    ##                 err    nullErr nPars nObs     Fval         Pval   Rsquared
-    ## mean   3.005789e-04 0.03071614     3   30 1692.257 1.110223e-16 0.97598123
-    ## stdErr 6.868056e-05 0.01187769     0    0  653.344 1.110223e-16 0.01661869
+    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
+    ## mean   3.006041e-04 0.03071614     3   30 1692.0454 1.110223e-16 0.97597964
+    ## stdErr 6.867605e-05 0.01187769     0    0  653.2646 1.110223e-16 0.01661923
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.332009 -211.91820 -125.41381 identity    ols      expo         1
-    ## stdErr    6.548621   14.35328   19.26292 identity    ols      expo         0
+    ## mean   -337.328688 -211.91820 -125.41049 identity    ols      expo         1
+    ## stdErr    6.547315   14.35328   19.26239 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -154,9 +156,9 @@ summary(mod_4group)
     ## >> Parameter Pearson product-moment correlations:
 
     ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.755
+    ## pAsym   1.000  1.000 -0.757
     ## pStart  1.000  1.000 -0.762
-    ## pRate  -0.755 -0.762  1.000
+    ## pRate  -0.757 -0.762  1.000
 
 Using a more typical regression framework
 =========================================
@@ -177,7 +179,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|  log2\_rate|
 |-------------:|--------------:|-----------:|
-|         3.526|         -2.655|       2.873|
+|         3.529|         -2.656|       2.878|
 
 TEfit parameter estimates:
 
