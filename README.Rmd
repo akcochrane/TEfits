@@ -17,11 +17,13 @@ library(TEfits)
 
 ## Overview to Time-Evolving fits
 
-Data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. The **TEfits** package serves to allow the same questions to be asked about time-evolving aspects of these indices, such as the starting level, the amount of time that the index takes to change, and the asymptotic level of that index. Nonlinear regression applied to time-evolving functions is made as intuitive and painless as is feasible, with many extensions if desired. 
+Behavioral data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. The **TEfits** package serves to allow the same questions to be asked about time-evolving aspects of these indices, such as the starting level, the amount of time that the index takes to change, and the asymptotic level of that index. Nonlinear regression applied to time-evolving functions is made as intuitive and painless as is feasible, with many extensions if desired. 
 
 The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
-# Simple model of exponential change
+## Simple model of exponential change
+
+A basic model nonlinearly relating time to an outcome variable.
 
 ```{r simple_model, message=FALSE, warning=FALSE}
 
@@ -33,7 +35,7 @@ plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 summary(mod_simple)
 ```
 
-# Bootstrapped model with Bernoulli error function
+## Bootstrapped model with Bernoulli error function
 
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
@@ -48,7 +50,7 @@ plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 
 summary(mod_boot)
 ```
 
-# Fitting multiple models
+## Fitting multiple models
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
@@ -72,7 +74,7 @@ plot(mod_4group)
 summary(mod_4group)
 ```
 
-# Using a more typical regression framework
+## Using a more common linear regression framework
 
 In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in green on top of the `mod_simple` results, with clearly near-identical fits.
 
@@ -95,8 +97,3 @@ TEfit parameter estimates:
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides 
 start as an offset from asymptote (ie., `Intercept`).
-
-# Additional principles guiding the development of **TEfits**:
-
-- Reliance primarily on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
-- Good things come to those who wait: Speed is nice, but robustness is better.

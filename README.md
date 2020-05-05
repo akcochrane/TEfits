@@ -7,12 +7,14 @@ TEfits
 Overview to Time-Evolving fits
 ------------------------------
 
-Data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. The **TEfits** package serves to allow the same questions to be asked about time-evolving aspects of these indices, such as the starting level, the amount of time that the index takes to change, and the asymptotic level of that index. Nonlinear regression applied to time-evolving functions is made as intuitive and painless as is feasible, with many extensions if desired.
+Behavioral data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. The **TEfits** package serves to allow the same questions to be asked about time-evolving aspects of these indices, such as the starting level, the amount of time that the index takes to change, and the asymptotic level of that index. Nonlinear regression applied to time-evolving functions is made as intuitive and painless as is feasible, with many extensions if desired.
 
 The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
 Simple model of exponential change
-==================================
+----------------------------------
+
+A basic model nonlinearly relating time to an outcome variable.
 
 ``` r
 dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
@@ -53,7 +55,7 @@ summary(mod_simple)
     ## response ~ trial_number:          < .01            > .1
 
 Bootstrapped model with Bernoulli error function
-================================================
+------------------------------------------------
 
 An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
@@ -78,19 +80,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.995 1.000    0.001
-    ## pRate     2.736 2.659 2.789    0.033
-    ## pStart    0.231 0.194 0.264    0.018
+    ## pAsym     1.000 0.999 1.000    0.000
+    ## pRate     2.740 2.652 2.812    0.041
+    ## pStart    0.231 0.203 0.267    0.016
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42342 16.83409     3   30 37.05044 37.06937 -0.01893113
+    ##              err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
+    ## bernoulli 13.423 16.83409     3   30 37.04959 37.06937 -0.01977973
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.04605117
+    ## response ~ trial_number:          -1              -0.03581758
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.04605117                  0
+    ## response ~ trial_number:                 0.03581758                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -99,14 +101,14 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000 -0.174 0.252 -0.432
-    ## pStart -0.174  1.000 0.607  0.557
-    ## pRate   0.252  0.607 1.000  0.051
-    ## err    -0.432  0.557 0.051  1.000
+    ##        pAsym pStart pRate   err
+    ## pAsym  1.000  0.065 0.019 0.157
+    ## pStart 0.065  1.000 0.660 0.651
+    ## pRate  0.019  0.660 1.000 0.257
+    ## err    0.157  0.651 0.257 1.000
 
 Fitting multiple models
-=======================
+-----------------------
 
 An example of fitting a given model to subsets of data (e.g., individual participants within a behavioral study).
 
@@ -140,15 +142,15 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14918646 0.01639920 3.83346113
-    ## stdErr 0.03935363 0.01058692 0.02424341
+    ## mean   0.14922258 0.01637112 3.83339257
+    ## stdErr 0.03930798 0.01062749 0.02419787
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.006129e-04 0.03071614     3   30 1692.0521 1.110223e-16 0.97598182
-    ## stdErr 6.863798e-05 0.01187769     0    0  653.4765 1.110223e-16 0.01661394
+    ## mean   3.006600e-04 0.03071614     3   30 1691.6222 1.110223e-16 0.97597581
+    ## stdErr 6.867011e-05 0.01187769     0    0  653.1191 1.110223e-16 0.01662083
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.326137 -211.91820 -125.40794 identity    ols      expo         1
-    ## stdErr    6.545673   14.35328   19.26201 identity    ols      expo         0
+    ## mean   -337.321636 -211.91820 -125.40344 identity    ols      expo         1
+    ## stdErr    6.544913   14.35328   19.26161 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -158,13 +160,13 @@ summary(mod_4group)
     ## 
     ## >> Parameter Pearson product-moment correlations:
 
-    ##         pAsym pStart  pRate
-    ## pAsym   1.000  1.000 -0.757
-    ## pStart  1.000  1.000 -0.764
-    ## pRate  -0.757 -0.764  1.000
+    ##        pAsym pStart  pRate
+    ## pAsym   1.00  1.000 -0.760
+    ## pStart  1.00  1.000 -0.764
+    ## pRate  -0.76 -0.764  1.000
 
-Using a more typical regression framework
-=========================================
+Using a more common linear regression framework
+-----------------------------------------------
 
 In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in green on top of the `mod_simple` results, with clearly near-identical fits.
 
@@ -182,7 +184,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|  log2\_rate|
 |-------------:|--------------:|-----------:|
-|         3.512|          -2.65|       2.848|
+|         3.528|         -2.656|       2.877|
 
 TEfit parameter estimates:
 
@@ -191,9 +193,3 @@ TEfit parameter estimates:
 | Estimate |  3.522|   0.869|  2.866|
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides start as an offset from asymptote (ie., `Intercept`).
-
-Additional principles guiding the development of **TEfits**:
-============================================================
-
--   Reliance primarily on base R (dependencies are few and optional: **psych**, **MASS**, **brms**, **lme4**)
--   Good things come to those who wait: Speed is nice, but robustness is better.
