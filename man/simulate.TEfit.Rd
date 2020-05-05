@@ -4,13 +4,15 @@
 \alias{simulate.TEfit}
 \title{Simulate from a TEfit, assuming multivariate gaussian parameters}
 \usage{
-\method{simulate}{TEfit}(model_in, nsim = 100, newdata = data.frame(),
-  toPlot = F)
+\method{simulate}{TEfit}(object, nsim = 100, seed = NULL,
+  newdata = data.frame(), toPlot = F)
 }
 \arguments{
-\item{model_in}{A TEfit model}
+\item{object}{A TEfit model}
 
 \item{nsim}{number of simulations to generate}
+
+\item{seed}{Null, to retain symmetry with other simulate() methods}
 
 \item{newdata}{If desired, new data from which to generate values}
 

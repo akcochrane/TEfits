@@ -3,10 +3,11 @@
 #'
 #' Requires the $psych$ and $MASS$ packages.
 #'
-#' @param model_in A TEfit model
+#' @param object A TEfit model
 #' @param nsim number of simulations to generate
 #' @param newdata If desired, new data from which to generate values
 #' @param toPlot Logical, for plotting of values.
+#' @param seed Null, to retain symmetry with other simulate() methods
 #'
 #' @method simulate TEfit
 #' @export
@@ -14,37 +15,37 @@
 #' @examples
 #' \dontrun{simulate(model_fit_by_TEfit)}
 #'
-simulate.TEfit <- function(model_in,nsim=100,newdata=data.frame(),toPlot=F){
+simulate.TEfit <- function(object,nsim=100,seed=NULL,newdata=data.frame(),toPlot=F){
 
 require(psych)
 require(MASS)
 
-  if(exists('bootList',model_in)){
+  if(exists('bootList',object)){
   if(dim(newdata)[1]==0){
-    newdata <- model_in$modList$varIn
+    newdata <- object$modList$varIn
   }else
 
-    if(any(colnames(newdata) != colnames(model_in$modList$varIn))){
+    if(any(colnames(newdata) != colnames(object$modList$varIn))){
       cat('Your input data variables do not match your model variables.\n')
       # break
     }
 
   if(toPlot){
-    if(!exists('fitThresh',model_in$model)){
-    plot(model_in$modList$varIn[,2],model_in$modList$varIn[,1],col='darkred',
-         xlab=colnames(model_in$modList$varIn)[2],ylab=colnames(model_in$modList$varIn)[1],
+    if(!exists('fitThresh',object$model)){
+    plot(object$modList$varIn[,2],object$modList$varIn[,1],col='darkred',
+         xlab=colnames(object$modList$varIn)[2],ylab=colnames(object$modList$varIn)[1],
          main='Predictions from models\nsimulated from fit parameter distributions')
-    lines(model_in$modList$varIn[,2],model_in$model$fitVals)
+    lines(object$modList$varIn[,2],object$model$fitVals)
     }else{
-      plot(model_in$modList$varIn[,2],model_in$model$fitThresh,'l',col='darkred',
-           xlab=colnames(model_in$modList$varIn)[2],ylab=colnames(model_in$modList$varIn)[1],
+      plot(object$modList$varIn[,2],object$model$fitThresh,'l',col='darkred',
+           xlab=colnames(object$modList$varIn)[2],ylab=colnames(object$modList$varIn)[1],
            main='Predictions from models\nsimulated from fit parameter distributions')
     }
   }
 
 parCovar <- cor2cov(
-model_in$bootList$bootCorrel[1:length(model_in$modList$pNames),1:length(model_in$modList$pNames)]
-,apply(model_in$bootList$bootFits[,1:length(model_in$modList$pNames)],2,sd)
+object$bootList$bootCorrel[1:length(object$modList$pNames),1:length(object$modList$pNames)]
+,apply(object$bootList$bootFits[,1:length(object$modList$pNames)],2,sd)
 )
 
 newPars <- data.frame(matrix(NA,nsim,dim(parCovar)[2]))
@@ -54,17 +55,17 @@ colnames(newDat) <-sprintf('%s%03d','t',1:dim(newdata)[1])
 
 for (curLine in 1:nsim){
 newPars[curLine,] <- mvrnorm(1,
-                  apply(model_in$bootList$bootFits[,1:length(model_in$modList$pNames)],2,mean)
+                  apply(object$bootList$bootFits[,1:length(object$modList$pNames)],2,mean)
                   ,parCovar)
 
 parsIn <- as.data.frame(matrix(unlist(newPars[curLine,]),
                             nrow(newdata),length(newPars[curLine,]),byrow=T))
-colnames(parsIn) <- model_in$modList$pNames
-newDat[curLine,] <- eval(expr=model_in$modList$evalFun,env=data.frame(newdata,parsIn))
+colnames(parsIn) <- object$modList$pNames
+newDat[curLine,] <- eval(expr=object$modList$evalFun,env=data.frame(newdata,parsIn))
 
 if(toPlot){
-  if(!exists('fitThresh',model_in$model)){plotY <- newDat[curLine,]}else{
-    plotY <- eval(expr=as.formula(paste('~',model_in$modList$thresh_fun
+  if(!exists('fitThresh',object$model)){plotY <- newDat[curLine,]}else{
+    plotY <- eval(expr=as.formula(paste('~',object$modList$thresh_fun
                                         ))[[2]],env=data.frame(newdata,parsIn))
       }
 lines(newdata[,2],plotY,col=rgb(.3,.3,.8,max((1/nsim),.005)),lwd=5)
