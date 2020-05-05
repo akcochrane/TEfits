@@ -8,9 +8,7 @@ Description: Data is described, interpreted, and tested using indices such as d 
 License: MIT
 Encoding: UTF-8
 LazyData: true
-Imports:
-    graphics,
-    stats
+Imports: graphics, stats
 Suggests: knitr, rmarkdown, brms, MASS, psych, lme4
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
