@@ -5,7 +5,7 @@
 #' while estimating the shape of the nonlinear interpolation between starting and ending time.
 #' First resamples data with replacement 200 times, and each time estimates the best-shaped curve to interpolate
 #' between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
-#' Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
+#' Then uses the mean estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 #' interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
 #' offset magnitude 0). Last uses this transformed time variable in a \code{\link{tef_rlm_boot}} [\code{rlm} or \code{lm}] model
 #' (i.e., attempts to answer the question "how different was the start than the end?").
@@ -18,6 +18,9 @@
 #' some robustness in estimates of asympototic effects (i.e., "controlling for time") as well as initial effects
 #' (i.e., "time-related starting offset"). Uses this transformed time variable in a \code{\link{tef_rlm_boot}} model to estimate
 #' bootstrapped parameter coefficients and out-of-sample prediction.
+#'
+#' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
+#' extremes in resampling.
 #'
 #' @note
 #' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is log2-transformed.
@@ -77,7 +80,8 @@ TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
     curFit
   }
   )
-  fixRate <- median(bootRate)
+  # fixRate <- median(bootRate)
+  fixRate <- mean(bootRate,trim=.25)
   })}
 
   datIn[,timeVar] <- 2^((1-datIn[,timeVar])/fixRate)
