@@ -54,14 +54,14 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 5){
   groupNames <- unique(dat[,groupingVar])
   nGroups <- length(groupNames)
 
-  # first estimate univariate rates
+  # first estimate bivariate rates
   {
     groupMods <- list() ; rateVect <- c()
     timeDat <- data.frame(groupName=c(),original=c(),transformed=c()) ; for(curGroupName in groupNames){
       groupMods[[curGroupName]] <- TElm(as.formula(paste(as.formula(formIn)[[2]],'~',timeVar)),
                                         timeVar = timeVar,
                                         datIn = dat[dat[,groupingVar]==curGroupName,],
-                                        nBoot = 50
+                                        nBoot = 20
       )
       rateVect[curGroupName] <- groupMods[[curGroupName]]$rate
       timeDat <- rbind(timeDat,data.frame(

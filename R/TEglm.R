@@ -3,7 +3,7 @@
 #'
 #' Fit a generalized linear model with time as a covariate,
 #' while estimating the shape of the nonlinear interpolation between starting and ending time.
-#' First resamples data with replacement 100 times, and each time estimates the best-shaped curve to interpolate
+#' First resamples data with replacement 200 times, and each time estimates the best-shaped curve to interpolate
 #' between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 #' Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 #' interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
@@ -46,10 +46,9 @@ TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
     return(modErr)
   }
 
-  bootRate <- replicate(100,{
+  bootRate <- replicate(200,{# resample data with replacement and find the best rate for that resampled data
+      curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
     curDat <- datIn[sample(nrow(datIn),replace = T),]
-
-    curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
      curFit <- optimize(fitRateLM,
                   interval=quantile(curDat[,timeVar],c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,

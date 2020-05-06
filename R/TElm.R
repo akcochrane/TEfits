@@ -3,7 +3,7 @@
 #'
 #' Fit a linear model or robust linear model with time as a covariate,
 #' while estimating the shape of the nonlinear interpolation between starting and ending time.
-#' First resamples data with replacement 100 times, and each time estimates the best-shaped curve to interpolate
+#' First resamples data with replacement 200 times, and each time estimates the best-shaped curve to interpolate
 #' between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 #' Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 #' interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
@@ -32,7 +32,7 @@
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should \code{\link[MASS]{rlm}} be used?
 #' @param fixRate If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
-#' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated
+#' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated (passed to \code{\link{tef_rlm_boot}})
 #'
 #' @examples
 #' dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
@@ -52,7 +52,7 @@
 #' lines(dat$trialNum,fitted(m_rlm),col='red')
 #'
 #' @export
-TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 200){
+TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
 
   if(!is.numeric(fixRate)){suppressWarnings({
   fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
@@ -63,10 +63,9 @@ TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 200){
     return(modErr)
   }
 
-  bootRate <- replicate(100,{
+  bootRate <- replicate(200,{ # resample data with replacement and find the best rate for that resampled data
+     curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
     curDat <- datIn[sample(nrow(datIn),replace = T),]
-
-    curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
      curFit <- optimize(fitRateLM,
                   interval=quantile(curDat[,timeVar],c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,

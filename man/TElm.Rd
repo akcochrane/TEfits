@@ -4,7 +4,7 @@
 \alias{TElm}
 \title{[Robust] linear model with nonlinear time predictor}
 \usage{
-TElm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 200)
+TElm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 250)
 }
 \arguments{
 \item{formIn}{model formula, as in \code{lm()}}
@@ -17,12 +17,12 @@ TElm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 200)
 
 \item{fixRate}{If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
 
-\item{nBoot}{Number of bootstrapped models to fit after rate [time constant] has been estimated}
+\item{nBoot}{Number of bootstrapped models to fit after rate [time constant] has been estimated (passed to \code{\link{tef_rlm_boot}})}
 }
 \description{
 Fit a linear model or robust linear model with time as a covariate,
 while estimating the shape of the nonlinear interpolation between starting and ending time.
-First resamples data with replacement 100 times, and each time estimates the best-shaped curve to interpolate
+First resamples data with replacement 200 times, and each time estimates the best-shaped curve to interpolate
 between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 Then uses the median estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time

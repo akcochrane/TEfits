@@ -56,7 +56,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
   nGroups <- length(groupNames)
 
 
-  # first estimate univariate rates
+  # first estimate bivariate rates
   {
     groupMods <- list() ; rateVect <- c()
     timeDat <- data.frame(groupName=c(),original=c(),transformed=c()) ; for(curGroupName in groupNames){
