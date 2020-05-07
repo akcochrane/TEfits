@@ -4,9 +4,22 @@
 \alias{tef_checkPars}
 \title{Check for bound hitting and other undesireable outcomes within an optim() call}
 \usage{
-tef_checkPars(err, guesses, curDat, pNames, evalFun, errFun, respVar,
-  linkFunX = NA, y_lim, rate_lim, shape_lim, penalizeRate, paramTerms,
-  guessGroups = guessGroups)
+tef_checkPars(
+  err,
+  guesses,
+  curDat,
+  pNames,
+  evalFun,
+  errFun,
+  respVar,
+  linkFunX = NA,
+  y_lim,
+  rate_lim,
+  shape_lim,
+  penalizeRate,
+  paramTerms,
+  guessGroups = guessGroups
+)
 }
 \arguments{
 \item{err}{Error}

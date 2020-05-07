@@ -4,8 +4,7 @@
 \alias{tef_penalizedErr}
 \title{Penalize error for being close to a boundary}
 \usage{
-tef_penalizedErr(boundedPar, errPar, loBound, upBound,
-  dbeta_penalty = 1.001)
+tef_penalizedErr(boundedPar, errPar, loBound, upBound, dbeta_penalty = 1.001)
 }
 \arguments{
 \item{boundedPar}{Value of the parameter that has bounds.}

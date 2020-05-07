@@ -36,7 +36,8 @@ Fits a \code{\link[lme4]{lmer}} linear mixed-effects model with the random effec
 \details{
 First uses \code{\link{TElm}} to find a rate parameter for each level of \code{groupingVar}. These
 rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
-saturating variable (see \code{\link{TElm}}). After finding bivariate rate parameters using \code{\link{TElm}},
+saturating variable (see \code{\link{TElm}}). After finding an initial set of
+bivariate rate parameters using \code{\link{TElm}},
 \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{lmer} model.
 

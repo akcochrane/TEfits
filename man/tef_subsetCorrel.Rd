@@ -4,8 +4,14 @@
 \alias{tef_subsetCorrel}
 \title{Find mean correlations of subsets of vectors}
 \usage{
-tef_subsetCorrel(x, y, method = "spearman", returnVal = "mean",
-  subsample = "even_odd", iter = 200)
+tef_subsetCorrel(
+  x,
+  y,
+  method = "spearman",
+  returnVal = "mean",
+  subsample = "even_odd",
+  iter = 200
+)
 }
 \arguments{
 \item{x}{vector to correlate}

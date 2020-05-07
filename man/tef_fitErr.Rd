@@ -4,9 +4,23 @@
 \alias{tef_fitErr}
 \title{Calculate the error of data, given the model and certain parameters}
 \usage{
-tef_fitErr(guesses, varIn, pNames, evalFun, errFun, respVar,
-  linkFunX = NA, y_lim, rate_lim, shape_lim, penalizeMean, penalizeRate,
-  parLims, thresh_fun, paramTerms)
+tef_fitErr(
+  guesses,
+  varIn,
+  pNames,
+  evalFun,
+  errFun,
+  respVar,
+  linkFunX = NA,
+  y_lim,
+  rate_lim,
+  shape_lim,
+  penalizeMean,
+  penalizeRate,
+  parLims,
+  thresh_fun,
+  paramTerms
+)
 }
 \arguments{
 \item{guesses}{proposed parameter values}

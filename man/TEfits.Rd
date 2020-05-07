@@ -3,7 +3,6 @@
 \docType{package}
 \name{TEfits}
 \alias{TEfits}
-\alias{TEfits-package}
 \title{TEfits: Time-evolving model fits}
 \description{
 Data is described, interpreted, and tested using indices such as d prime,

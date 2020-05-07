@@ -4,11 +4,20 @@
 \alias{TEfitAll}
 \title{Fit several time-evolving regression models}
 \usage{
-TEfitAll(varIn, groupingVar, groupingVarName = "grouping_var",
-  returnAll = T, progressDot = T, linkFun = list(link = "identity"),
-  errFun = "ols", changeFun = "expo", bootPars = list(nBoots = 0,
-  bootTries = 0, bootPercent = 0), blockTimeVar = NULL,
-  covarTerms = list(), control = tef_control())
+TEfitAll(
+  varIn,
+  groupingVar,
+  groupingVarName = "grouping_var",
+  returnAll = T,
+  progressDot = T,
+  linkFun = list(link = "identity"),
+  errFun = "ols",
+  changeFun = "expo",
+  bootPars = list(nBoots = 0, bootTries = 0, bootPercent = 0),
+  blockTimeVar = NULL,
+  covarTerms = list(),
+  control = tef_control()
+)
 }
 \arguments{
 \item{varIn}{Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.}

@@ -4,9 +4,16 @@
 \alias{TEfit}
 \title{Fit a time-evolving model (nonlinear regression by minimizing error)}
 \usage{
-TEfit(varIn, linkFun = list(link = "identity"), errFun = "ols",
-  changeFun = "expo", bootPars = tef_bootList(), blockTimeVar = NULL,
-  covarTerms = list(), control = tef_control())
+TEfit(
+  varIn,
+  linkFun = list(link = "identity"),
+  errFun = "ols",
+  changeFun = "expo",
+  bootPars = tef_bootList(),
+  blockTimeVar = NULL,
+  covarTerms = list(),
+  control = tef_control()
+)
 }
 \arguments{
 \item{varIn}{Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.}

@@ -4,8 +4,15 @@
 \alias{TEglmem}
 \title{Generalized linear mixed-effects model with nonlinear time random effects}
 \usage{
-TEglmem(formIn, dat, timeVar, groupingVar, family = gaussian,
-  onlyGroupMods = F, nRuns = 5)
+TEglmem(
+  formIn,
+  dat,
+  timeVar,
+  groupingVar,
+  family = gaussian,
+  onlyGroupMods = F,
+  nRuns = 5
+)
 }
 \arguments{
 \item{formIn}{model formula, as in \code{glmer}}
@@ -39,7 +46,8 @@ Fits a \code{\link[lme4]{glmer}} generalized linear mixed-effects model with the
 \details{
 First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}. These
 rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
-saturating variable (see \code{\link{TEglm}}). After finding bivariate rate parameters using \code{\link{TEglm}},
+saturating variable (see \code{\link{TEglm}}). After finding an initial set of
+bivariate rate parameters using \code{\link{TEglm}},
 \code{TEglmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{glmer} model.
 

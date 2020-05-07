@@ -6,7 +6,8 @@
 #'
 #' First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}. These
 #' rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
-#' saturating variable (see \code{\link{TEglm}}). After finding bivariate rate parameters using \code{\link{TEglm}},
+#' saturating variable (see \code{\link{TEglm}}). After finding an initial set of
+#' bivariate rate parameters using \code{\link{TEglm}},
 #' \code{TEglmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{glmer} model.
 #'

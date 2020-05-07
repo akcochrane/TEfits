@@ -7,7 +7,8 @@
 #'
 #' First uses \code{\link{TElm}} to find a rate parameter for each level of \code{groupingVar}. These
 #' rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
-#' saturating variable (see \code{\link{TElm}}). After finding bivariate rate parameters using \code{\link{TElm}},
+#' saturating variable (see \code{\link{TElm}}). After finding an initial set of
+#' bivariate rate parameters using \code{\link{TElm}},
 #' \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{lmer} model.
 #'
@@ -87,6 +88,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 5){
     rm(curGV,curDat)
   }
 
+  ## define function to optimize (input a vector of rates to minimize negative L)
   fitFun <- function(rates,curDat,formula,timeVar,groupNames,rateBounds){
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
@@ -105,6 +107,8 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 5){
 
     return(modNegLL)
   }
+
+  ## run optimization nRuns times
   cat('[')
   for(. in 1:nRuns){
     rates <- (rateVect+runif(nGroups,rateBounds[1],rateBounds[2]))/2 # try starting points for optimization biased toward group-fit rates

@@ -4,8 +4,15 @@
 \alias{plot.TEfit}
 \title{Plot a TEfit}
 \usage{
-\method{plot}{TEfit}(TEs3, plot_title = "", xlabel = "", ylabel = "",
-  sub_title = "", ymin = NA, ymax = NA)
+\method{plot}{TEfit}(
+  TEs3,
+  plot_title = "",
+  xlabel = "",
+  ylabel = "",
+  sub_title = "",
+  ymin = NA,
+  ymax = NA
+)
 }
 \arguments{
 \item{TEs3}{TEfit model output}

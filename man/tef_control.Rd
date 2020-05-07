@@ -4,11 +4,22 @@
 \alias{tef_control}
 \title{Get control parameters for a TEfit model}
 \usage{
-tef_control(quietErrs = F, suppressWarnings = F, nTries = 200,
-  y_lim = c(-1e+07, 1e+07), rate_lim = c(0, 0), shape_lim = c(0, 0),
-  expBase = 2, rateBase = 2, pFix = c(), penalizeMean = T,
-  penalizeRate = F, convergeTol = 0.05, stepwise_asym = F,
-  explicit = "")
+tef_control(
+  quietErrs = F,
+  suppressWarnings = F,
+  nTries = 200,
+  y_lim = c(-1e+07, 1e+07),
+  rate_lim = c(0, 0),
+  shape_lim = c(0, 0),
+  expBase = 2,
+  rateBase = 2,
+  pFix = c(),
+  penalizeMean = T,
+  penalizeRate = F,
+  convergeTol = 0.05,
+  stepwise_asym = F,
+  explicit = ""
+)
 }
 \arguments{
 \item{quietErrs}{logical. Should errors be printed to the Console?}

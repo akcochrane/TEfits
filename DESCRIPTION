@@ -11,4 +11,4 @@ LazyData: true
 Imports: graphics, MASS, stats
 Suggests: knitr, rmarkdown, brms, psych, lme4
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.1

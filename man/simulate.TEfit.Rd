@@ -4,8 +4,7 @@
 \alias{simulate.TEfit}
 \title{Simulate from a TEfit, assuming multivariate gaussian parameters}
 \usage{
-\method{simulate}{TEfit}(object, nsim = 100, seed = NULL,
-  newdata = data.frame(), toPlot = F)
+\method{simulate}{TEfit}(object, nsim = 100, seed = NULL, newdata = data.frame(), toPlot = F)
 }
 \arguments{
 \item{object}{A TEfit model}
