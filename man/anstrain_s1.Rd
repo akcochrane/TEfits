@@ -4,7 +4,9 @@
 \name{anstrain_s1}
 \alias{anstrain_s1}
 \title{Perceptual learning data from one participant}
-\format{An object of class \code{data.frame} with 250 rows and 6 columns.}
+\format{
+An object of class \code{data.frame} with 250 rows and 6 columns.
+}
 \usage{
 anstrain_s1
 }

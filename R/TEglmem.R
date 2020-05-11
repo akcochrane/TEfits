@@ -4,15 +4,16 @@
 #' \code{timeVar} for each level of \code{groupingVar}. Provides estimates of time-related change
 #' (i.e., attempts to answer the question "how different was the start than the end?").
 #'
-#' First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}. These
+#' First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}, with
+#' the formula extracted using \code{\link{tef_getRanefForm}}. These
 #' rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
 #' saturating variable (see \code{\link{TEglm}}). After finding an initial set of
-#' bivariate rate parameters using \code{\link{TEglm}},
+#' rate parameters using \code{\link{TEglm}},
 #' \code{TEglmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{glmer} model.
 #'
 #' May be used, with \code{onlyGroupMods=T}, as a wrapper for \code{\link{TEglm}} in order to simply
-#' fit bivariate \code{response~time} models and extract the corresponding transformed time variable.
+#' fit bivariate \code{response~time} models and use the corresponding transformed time variable.
 #'
 #' @note
 #' Random effects and rate estimates may be unstable, and optimization may take
@@ -47,7 +48,7 @@
 #'
 #' @export
 #'
-TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods=F,nRuns = 5){
+TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods=F,nRuns = 1,silent=F){
   require(lme4)
   origTime <-   dat[,timeVar]
 
@@ -56,12 +57,13 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
   groupNames <- unique(dat[,groupingVar])
   nGroups <- length(groupNames)
 
-
-  # first estimate bivariate rates
+  if(!silent){cat('[')}
+  # first estimate group-level rates
   {
+    groupForm <- tef_getRanefForm(formIn,groupingVar)
     groupMods <- list() ; rateVect <- c()
     timeDat <- data.frame(groupName=c(),original=c(),transformed=c()) ; for(curGroupName in groupNames){
-      groupMods[[curGroupName]] <- TEglm(as.formula(paste(as.formula(formIn)[[2]],'~',timeVar)),
+      groupMods[[curGroupName]] <- TEglm(groupForm,
                                         timeVar = timeVar,
                                         datIn = dat[dat[,groupingVar]==curGroupName,],
                                         family=family
@@ -73,7 +75,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
         transformed=groupMods[[curGroupName]]$transformed_time
       ))
     }
-    if(onlyGroupMods){return(list(models=groupMods,rates=rateVect,timeDat=timeDat))}
+
     # rm(curGroupName,timeDat)
   }
 
@@ -89,8 +91,8 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
     bestNegLL <- -logLik(initMod)
     rm(curGV,curDat)
   }
-
-
+  if(!silent){cat('=')}
+ if(onlyGroupMods){if(!silent){cat(']\n')} ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,glmerMod = initMod))}
   # optimize directly
   {
   fitFun <- function(rates,curDat,formula,timeVar,groupNames,rateBounds){
@@ -111,9 +113,9 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
 
     return(modNegLL)
   }
-  cat('[')
+
   bestNegLL <- 1E15; for(. in 1:nRuns){
-    rates <- (rateVect+runif(nGroups,rateBounds[1],rateBounds[2]))/2
+    rates <- (rateVect*4+runif(nGroups,rateBounds[1],rateBounds[2]))/5
     names(rates) <- groupNames
     mF <- optim(rates,
                 fn=fitFun,
@@ -122,7 +124,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
                 timeVar=timeVar,
                 groupNames=groupNames,
                 rateBounds=rateBounds)
-    cat('=')
+    if(!silent){cat('=')}
     if(mF$value < bestNegLL){
       bestRates <- mF$par
       names(bestRates) <- groupNames
@@ -138,7 +140,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,onlyGroupMods
   }
 
   outMod <- glmer(formIn,dat,family=family)
-    cat(']')
+  if(!silent){cat(']\n')}
   return(list(glmerMod=outMod,
               rates=bestRates,
               groupMods=groupMods,

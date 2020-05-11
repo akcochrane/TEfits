@@ -11,7 +11,8 @@ TEglmem(
   groupingVar,
   family = gaussian,
   onlyGroupMods = F,
-  nRuns = 5
+  nRuns = 1,
+  silent = F
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ TEglmem(
 \item{onlyGroupMods}{IF TRUE, returns only the by-\code{groupingVar} fits from \code{TElm}}
 
 \item{nRuns}{Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})}
+
+\item{silent}{Progress is printed by default. silent=T to suppress}
 }
 \value{
 A list including:
@@ -44,15 +47,16 @@ Fits a \code{\link[lme4]{glmer}} generalized linear mixed-effects model with the
 (i.e., attempts to answer the question "how different was the start than the end?").
 }
 \details{
-First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}. These
+First uses \code{\link{TEglm}} to find a rate parameter for each level of \code{groupingVar}, with
+the formula extracted using \code{\link{tef_getRanefForm}}. These
 rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
 saturating variable (see \code{\link{TEglm}}). After finding an initial set of
-bivariate rate parameters using \code{\link{TEglm}},
+rate parameters using \code{\link{TEglm}},
 \code{TEglmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{glmer} model.
 
 May be used, with \code{onlyGroupMods=T}, as a wrapper for \code{\link{TEglm}} in order to simply
-fit bivariate \code{response~time} models and extract the corresponding transformed time variable.
+fit bivariate \code{response~time} models and use the corresponding transformed time variable.
 }
 \note{
 Random effects and rate estimates may be unstable, and optimization may take

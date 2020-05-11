@@ -4,7 +4,9 @@
 \name{anstrain}
 \alias{anstrain}
 \title{Perceptual learning data}
-\format{An object of class \code{data.frame} with 1000 rows and 6 columns.}
+\format{
+An object of class \code{data.frame} with 1000 rows and 6 columns.
+}
 \usage{
 anstrain
 }

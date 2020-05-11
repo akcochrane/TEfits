@@ -4,7 +4,15 @@
 \alias{TElmem}
 \title{Linear mixed-effects model with nonlinear time random effects}
 \usage{
-TElmem(formIn, dat, timeVar, groupingVar, onlyGroupMods = F, nRuns = 5)
+TElmem(
+  formIn,
+  dat,
+  timeVar,
+  groupingVar,
+  onlyGroupMods = F,
+  nRuns = 1,
+  silent = F
+)
 }
 \arguments{
 \item{formIn}{model formula, as in \code{lmer}}
@@ -18,6 +26,8 @@ TElmem(formIn, dat, timeVar, groupingVar, onlyGroupMods = F, nRuns = 5)
 \item{onlyGroupMods}{IF TRUE, returns only the by-\code{groupingVar} fits from \code{\link{TElm}}}
 
 \item{nRuns}{Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})}
+
+\item{silent}{Progress is printed by default. silent=T to suppress}
 }
 \value{
 A list including:
@@ -34,22 +44,24 @@ Fits a \code{\link[lme4]{lmer}} linear mixed-effects model with the random effec
 (i.e., attempts to answer the question "how different was the start than the end?").
 }
 \details{
-First uses \code{\link{TElm}} to find a rate parameter for each level of \code{groupingVar}. These
+First uses \code{\link{TElm}} to find a rate parameter for each level of \code{groupingVar}, with
+the formula extracted using \code{\link{tef_getRanefForm}}. These
 rate parameters are used to transform the corresponding \code{timeVar} into a exponentially
 saturating variable (see \code{\link{TElm}}). After finding an initial set of
-bivariate rate parameters using \code{\link{TElm}},
+rate parameters using \code{\link{TElm}},
 \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{lmer} model.
 
 May be used, with \code{onlyGroupMods=T}, as a wrapper for \code{\link{TElm}} in order to simply
-fit bivariate \code{response~time} models and extract the corresponding transformed time variable.
+use rate estimates from independent \code{groupingVar}-level models and extract the corresponding
+transformed time variable.
 }
 \note{
 Random effects and rate estimates may be unstable, and optimization may take
 a very long time to run. The primary purpose of this function is to allow for by-\code{groupingVar}
 detrending of time-related changes in data (i.e., to estimate and test fixed effects at asymptotic time,
 or to estimate and test the magnitude of time-related effects).
-If reliable by-\code{groupingVar} parameters are desired, it is highly recommended to use
+If reliable by-\code{groupingVar} parameters are desired, especially of rate, it is highly recommended to use
 \code{\link{TEfit}} or \code{\link{TEfitAll}}.
 
 The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
