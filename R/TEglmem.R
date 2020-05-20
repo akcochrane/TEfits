@@ -51,7 +51,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' m_TEglmem <- TEglmem(resp ~ ratio + trialNum:ratio + (ratio + trialNum:ratio || subID), anstrain, timeVar = 'trialNum',groupingVar = 'subID',family=binomial)
+#' m_TEglmem <- TEglmem(resp ~ ratio + trialNum:ratio + (ratio + trialNum:ratio || subID),anstrain, timeVar = 'trialNum',groupingVar = 'subID',family=binomial)
 #' # Typical glmer model:
 #' summary(m_TEglmem$glmerMod)
 #' # Participant-level rate parameters:
@@ -88,8 +88,6 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,nRuns = 1,sil
         transformed=groupMods[[curGroupName]]$transformed_time
       ))
     }
-
-    # rm(curGroupName,timeDat)
   }
 
   ## initialize a model with the by-group fits:
@@ -156,7 +154,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,nRuns = 1,sil
   if(!silent){cat(']\n')}
   return(list(glmerMod=outMod,
               rates=bestRates,
-              groupMods=groupMods,
+              groupMods=list(models=groupMods,rates=rateVect),
               timeDat=data.frame(original=origTime,transformed=dat[,timeVar])))
 }
 

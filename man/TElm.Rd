@@ -4,12 +4,12 @@
 \alias{TElm}
 \title{[Robust] linear model with nonlinear time predictor}
 \usage{
-TElm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 250)
+TElm(formIn, dat, timeVar, robust = F, fixRate = NA, nBoot = 250)
 }
 \arguments{
 \item{formIn}{model formula, as in \code{lm()}}
 
-\item{datIn}{model data, as in \code{lm()}}
+\item{dat}{model data, as in \code{lm()}}
 
 \item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed)}
 

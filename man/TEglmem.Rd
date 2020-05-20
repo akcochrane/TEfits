@@ -73,7 +73,7 @@ to the time-associated model coefficients.
 }
 \examples{
 \dontrun{
-m_TEglmem <- TEglmem(resp ~ ratio + trialNum:ratio + (ratio + trialNum:ratio || subID), anstrain, timeVar = 'trialNum',groupingVar = 'subID',family=binomial)
+m_TEglmem <- TEglmem(resp ~ ratio + trialNum:ratio + (ratio + trialNum:ratio || subID),anstrain, timeVar = 'trialNum',groupingVar = 'subID',family=binomial)
 # Typical glmer model:
 summary(m_TEglmem$glmerMod)
 # Participant-level rate parameters:

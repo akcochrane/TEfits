@@ -1,5 +1,3 @@
-
-
 #' Print a line from a Modest Mouse song.
 #'
 #' Mostly from This Is a Long Drive for Someone with Nothing to Think About

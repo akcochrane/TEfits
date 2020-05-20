@@ -1,7 +1,7 @@
 #' Define parameter boundaries and guessing ranges
 #'
 #' \code{\link{TEfit}} internal. Future versions will systematize this more thoroughly.
-#' The core idea, though, is to allow variation in the starting points for optimization runs.
+#' Designed to variation in the starting points for optimization runs.
 #'
 #'
 #' @param modList TEfit modList

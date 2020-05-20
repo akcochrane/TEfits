@@ -4,12 +4,12 @@
 \alias{TEglm}
 \title{Generalized linear model with nonlinear time predictor}
 \usage{
-TEglm(formIn, datIn, timeVar, family = gaussian, fixRate = NA)
+TEglm(formIn, dat, timeVar, family = gaussian, fixRate = NA)
 }
 \arguments{
 \item{formIn}{model formula, as in glm()}
 
-\item{datIn}{model data, as in glm()}
+\item{dat}{model data, as in glm()}
 
 \item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed)}
 

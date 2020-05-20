@@ -27,7 +27,7 @@
 #' to the time-associated model coefficients.
 #'
 #' @param formIn model formula, as in glm()
-#' @param datIn model data, as in glm()
+#' @param dat model data, as in glm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param family  passed to glm()
 #' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
@@ -39,7 +39,7 @@
 #' m_glm <- TEglm(resp ~ trialNum,dat,'trialNum',family=binomial)
 #' m_glm$rate # estimated half-of-change time constant
 #'
-TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
+TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
 
   minTime <- min(dat[,timeVar],na.rm = T)
   if(minTime < 0){cat('The earliest time is negative.')}
@@ -55,7 +55,7 @@ TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
 
   bootRate <- replicate(200,{# resample data with replacement and find the best rate for that resampled data
       curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
-    curDat <- datIn[sample(nrow(datIn),replace = T),]
+    curDat <- dat[sample(nrow(dat),replace = T),]
      curFit <- optimize(fitRateLM,
                   interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,
@@ -71,19 +71,19 @@ TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
   fixRate <- mean(bootRate,trim=.25)
   })}
 
-  datIn[,timeVar] <- 2^((minTime-datIn[,timeVar])/(2^fixRate))
+  dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))
 
 
   ### ### still needs to be implemented: isn't playing will with interactions? covariates?
-  # if(robust){modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot)
-  # }else{modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot,useLM=T)}
+  # if(robust){modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot)
+  # }else{modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot,useLM=T)}
 
-  modOut <- glm(formIn,datIn,family=family)
+  modOut <- glm(formIn,dat,family=family)
 
   modOut$rate <- fixRate
   try({modOut$bootRate <- bootRate},silent = T)
 
-  modOut$transformed_time <- datIn[,timeVar]
+  modOut$transformed_time <- dat[,timeVar]
 
   modOut$call <- formula(deparse(formIn))
 

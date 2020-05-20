@@ -27,7 +27,7 @@
 #' \code{\link{TEglm}} for generalized extension of \code{TElm}
 #'
 #' @param formIn model formula, as in \code{lm()}
-#' @param datIn model data, as in \code{lm()}
+#' @param dat model data, as in \code{lm()}
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should \code{\link[MASS]{rlm}} be used?
 #' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
@@ -51,7 +51,7 @@
 #' lines(dat$trialNum,fitted(m_rlm),col='red')
 #'
 #' @export
-TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
+TElm <- function(formIn,dat,timeVar,robust=F,fixRate=NA,nBoot = 250){
 
   minTime <- min(dat[,timeVar],na.rm = T)
   if(minTime < 0){cat('The earliest time is negative.')}
@@ -66,7 +66,7 @@ TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
 
   bootRate <- replicate(200,{ # resample data with replacement and find the best rate for that resampled data
      curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
-    curDat <- datIn[sample(nrow(datIn),replace = T),]
+    curDat <- dat[sample(nrow(dat),replace = T),]
      curFit <- optimize(fitRateLM,
                   interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,
@@ -81,15 +81,15 @@ TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
   fixRate <- mean(bootRate,trim=.25)
   })}
 
-  datIn[,timeVar] <- 2^((minTime-datIn[,timeVar])/(2^fixRate))
+  dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))
 
-  if(robust){modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot)
-  }else{modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot,useLM=T)}
+  if(robust){modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot)
+  }else{modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot,useLM=T)}
 
   modOut$rate <- fixRate
   try({modOut$bootRate <- bootRate},silent = T)
 
-  modOut$transformed_time <- datIn[,timeVar]
+  modOut$transformed_time <- dat[,timeVar]
 
   modOut$call <- formula(deparse(formIn))
 
