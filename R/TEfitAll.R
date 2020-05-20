@@ -89,10 +89,6 @@ TEfitAll <- function(varIn,
   attr(TEFit_group,'grouping_var') <- groupingVarName
   attr(TEFitList,'grouping_var') <- groupingVarName
 
-
-
-
-
   if(returnAll){
     outList <- list(fitSummary=TEFitSummary ,allFits = TEFit_group,allFitList = TEFitList,data=fit_data)# return everything that was calculated
 

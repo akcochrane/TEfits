@@ -94,7 +94,7 @@
 #' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 #' constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
 #'
-#' @param varIn   Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.
+#' @param varIn   Data frame or vector. First column [or vector] must be the time-dependent response variable (left hand side of regression). If available, second column must be the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param linkFun A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')
 #' @param errFun  A string defining an error function (e.g., 'ols', 'logcosh', 'bernoulli').
 #' @param changeFun A string defining the functional form of change (e.g., 'expo', 'power', 'weibull')
@@ -229,7 +229,7 @@ TEfit <- function(varIn,
     modList$covarTerms <- covarTerms
 
     modList$varIn <- varIn
-    # # add in trial num, if needed
+    # # add in trial num, if not included in varIn
     if(is.vector(modList$varIn)){
       modList$varIn <- data.frame(y=modList$varIn,timeVar=1:length(modList$varIn))
     }

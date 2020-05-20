@@ -20,7 +20,7 @@ TEfitAll(
 )
 }
 \arguments{
-\item{varIn}{Data frame or vector. First column [or vector] is the time-dependent response variable. If available, second column is the time variable. All other columns are covariates, possibly involved in a link function.}
+\item{varIn}{Data frame or vector. First column [or vector] must be the time-dependent response variable (left hand side of regression). If available, second column must be the time variable. All other columns are covariates, possibly involved in a link function.}
 
 \item{groupingVar}{Variable (e.g., participant ID) with which to separate TEfit models. Length must be nrows(varIn)}
 

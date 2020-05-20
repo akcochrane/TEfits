@@ -35,7 +35,7 @@ dat <- data.frame(
 )
 ```
 
-The typical analytical approach would be to find the average accuracy (`r mean(dat$accuracy)`). One alternative would be to remove some early set of trials (e.g., 20) as so-called "practice" and average the remaining trials (`r mean(dat$accuracy[21:80])`).
+The typical analytical approach would be to find the average accuracy (`r round(mean(dat$accuracy),3)`). One alternative would be to remove some early set of trials (e.g., 20) as so-called "practice" and average the remaining trials (`r round(mean(dat$accuracy[21:80]),3)`).
 
 ## Fitting a time-evolving mean accuracy
 
@@ -49,21 +49,21 @@ m_simple <- TEfit(dat[,c('accuracy','trial_number')])
 m_simple$model$par['pAsym']
 ```
 
-A more general summary can be viewed:
+This is more accurate than either approach, while utilizing all data. A more general summary can be viewed:
 
 ```{r TEfit_simple_summary}
 summary(m_simple)
 ```
 
-`Call` shows the equation that was fit in the model
+`Formula` shows the equation that was fit in the model
 
-`Converged` indicates whether the model converged, as measured by similar parameter values being found by the optimization runs with the 10 lowest errors. This is a heuristic, and should ideally be corroborated with parameter distributions from bootstrapped fits.
+`Converged` indicates whether the model converged, as measured by similar parameter values being found by the optimization runs with the lowest errors. *This is a heuristic*, and should ideally be corroborated with parameter distributions from bootstrapped fits.
 
-`Fit Values` prints the fit parameter values. In 3-parameter exponential change, `rate` is `log~2~` of the amount of time taken for 50% of change to occur
+`Fit Values` prints the fit parameter values. In 3-parameter exponential change, `rate` is log~2~ of the amount of time taken for 50% of change to occur
 
 `Goodness-of-fit` prints several fit indices (e.g., the `err` and `BIC` of the best fit). Also printed are the corresponding fit indices for the null model (i.e., the model that is not time-evolving). The row name indicates the error function (e.g., `ols` or `logcosh`).
 
-`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`. If the `tseries` package is installed, the p-value from `kpss.test` of stationarity will also be included.
+`Test of change in nonindependence` prints the rank correlation between the null model residuals and the time variable, the rank correlation between the full model residuals and the time variable, the ratio between the absolute values of these correlations, and the p value as calculated with `psych::r.test()`. If the `tseries` package is available, the p-value from `kpss.test` of stationarity will also be included.
 
 A plot can also be viewed:
 
