@@ -10,7 +10,6 @@
 #' offset magnitude 0). Last uses this transformed time variable in a \code{rlm} or \code{lm} model
 #' (i.e., attempts to answer the question "how different was the start than the end?").
 #'
-#'
 #' Rate is parameterized as a time constant, or the amount of time it takes for half of change to occur.
 #' The value of rate has a lower bound of
 #' the .0333 quantile of the time variable (i.e., 87.5\% of change happens in the first 10\% of time) and an upper bound of the
@@ -22,15 +21,16 @@
 #' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
 #' extremes in resampling.
 #'
+#' @note
+#' Although the time variable is transformed to exponentially decay toward zero, this does not necessarily mean
+#' that the model prediction involves an exponential change with time. The nonlinear change in time relates
+#' to the time-associated model coefficients.
+#'
 #' @param formIn model formula, as in glm()
 #' @param datIn model data, as in glm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param family  passed to glm()
-#' @param fixRate If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
-#'
-#' @note
-#' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
-#' Here it is not.
+#' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #'
 #' @export
 #'
@@ -41,9 +41,13 @@
 #'
 TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
 
+  minTime <- min(dat[,timeVar],na.rm = T)
+  if(minTime < 0){cat('The earliest time is negative.')}
+
   if(!is.numeric(fixRate)){suppressWarnings({
+
   fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,family=family){
-    fitData[,fitTimeVar] <- 2^((1-fitData[,fitTimeVar])/rate)
+    fitData[,fitTimeVar] <- 2^((minTime-fitData[,fitTimeVar])/(2^rate))
     modErr <- -logLik(glm(fitFormula,fitData,family=family)) # minimize error ( -logLikelihood)
 
     return(modErr)
@@ -53,7 +57,7 @@ TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
       curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
     curDat <- datIn[sample(nrow(datIn),replace = T),]
      curFit <- optimize(fitRateLM,
-                  interval=quantile(curDat[,timeVar],c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
+                  interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,
                   fitData=curDat,
                   fitTimeVar=timeVar,
@@ -64,11 +68,10 @@ TEglm <- function(formIn,datIn,timeVar,family=gaussian,fixRate=NA){
     curFit
   }
   )
-  # fixRate <- median(bootRate)
   fixRate <- mean(bootRate,trim=.25)
   })}
 
-  datIn[,timeVar] <- 2^((1-datIn[,timeVar])/fixRate)
+  datIn[,timeVar] <- 2^((minTime-datIn[,timeVar])/(2^fixRate))
 
 
   ### ### still needs to be implemented: isn't playing will with interactions? covariates?

@@ -22,10 +22,6 @@
 #' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
 #' extremes in resampling.
 #'
-#' @note
-#' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is log2-transformed.
-#' Here it is not.
-#'
 #' @seealso
 #' \code{\link{TElmem}} for mixed-effects extension of \code{TElm};
 #' \code{\link{TEglm}} for generalized extension of \code{TElm}
@@ -34,7 +30,7 @@
 #' @param datIn model data, as in \code{lm()}
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param robust  Logical. Should \code{\link[MASS]{rlm}} be used?
-#' @param fixRate If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
+#' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated (passed to \code{\link{tef_rlm_boot}})
 #'
 #' @examples
@@ -57,12 +53,14 @@
 #' @export
 TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
 
+  minTime <- min(dat[,timeVar],na.rm = T)
+  if(minTime < 0){cat('The earliest time is negative.')}
+
   if(!is.numeric(fixRate)){suppressWarnings({
   fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
-    fitData[,fitTimeVar] <- 2^((1-fitData[,fitTimeVar])/rate)
+    fitData[,fitTimeVar] <- 2^((minTime-fitData[,fitTimeVar])/(2^(rate)))
     if(robust){ modErr <- sum(MASS::rlm(fitFormula,fitData)$residuals^2,na.rm=T) # minimize error (SSE)
     }else{modErr <- 1-summary(lm(fitFormula,fitData))$r.squared} # minimize error (1-rSquared)
-
     return(modErr)
   }
 
@@ -70,7 +68,7 @@ TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
      curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
     curDat <- datIn[sample(nrow(datIn),replace = T),]
      curFit <- optimize(fitRateLM,
-                  interval=quantile(curDat[,timeVar],c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
+                  interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,
                   fitData=curDat,
                   fitTimeVar=timeVar,
@@ -80,19 +78,13 @@ TElm <- function(formIn,datIn,timeVar,robust=F,fixRate=NA,nBoot = 250){
     curFit
   }
   )
-  # fixRate <- median(bootRate)
   fixRate <- mean(bootRate,trim=.25)
   })}
 
-  datIn[,timeVar] <- 2^((1-datIn[,timeVar])/fixRate)
+  datIn[,timeVar] <- 2^((minTime-datIn[,timeVar])/(2^fixRate))
 
-
-  ### ### still needs to be implemented: isn't playing will with interactions? covariates?
   if(robust){modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot)
   }else{modOut <- tef_rlm_boot(formIn,datIn,nBoot = nBoot,useLM=T)}
-
-  # if(robust){modOut <- MASS::rlm(formIn,datIn)
-  # }else{modOut <- lm(formIn,datIn)}
 
   modOut$rate <- fixRate
   try({modOut$bootRate <- bootRate},silent = T)

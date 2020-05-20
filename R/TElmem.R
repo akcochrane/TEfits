@@ -13,9 +13,9 @@
 #' \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{lmer} model.
 #'
-#' May be used, with \code{onlyGroupMods=T}, as a wrapper for \code{\link{TElm}} in order to simply
-#' use rate estimates from independent \code{groupingVar}-level models and extract the corresponding
-#' transformed time variable.
+#' May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TElm}} in order to simply
+#' use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
+#' transformed time variable, and use this in a LMEM.
 #'
 #' @note
 #' Random effects and rate estimates may be unstable, and optimization may take
@@ -28,14 +28,11 @@
 #' The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
 #' (e.g., \code{(time_variable | grouping_variable)})
 #'
-#' In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
-#' Here it is not.
 #'
 #' @param formIn model formula, as in \code{lmer}
 #' @param dat model data, as in \code{lmer}
 #' @param timeVar String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed)
 #' @param groupingVar String. Indicates which variable in \code{datIn} should have a time=related random effect.
-#' @param onlyGroupMods IF TRUE, returns only the by-\code{groupingVar} fits from \code{\link{TElm}}
 #' @param nRuns Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})
 #' @param silent Progress is printed by default. silent=T to suppress
 #'
@@ -49,14 +46,26 @@
 #' }
 #'
 #' @export
-TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 1,silent=F){
+#'
+#' @examples
+#' \dontrun{
+#' m_TElmem <- TElmem(acc ~ trialNum + (trialNum || subID), anstrain, timeVar = 'trialNum',groupingVar = 'subID')
+#' # Typical lmer model:
+#' summary(m_TElmem$lmerMod) # On average, starting accuracy was .137 worse than asymptotic accuracy
+#' # Participant-level rate parameters:
+#' m_TElmem$rates
+#' }
+TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
   require(lme4)
+
+  minTime <- min(dat[,timeVar],na.rm = T)
+  if(minTime < 0){cat('The earliest time is negative.')}
 
   formIn <- as.formula(formIn)
 
   origTime <-   dat[,timeVar]
 
-  rateBounds <- quantile(dat[,timeVar],c(1/30,1/3))
+  rateBounds <- quantile(log2(dat[,timeVar]),c(1/30,1/3))
 
   groupNames <- unique(dat[,groupingVar])
   nGroups <- length(groupNames)
@@ -89,7 +98,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 1,sile
     bestRates <- rateVect
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
-        2^((1-curDat[curDat[,groupingVar]==curGV,timeVar])/bestRates[curGV])
+        2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^bestRates[curGV]))
     }
     initMod <- lmer(formIn,curDat)
     bestNegLL <- -logLik(initMod)
@@ -97,13 +106,13 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 1,sile
   }
   if(!silent){cat('=')}
 
-  if(onlyGroupMods){cat(']\n') ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,lmerMod = initMod))}
+  if(nRuns==0){cat(']\n') ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,lmerMod = initMod))}
 
   ## define function to optimize (input a vector of rates to minimize negative L)
   fitFun <- function(rates,curDat,formula,timeVar,groupNames,rateBounds){
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
-        2^((1-curDat[curDat[,groupingVar]==curGV,timeVar])/rates[curGV])
+        2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^rates[curGV]))
     }
     modNegLL <- 1E15
     try({
@@ -122,7 +131,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 1,sile
   ## run optimization nRuns times
 
   for(. in 1:nRuns){
-    rates <- (rateVect*4+runif(nGroups,rateBounds[1],rateBounds[2]))/5 # try starting points for optimization biased toward group-fit rates
+    rates <- (rateVect*4+runif(nGroups,rateBounds[1],rateBounds[2]))/5 # try random starting points for optimization, biased toward group-fit rates
     names(rates) <- groupNames
     mF <- optim(rates,
                 fn=fitFun,
@@ -141,7 +150,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,onlyGroupMods=F,nRuns = 1,sile
 
   for(curGV in groupNames){
     dat[dat[,groupingVar]==curGV,timeVar] <-
-      2^((1-dat[dat[,groupingVar]==curGV,timeVar])/bestRates[curGV])
+      2^((minTime-dat[dat[,groupingVar]==curGV,timeVar])/(2^bestRates[curGV]))
   } ; rm(curGV)
 
   outMod <- lmer(formIn,dat)

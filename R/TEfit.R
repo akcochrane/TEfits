@@ -233,6 +233,7 @@ TEfit <- function(varIn,
     if(is.vector(modList$varIn)){
       modList$varIn <- data.frame(y=modList$varIn,timeVar=1:length(modList$varIn))
     }
+    if(any(sapply(modList$varIn,class)=='factor')){cat('WARNING: your data includes factors. Please do not include factor variables.')}
   }## ## ##
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 

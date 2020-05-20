@@ -86,19 +86,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.999 1.000    0.000
-    ## pRate     2.735 2.672 2.801    0.033
-    ## pStart    0.231 0.210 0.257    0.012
+    ## pAsym     1.000 0.996 1.000    0.001
+    ## pRate     2.739 2.671 2.822    0.039
+    ## pStart    0.231 0.207 0.270    0.016
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42358 16.83409     3   30 37.05076 37.06937 -0.01861105
+    ##              err  nullErr nPars nObs     BIC  nullBIC    deltaBIC
+    ## bernoulli 13.423 16.83409     3   30 37.0496 37.06937 -0.01977413
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.04605117
+    ## response ~ trial_number:          -1              -0.03581758
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.04605117                  0
+    ## response ~ trial_number:                 0.03581758                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -107,11 +107,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate    err
-    ## pAsym   1.000  0.009  0.213 -0.060
-    ## pStart  0.009  1.000  0.477  0.510
-    ## pRate   0.213  0.477  1.000 -0.022
-    ## err    -0.060  0.510 -0.022  1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000 -0.205 0.127 -0.251
+    ## pStart -0.205  1.000 0.604  0.691
+    ## pRate   0.127  0.604 1.000  0.156
+    ## err    -0.251  0.691 0.156  1.000
 
 Fitting multiple models
 -----------------------
@@ -150,15 +150,15 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14923089 0.01639689 3.83340520
-    ## stdErr 0.03934536 0.01058507 0.02423948
+    ## mean   0.14924386 0.01637353 3.83345664
+    ## stdErr 0.03933235 0.01059828 0.02424174
     ## 
-    ##                 err    nullErr nPars nObs      Fval         Pval  Rsquared
-    ## mean   3.006328e-04 0.03071614     3   30 1692.0117 1.110223e-16 0.9759788
-    ## stdErr 6.865709e-05 0.01187769     0    0  653.4459 1.110223e-16 0.0166171
+    ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
+    ## mean   3.006069e-04 0.03071614     3   30 1692.0608 1.110223e-16 0.97598105
+    ## stdErr 6.865449e-05 0.01187769     0    0  653.3861 1.110223e-16 0.01661616
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.324861 -211.91820 -125.40666 identity    ols      expo         1
-    ## stdErr    6.546535   14.35328   19.26293 identity    ols      expo         0
+    ## mean   -337.327500 -211.91820 -125.40930 identity    ols      expo         1
+    ## stdErr    6.546434   14.35328   19.26217 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -170,8 +170,8 @@ summary(mod_4group)
 
     ##         pAsym pStart  pRate
     ## pAsym   1.000  1.000 -0.756
-    ## pStart  1.000  1.000 -0.764
-    ## pRate  -0.756 -0.764  1.000
+    ## pStart  1.000  1.000 -0.763
+    ## pRate  -0.756 -0.763  1.000
 
 Using a more common linear regression framework
 -----------------------------------------------
@@ -191,9 +191,9 @@ lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 
 TElm parameter estimates:
 
-|  X.Intercept.|  trial\_number|  log2\_rate|
-|-------------:|--------------:|-----------:|
-|         3.531|         -2.657|       2.883|
+|  X.Intercept.|  trial\_number|   rate|
+|-------------:|--------------:|------:|
+|         3.532|         -2.657|  2.884|
 
 TEfit parameter estimates:
 
@@ -202,3 +202,13 @@ TEfit parameter estimates:
 | Estimate |  3.522|   0.869|  2.866|
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides start as an offset from asymptote (ie., `Intercept`).
+
+Performance disclaimer
+======================
+
+**TEfits** comes with no guarantee of performance. Nonlinear regression can be very sensitive to small changes in parameterization, optimization starting values, etc. No universal out-of-the box implementation exists, and **TEfits** is simply an attempt to create an easy-to-use and robust framework for behavioral researchers to integrate the dimension of time into their analyses. **TEfits** may be unstable with poorly-behaved data, and using the option to bootstrap models is generally the best option for assessing the robustness of fits. In addition, running the same fitting code multiple time and comparing fit models should provide useful checks. All of these things take time, and **TEfits** is not built for speed; please be patient.
+
+Community guidelines
+====================
+
+If you are having technical difficulties, if you would like to report a bug, or if you want to recommend features, it's best to open a Github Issue. Please feel welcome to fork the repository and submit a pull request as well.

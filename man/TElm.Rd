@@ -15,7 +15,7 @@ TElm(formIn, datIn, timeVar, robust = F, fixRate = NA, nBoot = 250)
 
 \item{robust}{Logical. Should \code{\link[MASS]{rlm}} be used?}
 
-\item{fixRate}{If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
+\item{fixRate}{If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
 
 \item{nBoot}{Number of bootstrapped models to fit after rate [time constant] has been estimated (passed to \code{\link{tef_rlm_boot}})}
 }
@@ -40,10 +40,6 @@ bootstrapped parameter coefficients and out-of-sample prediction.
 
 Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
 extremes in resampling.
-}
-\note{
-In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is log2-transformed.
-Here it is not.
 }
 \examples{
 dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))

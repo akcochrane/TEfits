@@ -96,7 +96,7 @@ lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 
 TElm parameter estimates:
 
-`r  knitr::kable(round(data.frame(t(c(coef(mod_lm),log2_rate=log2(mod_lm$rate)))),3))`
+`r  knitr::kable(round(data.frame(t(c(coef(mod_lm),rate=mod_lm$rate))),3))`
 
 TEfit parameter estimates:
 

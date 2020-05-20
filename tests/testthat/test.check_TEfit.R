@@ -82,3 +82,11 @@ test_that('model specification is correct',{
   expect_equivalent(paste(m_weibull$modList$evalFun,collapse=''),'+0.5((1 - 0.5) - 0.005) * (1 - 2.0204^(-(abs_ratio/(((threshAsym) + ((threshStart) - (threshAsym)) * 2^((1 - trialNum)/(2^(threshRate))))))^weibull_shape))') # entered 20200502
 })
 
+## ##
+test_that('errors occur after improper specification',{
+  expect_error(TEfit(data.frame(yVar = letters[1:11],tVar = 1:11))) # string response fails
+  expect_error(TEfit(data.frame(yVar = 1:11,tVar = letters[1:11]))) # string time fails
+
+  expect_error(TEfit(data.frame(yVar = factor(letters[1:11]),tVar = 1:11))) # factor response fails
+  expect_error(TEfit(data.frame(yVar = 1:11,tVar = factor(letters[1:11])))) # factor time fails
+  })

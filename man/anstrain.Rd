@@ -11,8 +11,10 @@ An object of class \code{data.frame} with 1000 rows and 6 columns.
 anstrain
 }
 \description{
-Data from 4 participants ("subID") completing 250 trials each of perceptual learning.
-"resp" is participant response to the "ratio" offset, with correctness recorded
-as "acc". "sizeRat" is a covariate.
+Subset of data from Cochrane, Cui, Hubbard & Green (2019; DOI: 10.3758/s13414-018-01636).
+Data from 4 participants ("subID") completing 250 trials each of perceptual learning in an
+Approximate Number System ratio discrimination task. "resp" is participant response to the
+"ratio" offset of two interspersed colors of dots, with correctness recorded as "acc".
+"sizeRat" is the ratio of sizes of the different colors of dots.
 }
 \keyword{datasets}

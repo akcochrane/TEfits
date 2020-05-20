@@ -4,15 +4,7 @@
 \alias{TElmem}
 \title{Linear mixed-effects model with nonlinear time random effects}
 \usage{
-TElmem(
-  formIn,
-  dat,
-  timeVar,
-  groupingVar,
-  onlyGroupMods = F,
-  nRuns = 1,
-  silent = F
-)
+TElmem(formIn, dat, timeVar, groupingVar, nRuns = 1, silent = F)
 }
 \arguments{
 \item{formIn}{model formula, as in \code{lmer}}
@@ -22,8 +14,6 @@ TElmem(
 \item{timeVar}{String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed)}
 
 \item{groupingVar}{String. Indicates which variable in \code{datIn} should have a time=related random effect.}
-
-\item{onlyGroupMods}{IF TRUE, returns only the by-\code{groupingVar} fits from \code{\link{TElm}}}
 
 \item{nRuns}{Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})}
 
@@ -52,9 +42,9 @@ rate parameters using \code{\link{TElm}},
 \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{lmer} model.
 
-May be used, with \code{onlyGroupMods=T}, as a wrapper for \code{\link{TElm}} in order to simply
-use rate estimates from independent \code{groupingVar}-level models and extract the corresponding
-transformed time variable.
+May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TElm}} in order to simply
+use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
+transformed time variable, and use this in a LMEM.
 }
 \note{
 Random effects and rate estimates may be unstable, and optimization may take
@@ -66,7 +56,13 @@ If reliable by-\code{groupingVar} parameters are desired, especially of rate, it
 
 The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
 (e.g., \code{(time_variable | grouping_variable)})
-
-In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
-Here it is not.
+}
+\examples{
+\dontrun{
+m_TElmem <- TElmem(acc ~ trialNum + (trialNum || subID), anstrain, timeVar = 'trialNum',groupingVar = 'subID')
+# Typical lmer model:
+summary(m_TElmem$lmerMod) # On average, starting accuracy was .137 worse than asymptotic accuracy
+# Participant-level rate parameters:
+m_TElmem$rates
+}
 }

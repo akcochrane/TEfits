@@ -15,7 +15,7 @@ TEglm(formIn, datIn, timeVar, family = gaussian, fixRate = NA)
 
 \item{family}{passed to glm()}
 
-\item{fixRate}{If numeric, use this as a rate parameter [50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
+\item{fixRate}{If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
 }
 \description{
 Fit a generalized linear model with time as a covariate,
@@ -40,8 +40,9 @@ Mean estimated rate is calculated after trimming the upper 25% and lower 25% of 
 extremes in resampling.
 }
 \note{
-In \code{\link{TEfit}} and \code{\link{TEfitAll}} rate [50 percent time constant] is binary-log-transformed.
-Here it is not.
+Although the time variable is transformed to exponentially decay toward zero, this does not necessarily mean
+that the model prediction involves an exponential change with time. The nonlinear change in time relates
+to the time-associated model coefficients.
 }
 \examples{
 dat <- data.frame(trialNum = 1:200, resp = rbinom(200,1,log(11:210)/log(300)))
