@@ -1,5 +1,5 @@
 ---
-title: 'TEFits: Nonlinear regression for time-evolving indices'
+title: 'TEfits: Nonlinear regression for time-evolving indices'
 authors:
 - affiliation: 1
   name: Aaron Cochrane
@@ -28,6 +28,6 @@ Within behavioral science, it is common for data to be paradigmatically collecte
 
 # Funding and Support
 
-This work is supported by US Office of Naval Research Grant ONR-N000141712049.
+This work has been supported in part by US Office of Naval Research Grant ONR-N000141712049.
 
 # References
