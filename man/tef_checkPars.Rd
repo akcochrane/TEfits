@@ -78,4 +78,6 @@ characterize that process.}
 that assumes that the learning function extents \emph{backward} through time. This parameter must be greater than
 0 and smaller than 1*10^5}
 }
+
+Users are highly encouraged to use their own boundaries (e.g., \code{y_lim} & \code{rate_lim}), given knowledge of a specific dataset, using \code{\link{tef_control}}.
 }
