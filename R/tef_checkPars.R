@@ -27,6 +27,8 @@
 #' 0 and smaller than 1*10^5}
 #' }
 #'
+#' Users are highly encouraged to use their own boundaries (e.g., \code{y_lim} & \code{rate_lim}), given knowledge of a specific dataset, using \code{\link{tef_control}}.
+#'
 #' @param err Error
 #' @param guesses Parameter values
 #' @param curDat Data being fit
