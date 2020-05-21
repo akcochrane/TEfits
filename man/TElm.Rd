@@ -41,25 +41,41 @@ bootstrapped parameter coefficients and out-of-sample prediction.
 Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
 extremes in resampling.
 }
+\note{
+The \code{TElm} approach to including a nonlinear time function in regression is quite different than the
+\code{\link{TEfit}} approach. \code{TElm} utilizes a point estimate for the rate parameter in order to
+coerce the model into a generalized linear format; \code{\link{TEfit}} simultaneously finds the best
+combination of rate, start, and asympote parameters. In effect, \code{TElm} treats \emph{magnitude}
+of change as being of theoretical interest (and rate as a nuisance parameter to be controlled for),
+while \code{\link{TEfit}} treats the starting value, rate, and
+the asymptotic value as each being of theoretical interest.
+
+#' @seealso
+\code{\link{TElmem}} for mixed-effects extension of \code{TElm};
+\code{\link{TEglm}} for generalized extension of \code{TElm}
+}
 \examples{
 dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
 
+# using a Linear Model
 m_lm <- TElm(resp ~ trialNum,dat, 'trialNum')
 summary(m_lm)
 m_lm$bootSummary
 m_lm$rate
 
+# using a Robust Linear Model
 m_rlm <- TElm(resp ~ trialNum,dat,'trialNum',robust=TRUE)
 summary(m_rlm)
 m_rlm$bootSummary
 m_rlm$rate
 
+# comparing fits
 plot(dat[,c('trialNum','resp')])
 lines(dat$trialNum,fitted(m_lm),col='blue')
 lines(dat$trialNum,fitted(m_rlm),col='red')
 
-}
-\seealso{
-\code{\link{TElmem}} for mixed-effects extension of \code{TElm};
-\code{\link{TEglm}} for generalized extension of \code{TElm}
+# Examining the bootstrapped rates and other parameters together
+summary(m_rlm$bootRate)
+cor(m_rlm$bootRate)
+
 }

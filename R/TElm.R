@@ -22,7 +22,16 @@
 #' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
 #' extremes in resampling.
 #'
-#' @seealso
+#' @note
+#' The \code{TElm} approach to including a nonlinear time function in regression is quite different than the
+#' \code{\link{TEfit}} approach. \code{TElm} utilizes a point estimate for the rate parameter in order to
+#' coerce the model into a generalized linear format; \code{\link{TEfit}} simultaneously finds the best
+#' combination of rate, start, and asympote parameters. In effect, \code{TElm} treats \emph{magnitude}
+#' of change as being of theoretical interest (and rate as a nuisance parameter to be controlled for),
+#' while \code{\link{TEfit}} treats the starting value, rate, and
+#' the asymptotic value as each being of theoretical interest.
+#'
+#' #' @seealso
 #' \code{\link{TElmem}} for mixed-effects extension of \code{TElm};
 #' \code{\link{TEglm}} for generalized extension of \code{TElm}
 #'
@@ -36,19 +45,26 @@
 #' @examples
 #' dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
 #'
+#' # using a Linear Model
 #' m_lm <- TElm(resp ~ trialNum,dat, 'trialNum')
 #' summary(m_lm)
 #' m_lm$bootSummary
 #' m_lm$rate
 #'
+#' # using a Robust Linear Model
 #' m_rlm <- TElm(resp ~ trialNum,dat,'trialNum',robust=TRUE)
 #' summary(m_rlm)
 #' m_rlm$bootSummary
 #' m_rlm$rate
 #'
+#' # comparing fits
 #' plot(dat[,c('trialNum','resp')])
 #' lines(dat$trialNum,fitted(m_lm),col='blue')
 #' lines(dat$trialNum,fitted(m_rlm),col='red')
+#'
+#' # Examining the bootstrapped rates and other parameters together
+#' summary(m_rlm$bootRate)
+#' cor(m_rlm$bootRate)
 #'
 #' @export
 TElm <- function(formIn,dat,timeVar,robust=F,fixRate=NA,nBoot = 250){
@@ -57,34 +73,37 @@ TElm <- function(formIn,dat,timeVar,robust=F,fixRate=NA,nBoot = 250){
   if(minTime < 0){cat('The earliest time is negative.')}
 
   if(!is.numeric(fixRate)){suppressWarnings({
-  fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
-    fitData[,fitTimeVar] <- 2^((minTime-fitData[,fitTimeVar])/(2^(rate)))
-    if(robust){ modErr <- sum(MASS::rlm(fitFormula,fitData)$residuals^2,na.rm=T) # minimize error (SSE)
-    }else{modErr <- 1-summary(lm(fitFormula,fitData))$r.squared} # minimize error (1-rSquared)
-    return(modErr)
-  }
-
-  bootRate <- replicate(200,{ # resample data with replacement and find the best rate for that resampled data
-     curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
-    curDat <- dat[sample(nrow(dat),replace = T),]
-     curFit <- optimize(fitRateLM,
-                  interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
-                  fitFormula=formIn,
-                  fitData=curDat,
-                  fitTimeVar=timeVar,
-                  robust=robust
-      )$minimum
+    fitRateLM <- function(rate,fitFormula,fitData,fitTimeVar,robust=robust){
+      fitData[,fitTimeVar] <- 2^((minTime-fitData[,fitTimeVar])/(2^(rate)))
+      if(robust){ mod <- MASS::rlm(fitFormula,fitData)
+      }else{mod <- lm(fitFormula,fitData)}
+      return(-logLik(mod))
     }
-    curFit
-  }
-  )
-  fixRate <- mean(bootRate,trim=.25)
+
+    bootRate <- replicate(200,{ # resample data with replacement and find the best rate for that resampled data
+      curRate <- NA ;  while(!is.numeric(curRate)){ # this increases robustness to pathological sampling
+        curDat <- dat[sample(nrow(dat),replace = T),]
+        curRate <- optimize(fitRateLM,
+                            interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
+                            fitFormula=formIn,
+                            fitData=curDat,
+                            fitTimeVar=timeVar,
+                            robust=robust
+        )$minimum
+      }
+      curDat[,timeVar] <- 2^((minTime-curDat[,timeVar])/(2^(curRate)))
+      if(robust){ mod <- MASS::rlm(formIn,curDat)
+      }else{mod <- lm(formIn,curDat)}
+      c(rate=curRate,coef(mod))
+    }
+    )
+    bootRate <- as.data.frame(t(bootRate))
+    fixRate <- mean(bootRate$rate,trim=.25)
   })}
 
   dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))
 
-  if(robust){modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot)
-  }else{modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot,useLM=T)}
+  modOut <- TEfits::tef_rlm_boot(formIn,dat,nBoot = nBoot,useLM=!robust)
 
   modOut$rate <- fixRate
   try({modOut$bootRate <- bootRate},silent = T)

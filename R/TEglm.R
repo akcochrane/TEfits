@@ -7,7 +7,7 @@
 #' between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 #' Then uses the mean estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 #' interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
-#' offset magnitude 0). Last uses this transformed time variable in a \code{rlm} or \code{lm} model
+#' offset magnitude 0). Last uses this transformed time variable in a \code{glm} model
 #' (i.e., attempts to answer the question "how different was the start than the end?").
 #'
 #' Rate is parameterized as a time constant, or the amount of time it takes for half of change to occur.
@@ -26,6 +26,13 @@
 #' that the model prediction involves an exponential change with time. The nonlinear change in time relates
 #' to the time-associated model coefficients.
 #'
+#' The \code{TEglm} approach to including a nonlinear time function in regression is quite different than the
+#' \code{\link{TEfit}} approach. \code{TEglm} utilizes a point estimate for the rate parameter in order to
+#' coerce the model into a generalized linear format; \code{\link{TEfit}} simultaneously finds the best
+#' combination of rate, start, and asympote parameters. In effect, \code{TEglm} treats \emph{magnitude}
+#' of change as being of theoretical interest, while \code{\link{TEfit}} treats the starting value, rate, and
+#' the asymptotic value as each being of theoretical interest.
+#'
 #' @param formIn model formula, as in glm()
 #' @param dat model data, as in glm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
@@ -37,7 +44,10 @@
 #' @examples
 #' dat <- data.frame(trialNum = 1:200, resp = rbinom(200,1,log(11:210)/log(300)))
 #' m_glm <- TEglm(resp ~ trialNum,dat,'trialNum',family=binomial)
+#' summary(m_glm)
 #' m_glm$rate # estimated half-of-change time constant
+#' summary(m_glm$bootRate) # bootstrapped parameter distributions
+#' cor(m_glm$bootRate) # bootstrapped parameter correlations
 #'
 TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
 
@@ -54,9 +64,9 @@ TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
   }
 
   bootRate <- replicate(200,{# resample data with replacement and find the best rate for that resampled data
-      curFit <- NA ;  while(!is.numeric(curFit)){ # this increases robustness to pathological sampling
+      curRate <- NA ;  while(!is.numeric(curRate)){ # this increases robustness to pathological sampling
     curDat <- dat[sample(nrow(dat),replace = T),]
-     curFit <- optimize(fitRateLM,
+     curRate <- optimize(fitRateLM,
                   interval=quantile(log2(curDat[,timeVar]),c(1/30,1/3),na.rm=T), # 7/8 of learning has to happen in more than 10% of trials and less than 100% of trials
                   fitFormula=formIn,
                   fitData=curDat,
@@ -64,11 +74,14 @@ TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
                   family=family
 
       )$minimum
-    }
-    curFit
+      }
+      curDat[,timeVar] <- 2^((minTime-curDat[,timeVar])/(2^curRate))
+      mod <- glm(formIn,curDat,family=family)
+      c(rate=curRate,coef(mod))
   }
   )
-  fixRate <- mean(bootRate,trim=.25)
+  bootRate <- as.data.frame(t(bootRate))
+  fixRate <- mean(bootRate$rate,trim=.25)
   })}
 
   dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))

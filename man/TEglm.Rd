@@ -24,7 +24,7 @@ First resamples data with replacement 200 times, and each time estimates the bes
 between initial time-related offset and asymptotic time (i.e., rate at which effect of time saturates at zero).
 Then uses the mean estimated rate to transform the \code{timeVar} predictor into an exponentially decaying variable
 interpolating between initial time (time offset magnitude of 1) and arbitrarily large time values (time
-offset magnitude 0). Last uses this transformed time variable in a \code{rlm} or \code{lm} model
+offset magnitude 0). Last uses this transformed time variable in a \code{glm} model
 (i.e., attempts to answer the question "how different was the start than the end?").
 }
 \details{
@@ -43,10 +43,20 @@ extremes in resampling.
 Although the time variable is transformed to exponentially decay toward zero, this does not necessarily mean
 that the model prediction involves an exponential change with time. The nonlinear change in time relates
 to the time-associated model coefficients.
+
+The \code{TEglm} approach to including a nonlinear time function in regression is quite different than the
+\code{\link{TEfit}} approach. \code{TEglm} utilizes a point estimate for the rate parameter in order to
+coerce the model into a generalized linear format; \code{\link{TEfit}} simultaneously finds the best
+combination of rate, start, and asympote parameters. In effect, \code{TEglm} treats \emph{magnitude}
+of change as being of theoretical interest, while \code{\link{TEfit}} treats the starting value, rate, and
+the asymptotic value as each being of theoretical interest.
 }
 \examples{
 dat <- data.frame(trialNum = 1:200, resp = rbinom(200,1,log(11:210)/log(300)))
 m_glm <- TEglm(resp ~ trialNum,dat,'trialNum',family=binomial)
+summary(m_glm)
 m_glm$rate # estimated half-of-change time constant
+summary(m_glm$bootRate) # bootstrapped parameter distributions
+cor(m_glm$bootRate) # bootstrapped parameter correlations
 
 }

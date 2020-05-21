@@ -53,10 +53,11 @@ Various handy S3 methods are available, such as
 }
 \details{
 TEfit defines a nonlinear regression model and re-fits that model
-using \code{optim} numerous times, with random starting values, until
+using \code{optim} numerous times, with parameter values randomly initialized prior to optimization, until
 the highest-likelihood fitting runs also have parameters very similar to
 one another (i.e., SD less than the convergence criterion). Runs are
-implemented in batches of 10.
+implemented in batches of 10. Convergence is a heuristic and should ideally be
+corroborated with other measures (e.g., bootstrapping).
 
 Bootstrapping or subsampling is specified as
 \code{bootPars=tef_bootList(resamples = 0, bootPercent = 1, bootTries = 20)}.
@@ -73,7 +74,7 @@ Currently supported \strong{error functions} are:
 \item{\code{ols}, i.e. \code{sum((y-yHat)^2)} -- sum of squared error}
 \item{\code{rmse}, i.e. \code{sqrt(mean((y-yHat)^2))} -- root mean squared error}
 \item{\code{logcosh}, i.e. \code{sum(log(cosh(y-yHat)))} -- log-hyperbolic-cosine}
-\item{\code{bernoulli}, i.e. \code{-sum(y*log(yHat) + (1-y)*log(1-yHat))} -- Bernoulli [binary binomial]}
+\item{\code{bernoulli}, i.e. \code{-sum(y\*log(yHat) + (1-y)\*log(1-yHat))} -- Bernoulli [binary binomial]}
 \item{\code{exGauss_mu}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=yHat,sigma=sigma_param,tau=tau_param)))} --
 ex-Gaussian distribution with time-evolving change in the Gaussian mean parameter}
 \item{\code{exGauss_tau}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=mu_param,sigma=sigma_param,tau=yHat)))} --
@@ -135,6 +136,7 @@ By default, the mean of the time-evolving model's fit values should be very simi
 This is enforced by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
 between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
+For this and other default model constraints see \code{?\link{tef_getBounds}}.
 }
 \examples{
 \dontrun{

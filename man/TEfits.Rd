@@ -19,7 +19,9 @@ extensions if desired.
 The \code{\link{TEfit}} function is the primary user-oriented function of
 the \code{TEfits} package. It allows for nonlinear fitting of time-related
 change in an outcome variable by estimating that outcome variable's value at
-each timepoint. See \code{\link{TEfit}} and \code{vignette('TEfits_tutorial')}.
+each timepoint. See \code{\link{TEfit}}, \code{\link{TEfitAll}} for fitting
+a \code{\link{TEfit}} model to subsets of data (e.g., individual participants),
+and \code{vignette('TEfits_tutorial')} for an introduction to the framework.
 }
 
 \section{Nonlinear regressors in [generalized] linear models}{

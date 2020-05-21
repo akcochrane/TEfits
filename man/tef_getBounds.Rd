@@ -15,5 +15,5 @@ tef_getBounds(modList, whichPnames = "pNames", linkFunX = NA)
 }
 \description{
 \code{\link{TEfit}} internal. Future versions will systematize this more thoroughly.
-The core idea, though, is to allow variation in the starting points for optimization runs.
+Designed to variation in the starting points for optimization runs.
 }

@@ -9,12 +9,12 @@
 #' \code{plot}, \code{summary},
 #' \code{coef}, and \code{simulate}.
 #'
-#'
 #' TEfit defines a nonlinear regression model and re-fits that model
-#' using \code{optim} numerous times, with random starting values, until
+#' using \code{optim} numerous times, with parameter values randomly initialized prior to optimization, until
 #' the highest-likelihood fitting runs also have parameters very similar to
 #' one another (i.e., SD less than the convergence criterion). Runs are
-#' implemented in batches of 10.
+#' implemented in batches of 10. Convergence is a heuristic and should ideally be
+#' corroborated with other measures (e.g., bootstrapping).
 #'
 #' Bootstrapping or subsampling is specified as
 #' \code{bootPars=tef_bootList(resamples = 0, bootPercent = 1, bootTries = 20)}.
