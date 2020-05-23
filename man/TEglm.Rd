@@ -36,7 +36,7 @@ some robustness in estimates of asympototic effects (i.e., "controlling for time
 (i.e., "time-related starting offset"). Uses this transformed time variable in a \code{\link{tef_rlm_boot}} model to estimate
 bootstrapped parameter coefficients and out-of-sample prediction.
 
-Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
+Mean estimated rate is calculated after trimming the upper 25\% and lower 25\% of bootstrapped rate estimates, for robustness to
 extremes in resampling.
 }
 \note{
@@ -59,4 +59,8 @@ m_glm$rate # estimated half-of-change time constant
 summary(m_glm$bootRate) # bootstrapped parameter distributions
 cor(m_glm$bootRate) # bootstrapped parameter correlations
 
+}
+\seealso{
+\code{\link{TEglmem}} for mixed-effects extension of \code{TEglm};
+\code{\link{TElm}} for a linear model version of \code{TEglm}
 }

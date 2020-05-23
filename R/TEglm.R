@@ -18,7 +18,7 @@
 #' (i.e., "time-related starting offset"). Uses this transformed time variable in a \code{\link{tef_rlm_boot}} model to estimate
 #' bootstrapped parameter coefficients and out-of-sample prediction.
 #'
-#' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
+#' Mean estimated rate is calculated after trimming the upper 25\% and lower 25\% of bootstrapped rate estimates, for robustness to
 #' extremes in resampling.
 #'
 #' @note
@@ -32,6 +32,10 @@
 #' combination of rate, start, and asympote parameters. In effect, \code{TEglm} treats \emph{magnitude}
 #' of change as being of theoretical interest, while \code{\link{TEfit}} treats the starting value, rate, and
 #' the asymptotic value as each being of theoretical interest.
+#'
+#' @seealso
+#' \code{\link{TEglmem}} for mixed-effects extension of \code{TEglm};
+#' \code{\link{TElm}} for a linear model version of \code{TEglm}
 #'
 #' @param formIn model formula, as in glm()
 #' @param dat model data, as in glm()
