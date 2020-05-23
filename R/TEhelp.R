@@ -41,7 +41,7 @@ Every effort is made to balance sensible defaults, full customization, and inter
 For more information see ?TEfits, the README at github.com/akcochrane/TEfits, and/or vignette("TEfit_tutorial")
 
 Use this help function to get more information about specific aspects. See ?TEhelp.'
-  )))
+  ),stringsAsFactors = TRUE))
 
 
   ## ## ##
@@ -73,9 +73,9 @@ Use this help function to get more information about specific aspects. See ?TEhe
       ,'\n\nR Implementation: log(cosh(y-yHat))\n__ __ __ __'
     )))
 
-    if(topic=='errFun=ols'){cat('help page pending')}
-    if(topic=='errFun=bernoulli'){cat('help page pending')}
-    if(topic=='errFun=rmse'){cat('help page pending')}
+    if(topic=='errFun=ols'){cat('help page pending. ')}
+    if(topic=='errFun=bernoulli'){cat('help page pending. ')}
+    if(topic=='errFun=rmse'){cat('help page pending. ')}
     helpTable <-rbind(helpTable,data.frame(topic='errFun=exGauss_tau',description=paste0(
       'The ex-Gaussian distribution is a 3-parameter convolution of exponential
        and Gaussian distributions often used to fit response time data.
@@ -84,12 +84,12 @@ Use this help function to get more information about specific aspects. See ?TEhe
        is naturally accommodated.'
     )))
 
-    if(topic=='errFun=exGauss_mu'){cat('help page pending')}
+    if(topic=='errFun=exGauss_mu'){cat('help page pending. ')}
   } # close error functions ##
   ## ## ##
   ## link functions
   {
-    if(topic=='linkFun=logistic'){cat('help page pending')}
+    if(topic=='linkFun=logistic'){cat('help page pending. ')}
 
       helpTable <-rbind(helpTable,data.frame(topic='linkFun=d_prime',description=paste0(
 'With the d_prime link function, you can use a binary (0 or 1) variable called `presence` to
@@ -135,7 +135,7 @@ __ __ __ __'
                                   nonindependence between response variables and time (and the change thereof) is
                                   reported.'
 )))
-  if(topic=='summary(TEfitAll)'){cat('help page pending')}
+  if(topic=='summary(TEfitAll)'){cat('help page pending. ')}
   } # close summary functions
   ## ## ##
   ## control arguments
@@ -152,9 +152,9 @@ helpTable <-rbind(helpTable,data.frame(topic='control(explicit)',description=pas
 
 
   # others
-  if(topic=='cross-validate'){cat('help page pending')}
-  if(topic=='bootstrap'){cat('help page pending')}
-  if(topic==''){cat('help page pending')}
+  if(topic=='cross-validate'){cat('help page pending. ')}
+  if(topic=='bootstrap'){cat('help page pending. ')}
+  if(topic==''){cat('help page pending. ')}
 
   ## ## ##
   ## Put it all together
