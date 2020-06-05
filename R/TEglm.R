@@ -15,10 +15,9 @@
 #' the .0333 quantile of the time variable (i.e., 87.5\% of change happens in the first 10\% of time) and an upper bound of the
 #' .333 quantile of the time variable (i.e., 87.5\% of change takes 100\% of the time to happen). These bounds provide
 #' some robustness in estimates of asympototic effects (i.e., "controlling for time") as well as initial effects
-#' (i.e., "time-related starting offset"). Uses this transformed time variable in a \code{\link{tef_rlm_boot}} model to estimate
-#' bootstrapped parameter coefficients and out-of-sample prediction.
+#' (i.e., "time-related starting offset").
 #'
-#' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
+#' Mean estimated rate is calculated after trimming the upper 25\% and lower 25\% of bootstrapped rate estimates, for robustness to
 #' extremes in resampling.
 #'
 #' @note
@@ -32,6 +31,10 @@
 #' combination of rate, start, and asympote parameters. In effect, \code{TEglm} treats \emph{magnitude}
 #' of change as being of theoretical interest, while \code{\link{TEfit}} treats the starting value, rate, and
 #' the asymptotic value as each being of theoretical interest.
+#'
+#' @seealso
+#' \code{\link{TEglmem}} for mixed-effects extension of \code{TEglm};
+#' \code{\link{TElm}} for a linear model version of \code{TEglm}
 #'
 #' @param formIn model formula, as in glm()
 #' @param dat model data, as in glm()
@@ -72,7 +75,6 @@ TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
                   fitData=curDat,
                   fitTimeVar=timeVar,
                   family=family
-
       )$minimum
       }
       curDat[,timeVar] <- 2^((minTime-curDat[,timeVar])/(2^curRate))
@@ -86,15 +88,11 @@ TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
 
   dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))
 
-
-  ### ### still needs to be implemented: isn't playing will with interactions? covariates?
-  # if(robust){modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot)
-  # }else{modOut <- tef_rlm_boot(formIn,dat,nBoot = nBoot,useLM=T)}
-
   modOut <- glm(formIn,dat,family=family)
 
   modOut$rate <- fixRate
-  try({modOut$bootRate <- bootRate},silent = T)
+
+  try({modOut$bootRate <- bootRate},silent = T) # is try() really needed here?
 
   modOut$transformed_time <- dat[,timeVar]
 

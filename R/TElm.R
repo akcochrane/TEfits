@@ -19,7 +19,7 @@
 #' (i.e., "time-related starting offset"). Uses this transformed time variable in a \code{\link{tef_rlm_boot}} model to estimate
 #' bootstrapped parameter coefficients and out-of-sample prediction.
 #'
-#' Mean estimated rate is calculated after trimming the upper 25% and lower 25% of bootstrapped rate estimates, for robustness to
+#' Mean estimated rate is calculated after trimming the upper 25\% and lower 25\% of bootstrapped rate estimates, for robustness to
 #' extremes in resampling.
 #'
 #' @note
