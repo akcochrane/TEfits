@@ -79,11 +79,11 @@
 #'
 #' Currently supported \strong{change functions} are:
 #' \itemize{
-#' \item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote)}
+#' \item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate as log of time-to-change, defaulting to log2 of 50 percent change}
 #' \item{\code{expo_block} -- 3-parameter exponential (start, [inverse] rate, and asymptote)
 #' plus 2-paramter multiplicative changes on timescales that are a subset of the whole}
 #' \item{\code{expo_double} -- 4-parameter exponential (start, two equally weighted [inverse] rates, and asymptote)}
-#' \item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote)}
+#' \item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote) -- rate as log of time to proportion remaining, defaulting to  log2 and proportion=.25}
 #' \item{\code{power4} -- 4-parameter power (start, [inverse] rate, asymptote, and "previous learning time")}
 #' \item{\code{expo} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape)}
 #' }
@@ -234,14 +234,14 @@ TEfit <- function(varIn,
     if(is.vector(modList$varIn)){
       modList$varIn <- data.frame(y=modList$varIn,timeVar=1:length(modList$varIn))
     }
-    if(any(sapply(modList$varIn,class)=='factor')){cat('WARNING: your data includes factors. Please do not include factor variables.')}
+    if(any(sapply(modList$varIn,class)=='factor')){warning('your data includes factors. Please do not include factor variables.')}
   }## ## ##
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
   ## ## ## ## ## ## ## ## ##
   ## ## >control arguments:
   {
-    if(length(control) < length(tef_control())){cat('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
+    if(length(control) < length(tef_control())){stop('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
     modList$convergeTol <- control$convergeTol
     modList$nTries      <- control$nTries
     modList$y_lim       <- control$y_lim
@@ -265,7 +265,7 @@ TEfit <- function(varIn,
   modList$timeVar <- colnames(modList$varIn)[2]
 
   if(max(xtabs(~modList$varIn[,1]),na.rm=T)/dim(na.omit(modList$varIn))[1]>.9){
-    cat('\nWARNING: Your response variable has few unique values. You may not be able to estimate a time-evolving function.\n')
+    warning('\nYour response variable has few unique values. You may not be able to estimate a time-evolving function.\n')
   }
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
