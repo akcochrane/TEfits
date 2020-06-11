@@ -27,29 +27,14 @@ tef_fitErr <- function(guesses,varIn,pNames,evalFun,errFun,respVar,linkFunX=NA,
   guessDat <- as.data.frame(matrix(guesses,dim(varIn)[1],length(guesses),byrow=T))
   colnames(guessDat) <- pNames
 
-  # cat(guesses,'\n')
-
-  # cat(evalFun)
-
   ## generate the model predictions
   curDat <- data.frame(varIn,guessDat)
   yHat <- eval(expr=evalFun,env=curDat)
 
-  # cat(' >.yhat: ',yHat[1:2],' .< ')
- # cat(guessDat[1:2,])
- #  cat(as.character(evalFun),'\n')
-
   if(sum(is.na(yHat))>sum(is.na(curDat[,respVar]))){ # check for more predicted NAs than original NAs
     err <- 1E15}else{
 
-## any error function that needs more than y and yHat:
-      if(errFun=='exGauss_mu'||
-         errFun=='exGauss_tau' ||
-         errFun=='wiener_dr'){
         err <- tef_err(y=curDat[,respVar],yHat,errFun,curDat)
-      }else{
-        err <- tef_err(y=curDat[,respVar],yHat,errFun)
-      }
 
       ## see what the model would predict at an asymptotic time
       asymDat <- curDat ; asymDat[,2] <- max(curDat[,2],na.rm = T)*10 # "Asymptotic" time point

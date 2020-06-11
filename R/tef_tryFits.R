@@ -31,7 +31,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
   modList <- tef_getBounds(modList=modList,whichPnames=whichPnames,linkFunX=linkFunX)
 
-  use_optim_bounds <-F #  length(grep('+',modList$covarTerms,fixed=T))==0
+
 
   replTry <- function(modList=modList){
 
@@ -39,7 +39,6 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                      modList$parGuessBounds$parMin,
                      modList$parGuessBounds$parMax)
 
-    ## STILL NEED TO CLEA UP EXGAUSS
 
     guesses[grep('sigma_param',modList$guessNames)] <- runif(length(grep('sigma_param',modList$guessNames)),
                                                      0,mad(modList$varIn[,modList$respVar],na.rm=T))
@@ -50,13 +49,9 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                                                    0,min(modList$varIn[,modList$respVar],na.rm=T))
 
     names(guesses) <- modList$guessNames
-    # preRunTime <- Sys.time()
-
-    # suppressWarnings
     {
 
-        if(use_optim_bounds){
-         try({
+        tryCatch({
            curFit <- optim(guesses,fn=tef_fitErr,
                           varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                           errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
@@ -69,11 +64,11 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                           paramTerms = paramTerms,
                           upper = modList$parLims$parMax,
                           lower = modList$parLims$parMin,
-                          method='L-BFGS-B', # use this or BFGS; go back to NM if poor performance
+                          method='L-BFGS-B',
                           control=list(maxit=100)
-          )
-           },silent=modList$quietErrs)
-        }else{try({
+           )
+        },error = function(.){
+          if(modList$quietErrs){cat('\nL-BFGS-B failed')}
         curFit <- optim(guesses,fn=tef_fitErr,
                         varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                         errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
@@ -87,7 +82,8 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                          method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
                         control=list(maxit=100)
         )
-      },silent = modList$quietErrs)}
+        })
+
 
     }
     # cat('\n',names(guesses),'\n',guesses,'--',curFit$value)

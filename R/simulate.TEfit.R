@@ -26,7 +26,7 @@ require(MASS)
   }else
 
     if(any(colnames(newdata) != colnames(object$modList$varIn))){
-      cat('Your input data variables do not match your model variables.\n')
+      stop('Your input data variables do not match your model variables.\n')
       # break
     }
 
@@ -75,7 +75,7 @@ lines(newdata[,2],plotY,col=rgb(.3,.3,.8,max((1/nsim),.005)),lwd=5)
 }
 return(list(newPars=newPars,newDat=newDat))
   }else{
-  cat('\nYour model does not contain any bootstrapped fits.\n')
+  stop('\nYour model does not contain any bootstrapped fits.\n')
   }
 }
 

@@ -440,6 +440,13 @@ TEfit <- function(varIn,
                       abs(bestFit$conditional_independence$rawSpearman),
                       abs(bestFit$conditional_independence$modelConditionalSpearman))$p
 
+      if(abs(bestFit$conditional_independence$rawSpearman) < abs(bestFit$conditional_independence$modelConditionalSpearman)){
+        bestFit$conditional_independence$pValSpearmanChange <- max(c(
+          1-bestFit$conditional_independence$pValSpearmanChange,
+          bestFit$conditional_independence$pValSpearmanChange
+        ))
+      }
+
     },silent=T)
 
     ## ## if they have the tseries package, then get the null and model residuals' KPSS p values:
