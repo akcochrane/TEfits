@@ -7,5 +7,5 @@
 tef_makeErrTable()
 }
 \description{
-Create table of error messages
+Deprecated
 }

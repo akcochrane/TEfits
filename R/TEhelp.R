@@ -1,8 +1,9 @@
 
 #' Get help for the TEfits package
 #'
-#' Many options for fitting using TEfits are specified in obscure lists and such. To help,
-#' this function provides verbose explanations of how to use various tools.
+#' Many options for fitting using TEfits are specified in a variety of places. To help,
+#' this function provides verbose explanations of how to use various tools. Topics will be
+#' gradually added, with no guarantee that a given topic has an entry yet.
 #'
 #' @param topic Help topic.
 #'

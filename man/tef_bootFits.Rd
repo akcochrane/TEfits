@@ -10,7 +10,7 @@ tef_bootFits(modList)
 \item{modList}{List of TEfit model details}
 }
 \description{
-{{RE TEST}} Given the modList constructed in TEfit(), refit the model nBoots number of times
+\code{\link{TEfit}} internal. Given the modList constructed in TEfit(), refit the model nBoots number of times
 on bootPercent proportion of the data. If bootPercent is 1, sampling is done with replacement.
 If bootPercent is between 0 and 1, sampling is done without replacement, i.e., a random
 subset of the data is selected. This latter case allows train/test assessment. That is,

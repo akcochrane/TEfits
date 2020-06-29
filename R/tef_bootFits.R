@@ -1,6 +1,6 @@
 #' Fit a model to resampled data
 #'
-#' {{RE TEST}} Given the modList constructed in TEfit(), refit the model nBoots number of times
+#' \code{\link{TEfit}} internal. Given the modList constructed in TEfit(), refit the model nBoots number of times
 #' on bootPercent proportion of the data. If bootPercent is 1, sampling is done with replacement.
 #' If bootPercent is between 0 and 1, sampling is done without replacement, i.e., a random
 #' subset of the data is selected. This latter case allows train/test assessment. That is,
@@ -63,7 +63,7 @@ tef_bootFits <- function(modList){
     oosFit <- eval(expr=modList$evalFun,env=oosDat)
 
 
-    ### NEED TO MODULARIZE ERROR HERE, AND IN FITERR
+    ### SHOULD MODULARIZE ERROR HERE, AND IN FITERR
     err_oos <- tef_err(y=oosDat[,modList$respVar],yHat=oosFit,errFun=modList$errFun)
     if(modList$errFun != 'rmse'){
     err_oos_mean <- err_oos/dim(oosDat)[1]
