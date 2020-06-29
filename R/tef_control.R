@@ -35,10 +35,6 @@ tef_control <- function(quietErrs = F,
                         explicit = ''
 ){
 
-  # # ^ need a meanConstrain argument
-
-  ## should calculate rate lims here, ideally
-
   return(list(
     quietErrs = quietErrs,
     suppressWarnings = suppressWarnings,

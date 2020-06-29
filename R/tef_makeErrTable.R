@@ -1,5 +1,7 @@
 #' Create table of error messages
 #'
+#' Deprecated
+#'
 #' @export
 #'
 tef_makeErrTable <- function(){
