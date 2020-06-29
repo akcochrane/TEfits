@@ -31,13 +31,13 @@
 #' while \code{\link{TEfit}} treats the starting value, rate, and
 #' the asymptotic value as each being of theoretical interest.
 #'
-#' #' @seealso
+#' @seealso
 #' \code{\link{TElmem}} for mixed-effects extension of \code{TElm};
 #' \code{\link{TEglm}} for generalized extension of \code{TElm}
 #'
 #' @param formIn model formula, as in \code{lm()}
 #' @param dat model data, as in \code{lm()}
-#' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
+#' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed). Must be numeric and positive.
 #' @param robust  Logical. Should \code{\link[MASS]{rlm}} be used?
 #' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated (passed to \code{\link{tef_rlm_boot}})

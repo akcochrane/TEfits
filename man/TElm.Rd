@@ -11,7 +11,7 @@ TElm(formIn, dat, timeVar, robust = F, fixRate = NA, nBoot = 250)
 
 \item{dat}{model data, as in \code{lm()}}
 
-\item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed)}
+\item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed). Must be numeric and positive.}
 
 \item{robust}{Logical. Should \code{\link[MASS]{rlm}} be used?}
 
@@ -49,10 +49,6 @@ combination of rate, start, and asympote parameters. In effect, \code{TElm} trea
 of change as being of theoretical interest (and rate as a nuisance parameter to be controlled for),
 while \code{\link{TEfit}} treats the starting value, rate, and
 the asymptotic value as each being of theoretical interest.
-
-#' @seealso
-\code{\link{TElmem}} for mixed-effects extension of \code{TElm};
-\code{\link{TEglm}} for generalized extension of \code{TElm}
 }
 \examples{
 dat <- data.frame(trialNum = 1:200, resp = log(11:210)+rnorm(200))
@@ -78,4 +74,8 @@ lines(dat$trialNum,fitted(m_rlm),col='red')
 summary(m_rlm$bootRate)
 cor(m_rlm$bootRate)
 
+}
+\seealso{
+\code{\link{TElmem}} for mixed-effects extension of \code{TElm};
+\code{\link{TEglm}} for generalized extension of \code{TElm}
 }

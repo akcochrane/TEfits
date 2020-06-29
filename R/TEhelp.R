@@ -116,7 +116,8 @@ __ __ __ __'
 )))
     helpTable <-rbind(helpTable,data.frame(topic='changeFun=power',description=paste0(
 '3-parameter power change function.
-Parameters represent the start, rate, and asymptotic values. Rate parameterized such that the value of rate is on a similar scale as rates used in the default 3-parameter exponential function.
+Parameters represent the start, rate, and asymptotic values. Rate parameterized such that the value of rate is on
+a similar scale as rates used in the default 3-parameter exponential function.
 Implementation: pAsym + (pStart - pAsym) * (timeVariable- (min(timeVariable)-1))^(log(0.25)/log(2^pRate))
 pAsym, pStart, and pRate may each be predicted by some combination of covariates.
 __ __ __ __'

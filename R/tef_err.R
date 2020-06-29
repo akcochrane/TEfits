@@ -66,14 +66,14 @@ tef_err <- function(y,yHat,errFun,curDat=NA){
          ########%#
          ,bernoulli={
            if(any(y>1,na.rm=T) || any(y<0,na.rm=T)){
-             cat('\nYour data are outside the bounds of zero and one.\n')
+             stop('\nYour data are outside the bounds of zero and one.\n')
              err <- 1E12
            }
-           errVect <- y*log(yHat) + (1-y)*log(1-yHat)
+           errVect <- suppressWarnings({ y*log(yHat) + (1-y)*log(1-yHat) })
            err <- -sum(errVect,na.rm=T)
 
-           if(sum(!is.na(errVect)) < y_n ||
-              max(abs(yHat-.5),na.rm=T)<.02){err <- 1E12} ## check for flat fits
+           # if(sum(!is.na(errVect)) < y_n ||
+           #    max(abs(yHat-.5),na.rm=T)<.01){err <- 1E12} ## check for flat fits
          }
          ########%#
          ,exGauss_mu={

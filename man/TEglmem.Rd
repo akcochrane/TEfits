@@ -19,7 +19,7 @@ TEglmem(
 
 \item{dat}{model data, as in \code{glmer}}
 
-\item{timeVar}{String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed)}
+\item{timeVar}{String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed). Must be numeric and positive.}
 
 \item{groupingVar}{String. Indicates which variable in \code{datIn} should have a time=related random effect.}
 

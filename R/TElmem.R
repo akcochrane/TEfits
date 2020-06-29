@@ -31,7 +31,7 @@
 #'
 #' @param formIn model formula, as in \code{lmer}
 #' @param dat model data, as in \code{lmer}
-#' @param timeVar String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed)
+#' @param timeVar String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed). Must be numeric and positive.
 #' @param groupingVar String. Indicates which variable in \code{datIn} should have a time=related random effect.
 #' @param nRuns Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})
 #' @param silent Progress is printed by default. silent=T to suppress

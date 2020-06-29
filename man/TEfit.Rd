@@ -74,7 +74,7 @@ Currently supported \strong{error functions} are:
 \item{\code{ols}, i.e. \code{sum((y-yHat)^2)} -- sum of squared error}
 \item{\code{rmse}, i.e. \code{sqrt(mean((y-yHat)^2))} -- root mean squared error}
 \item{\code{logcosh}, i.e. \code{sum(log(cosh(y-yHat)))} -- log-hyperbolic-cosine}
-\item{\code{bernoulli}, i.e. \code{-sum(y\*log(yHat) + (1-y)\*log(1-yHat))} -- Bernoulli [binary binomial]}
+\item{\code{bernoulli}, i.e. \code{-sum(y*log(yHat) + (1-y)*log(1-yHat))} -- Bernoulli [binary binomial]}
 \item{\code{exGauss_mu}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=yHat,sigma=sigma_param,tau=tau_param)))} --
 ex-Gaussian distribution with time-evolving change in the Gaussian mean parameter}
 \item{\code{exGauss_tau}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=mu_param,sigma=sigma_param,tau=yHat)))} --
@@ -122,13 +122,13 @@ by-timepoint d-prime, then fitting that d-prime as the response variable using a
 
 Currently supported \strong{change functions} are:
 \itemize{
-\item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote)}
+\item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is log2 of time to 50 percent remaining}
 \item{\code{expo_block} -- 3-parameter exponential (start, [inverse] rate, and asymptote)
 plus 2-paramter multiplicative changes on timescales that are a subset of the whole}
 \item{\code{expo_double} -- 4-parameter exponential (start, two equally weighted [inverse] rates, and asymptote)}
-\item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote)}
+\item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, defaulting is log2 of time to 25 percent remaining}
 \item{\code{power4} -- 4-parameter power (start, [inverse] rate, asymptote, and "previous learning time")}
-\item{\code{expo} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape)}
+\item{\code{weibull} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape) -- rate is same as \code{expo}}
 }
 }
 \note{
@@ -137,6 +137,11 @@ This is enforced by penalizing the time-evolving model's error multiplicatively 
 between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
 For this and other default model constraints see \code{?\link{tef_getBounds}}.
+
+Currently \strong{known bugs} are:
+\itemize{
+\item{The logistic linkfun must include threshChange=T. Returns error if only the bias term is allowed to change.}
+}
 }
 \examples{
 \dontrun{

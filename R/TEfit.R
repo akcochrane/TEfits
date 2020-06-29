@@ -31,7 +31,7 @@
 #'\item{\code{ols}, i.e. \code{sum((y-yHat)^2)} -- sum of squared error}
 #'\item{\code{rmse}, i.e. \code{sqrt(mean((y-yHat)^2))} -- root mean squared error}
 #'\item{\code{logcosh}, i.e. \code{sum(log(cosh(y-yHat)))} -- log-hyperbolic-cosine}
-#'\item{\code{bernoulli}, i.e. \code{-sum(y\*log(yHat) + (1-y)\*log(1-yHat))} -- Bernoulli [binary binomial]}
+#'\item{\code{bernoulli}, i.e. \code{-sum(y*log(yHat) + (1-y)*log(1-yHat))} -- Bernoulli [binary binomial]}
 #'\item{\code{exGauss_mu}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=yHat,sigma=sigma_param,tau=tau_param)))} --
 #'ex-Gaussian distribution with time-evolving change in the Gaussian mean parameter}
 #'\item{\code{exGauss_tau}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=mu_param,sigma=sigma_param,tau=yHat)))} --
@@ -79,13 +79,13 @@
 #'
 #' Currently supported \strong{change functions} are:
 #' \itemize{
-#' \item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote)}
+#' \item{\code{expo} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is log2 of time to 50 percent remaining}
 #' \item{\code{expo_block} -- 3-parameter exponential (start, [inverse] rate, and asymptote)
 #' plus 2-paramter multiplicative changes on timescales that are a subset of the whole}
 #' \item{\code{expo_double} -- 4-parameter exponential (start, two equally weighted [inverse] rates, and asymptote)}
-#' \item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote)}
+#' \item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, defaulting is log2 of time to 25 percent remaining}
 #' \item{\code{power4} -- 4-parameter power (start, [inverse] rate, asymptote, and "previous learning time")}
-#' \item{\code{expo} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape)}
+#' \item{\code{weibull} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape) -- rate is same as \code{expo}}
 #' }
 #'
 #' @note
@@ -94,6 +94,11 @@
 #' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 #' constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
 #' For this and other default model constraints see \code{?\link{tef_getBounds}}.
+#'
+#' Currently \strong{known bugs} are:
+#' \itemize{
+#' \item{The logistic linkfun must include threshChange=T. Returns error if only the bias term is allowed to change.}
+#' }
 #'
 #' @param varIn   Data frame or vector. First column [or vector] must be the time-dependent response variable (left hand side of regression). If available, second column must be the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param linkFun A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')
@@ -234,14 +239,14 @@ TEfit <- function(varIn,
     if(is.vector(modList$varIn)){
       modList$varIn <- data.frame(y=modList$varIn,timeVar=1:length(modList$varIn))
     }
-    if(any(sapply(modList$varIn,class)=='factor')){cat('WARNING: your data includes factors. Please do not include factor variables.')}
+    if(any(sapply(modList$varIn,class)=='factor')){warning('your data includes factors. Please do not include factor variables.')}
   }## ## ##
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
   ## ## ## ## ## ## ## ## ##
   ## ## >control arguments:
   {
-    if(length(control) < length(tef_control())){cat('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
+    if(length(control) < length(tef_control())){stop('\nYou do not have enough control inputs. Please use `control=tef_control()`.\n')}
     modList$convergeTol <- control$convergeTol
     modList$nTries      <- control$nTries
     modList$y_lim       <- control$y_lim
@@ -265,7 +270,7 @@ TEfit <- function(varIn,
   modList$timeVar <- colnames(modList$varIn)[2]
 
   if(max(xtabs(~modList$varIn[,1]),na.rm=T)/dim(na.omit(modList$varIn))[1]>.9){
-    cat('\nWARNING: Your response variable has few unique values. You may not be able to estimate a time-evolving function.\n')
+    warning('\nYour response variable has few unique values. You may not be able to estimate a time-evolving function.\n')
   }
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
@@ -440,6 +445,13 @@ TEfit <- function(varIn,
                       abs(bestFit$conditional_independence$rawSpearman),
                       abs(bestFit$conditional_independence$modelConditionalSpearman))$p
 
+      if(abs(bestFit$conditional_independence$rawSpearman) < abs(bestFit$conditional_independence$modelConditionalSpearman)){
+        bestFit$conditional_independence$pValSpearmanChange <- max(c(
+          1-bestFit$conditional_independence$pValSpearmanChange,
+          bestFit$conditional_independence$pValSpearmanChange
+        ))
+      }
+
     },silent=T)
 
     ## ## if they have the tseries package, then get the null and model residuals' KPSS p values:
@@ -463,7 +475,7 @@ TEfit <- function(varIn,
     rownames(bestFit$conditional_independence) <- paste0(modList$respVar,' ~ ',modList$timeVar,':')
 
     ## <><> for sigmoid links, find the threshold
-    if(modList$linkFun$link=='logit' || modList$linkFun$link=='weibull'){
+    if(modList$linkFun$link=='logit' || modList$linkFun$link=='weibull'){try({
       bestFit$fitThresh <- eval(as.formula(paste('~',modList$thresh_fun))[[2]],env=bestFit$fullDat)
 
       if(modList$changeFun=='power4'){
@@ -487,7 +499,7 @@ TEfit <- function(varIn,
         bootList$threshCI = list(ci025=apply(bootList$bootThresh,2,quantile,.025),
                                  ci975= apply(bootList$bootThresh,2,quantile,.975))
       }
-    }
+    },silent=T)}
 
     if(dim(modList$varIn)[2]>2){
       noCovar <- modList$varIn ; noCovar[,3:dim(noCovar)[2]] <- 0
