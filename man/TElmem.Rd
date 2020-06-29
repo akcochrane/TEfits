@@ -11,7 +11,7 @@ TElmem(formIn, dat, timeVar, groupingVar, nRuns = 1, silent = F)
 
 \item{dat}{model data, as in \code{lmer}}
 
-\item{timeVar}{String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed)}
+\item{timeVar}{String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed). Must be numeric and positive.}
 
 \item{groupingVar}{String. Indicates which variable in \code{datIn} should have a time=related random effect.}
 

@@ -31,7 +31,7 @@
 #'\item{\code{ols}, i.e. \code{sum((y-yHat)^2)} -- sum of squared error}
 #'\item{\code{rmse}, i.e. \code{sqrt(mean((y-yHat)^2))} -- root mean squared error}
 #'\item{\code{logcosh}, i.e. \code{sum(log(cosh(y-yHat)))} -- log-hyperbolic-cosine}
-#'\item{\code{bernoulli}, i.e. \code{-sum(y\*log(yHat) + (1-y)\*log(1-yHat))} -- Bernoulli [binary binomial]}
+#'\item{\code{bernoulli}, i.e. \code{-sum(y*log(yHat) + (1-y)*log(1-yHat))} -- Bernoulli [binary binomial]}
 #'\item{\code{exGauss_mu}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=yHat,sigma=sigma_param,tau=tau_param)))} --
 #'ex-Gaussian distribution with time-evolving change in the Gaussian mean parameter}
 #'\item{\code{exGauss_tau}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=mu_param,sigma=sigma_param,tau=yHat)))} --
@@ -94,6 +94,11 @@
 #' between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 #' constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
 #' For this and other default model constraints see \code{?\link{tef_getBounds}}.
+#'
+#' Currently \strong{known bugs} are:
+#' \itemize{
+#' \item{The logistic linkfun must include threshChange=T. Returns error if only the bias term is allowed to change.}
+#' }
 #'
 #' @param varIn   Data frame or vector. First column [or vector] must be the time-dependent response variable (left hand side of regression). If available, second column must be the time variable. All other columns are covariates, possibly involved in a link function.
 #' @param linkFun A list defining a link function (i.e., 'identity', 'd_prime', 'weibull', or 'logistic')
@@ -470,7 +475,7 @@ TEfit <- function(varIn,
     rownames(bestFit$conditional_independence) <- paste0(modList$respVar,' ~ ',modList$timeVar,':')
 
     ## <><> for sigmoid links, find the threshold
-    if(modList$linkFun$link=='logit' || modList$linkFun$link=='weibull'){
+    if(modList$linkFun$link=='logit' || modList$linkFun$link=='weibull'){try({
       bestFit$fitThresh <- eval(as.formula(paste('~',modList$thresh_fun))[[2]],env=bestFit$fullDat)
 
       if(modList$changeFun=='power4'){
@@ -494,7 +499,7 @@ TEfit <- function(varIn,
         bootList$threshCI = list(ci025=apply(bootList$bootThresh,2,quantile,.025),
                                  ci975= apply(bootList$bootThresh,2,quantile,.975))
       }
-    }
+    },silent=T)}
 
     if(dim(modList$varIn)[2]>2){
       noCovar <- modList$varIn ; noCovar[,3:dim(noCovar)[2]] <- 0

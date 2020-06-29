@@ -74,7 +74,7 @@ Currently supported \strong{error functions} are:
 \item{\code{ols}, i.e. \code{sum((y-yHat)^2)} -- sum of squared error}
 \item{\code{rmse}, i.e. \code{sqrt(mean((y-yHat)^2))} -- root mean squared error}
 \item{\code{logcosh}, i.e. \code{sum(log(cosh(y-yHat)))} -- log-hyperbolic-cosine}
-\item{\code{bernoulli}, i.e. \code{-sum(y\*log(yHat) + (1-y)\*log(1-yHat))} -- Bernoulli [binary binomial]}
+\item{\code{bernoulli}, i.e. \code{-sum(y*log(yHat) + (1-y)*log(1-yHat))} -- Bernoulli [binary binomial]}
 \item{\code{exGauss_mu}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=yHat,sigma=sigma_param,tau=tau_param)))} --
 ex-Gaussian distribution with time-evolving change in the Gaussian mean parameter}
 \item{\code{exGauss_tau}, i.e. \code{-sum(log(retimes::dexgauss(y,mu=mu_param,sigma=sigma_param,tau=yHat)))} --
