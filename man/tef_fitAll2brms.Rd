@@ -40,7 +40,7 @@ this function is less tested than most functions in the \code{TEfits} package. F
 \code{TEfitAll} \code{bernoulli} models are fit using either \code{bernoulli} or \code{Beta} response
 distributions in \code{brms} depending on whether the \code{TEfitAll} distribution is
 binary. \code{TEfitAll} \code{logcosh} models are fit using a \code{asym_laplace} response distribution
-in brms.
+in brms predicting the .5 quantile.
 }
 \note{
 Under development. Partial functionality.
