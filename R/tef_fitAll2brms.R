@@ -10,7 +10,7 @@
 #' \code{TEfitAll} \code{bernoulli} models are fit using either \code{bernoulli} or \code{Beta} response
 #' distributions in \code{brms} depending on whether the \code{TEfitAll} distribution is
 #' binary. \code{TEfitAll} \code{logcosh} models are fit using a \code{asym_laplace} response distribution
-#' in brms.
+#' in brms predicting the .5 quantile.
 #'
 #' @param TEs3s TEfitAll model
 #' @param nIter number of iterations
@@ -26,7 +26,6 @@
 #'
 #' @export
 tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA,prior_dispersion=2){
-
 
   require(brms)
   # par_lims <- TEs3s$allFitList[[1]]$modList$parLims
