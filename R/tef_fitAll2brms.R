@@ -2,8 +2,8 @@
 #' Refit a TEfitAll model with brms
 #'
 #' Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using the
-#' \code{\link[brms]{brms}} package. Note that, due to the extensive time needed to
-#' fit \code{\link[brms]{brms}} models,
+#' \code{\link[brms]{brms-package}} package. Note that, due to the extensive time needed to
+#' fit \code{\link[brms]{brms-package}} models,
 #' this function is less tested than most functions in the \code{TEfits} package. Functionality is
 #' \strong{experimental}.
 #'
@@ -22,7 +22,7 @@
 #' @note
 #' Under development. Partial functionality.
 #'
-#' @return A \code{\link[brms]{brms}} nonlinear mixed-effects model object.
+#' @return A \code{\link[brms]{brms-package}} nonlinear mixed-effects model object.
 #'
 #' @export
 tef_fitAll2brms <- function(TEs3s,nIter= 2000,nChains=3,nCores=2,errFun=NA,prior_dispersion=2){

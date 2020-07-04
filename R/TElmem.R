@@ -78,7 +78,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
     timeDat <- data.frame(groupName=c(),original=c(),transformed=c()) ; for(curGroupName in groupNames){
       groupMods[[curGroupName]] <- TElm(groupForm,
                                         timeVar = timeVar,
-                                        datIn = dat[dat[,groupingVar]==curGroupName,],
+                                        dat = dat[dat[,groupingVar]==curGroupName,],
                                         nBoot = 20
       )
       rateVect[curGroupName] <- groupMods[[curGroupName]]$rate
