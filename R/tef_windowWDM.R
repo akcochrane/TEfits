@@ -28,7 +28,7 @@ tef_windowWDM <- function(dat,windowSize=20,fit_BS=FALSE){
 
   require(RWiener)
 
-  overallMod <- wdm(dat)
+  overallMod <- wdm(dat[!is.na(dat)])
   overallPars <- overallMod$coefficients
   overallCI <- summary(overallMod)$cint
 
@@ -46,6 +46,7 @@ tef_windowWDM <- function(dat,windowSize=20,fit_BS=FALSE){
     curIndices <-  max(curKernel - half_kernel + 1, 1) : min(curKernel+half_kernel, length(dat))
 
     curDat <- dat[curIndices]
+    curDat <- curDat[!is.na(curDat)]
 
   try({ ## because optimization will inevitably fail for some windows, if the window size is too small
 
@@ -111,13 +112,14 @@ bsEst[curIndices,'ci975'] <-
     ,bias_Estimate = overallPars['beta']
     ,bias_c025 = overallCI['beta',"2.5 %"]
     ,bias_c975 = overallCI['beta',"97.5 %"]
-    ,original_data = dat
   )
   })
 
   if(any(apply(outTable,2,function(x){mean(is.na(x))>.25}))){
     warning('Estimation often failed. Using a larger window size is recommended.')
   }
+
+  outTable$original_data <- dat
 
   attr(outTable,'overall_model') <- overallMod
   attr(outTable,'overall_parameters') <- overallPars
