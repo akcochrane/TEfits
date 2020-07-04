@@ -27,12 +27,12 @@ tef_fitAll2brms(
 \item{prior_dispersion}{This number, multiplied by the SD of each TEfitAll parameter, is used as the prior SD for that parameter.}
 }
 \value{
-A \code{\link[brms]{brms}} nonlinear mixed-effects model object.
+A \code{\link[brms]{brms-package}} nonlinear mixed-effects model object.
 }
 \description{
 Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using the
-\code{\link[brms]{brms}} package. Note that, due to the extensive time needed to
-fit \code{\link[brms]{brms}} models,
+\code{\link[brms]{brms-package}} package. Note that, due to the extensive time needed to
+fit \code{\link[brms]{brms-package}} models,
 this function is less tested than most functions in the \code{TEfits} package. Functionality is
 \strong{experimental}.
 }
