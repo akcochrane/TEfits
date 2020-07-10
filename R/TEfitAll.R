@@ -19,6 +19,12 @@
 #'
 #' @export
 #'
+#' @examples
+#' \dontrun{
+#' m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID,groupingVarName = 'subID',bootPars = tef_bootList(resamples = 100))
+#' summary(m)
+#' }
+#'
 TEfitAll <- function(varIn,
                      groupingVar,
                      groupingVarName = 'grouping_var',
@@ -27,7 +33,7 @@ TEfitAll <- function(varIn,
                      linkFun = list(link='identity'),
                      errFun = 'ols',
                      changeFun = 'expo',
-                     bootPars = list(nBoots = 0, bootTries = 0, bootPercent=0),
+                     bootPars = tef_bootList(),
                      blockTimeVar = NULL,
                      covarTerms = list(),
                      control=tef_control()
