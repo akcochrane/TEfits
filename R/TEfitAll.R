@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID,groupingVarName = 'subID',bootPars = tef_bootList(resamples = 100))
+#' m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID,groupingVarName = 'subID',bootPars = tef_bootList(resamples = 20))
 #' summary(m)
 #' }
 #'
