@@ -38,7 +38,7 @@ TEfitAll <- function(varIn,
   fit_data <- data.frame()
 
   for(curGroup in unique(groupingVar)){
-    TEFitList[[length(TEFitList)+1]] <- TEfit(
+    TEFitList[[curGroup]] <- TEfit(
       varIn=varIn[groupingVar==curGroup,],linkFun=linkFun,errFun=errFun,
       changeFun=changeFun,bootPars=bootPars,
       blockTimeVar=blockTimeVar,
@@ -47,10 +47,10 @@ TEfitAll <- function(varIn,
 
     summLine <- TEFitList[[length(TEFitList)]]$model$par
     if(bootPars$nBoots>0){
-      pseudoSEs <- as.vector(coef(TEFitList[[length(TEFitList)]])$pseudoSE)
-      names(pseudoSEs) <- paste0(names(summLine),'_pseudoSE')
+      pseudoSEs <- as.vector(coef(TEFitList[[curGroup]])$pseudoSE)
+      names(pseudoSEs) <- paste0(rownames(coef(TEFitList[[curGroup]])),'_pseudoSE')
 
-      percentIncreasing <- TEFitList[[length(TEFitList)]]$bootList$percent_increasing
+      percentIncreasing <- TEFitList[[curGroup]]$bootList$percent_increasing
       names(percentIncreasing) <- 'percent_samples_increasing'
 
       summLine <- c(summLine,pseudoSEs,percentIncreasing)

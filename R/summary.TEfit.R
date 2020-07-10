@@ -30,8 +30,6 @@ summary.TEfit <- function(TEs3,printOutput=T){
   ,conditional_independence=TEs3$model$conditional_independence
   )
 
-
-
   if(exists('bootList',TEs3)){
 
     outList$percent_resamples_posSlope <- round(100*TEs3$bootList$percent_increasing,1)

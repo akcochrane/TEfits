@@ -12,7 +12,6 @@
 #' nBoot random 80 percent of data and tests the delta R-squared of each numeric or logical parameter
 #' when predicting the out-of-sample 20 percent.
 #'
-#'
 #' @return
 #' An augmented \code{rlm} or \code{lm} object that includes
 #' several new items: \code{$bootSummary}, \code{$boots} (all bootstrapped parameters),
@@ -43,8 +42,8 @@
 #'
 tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
 
-  if(!is.numeric(nBoot)){cat('Your number of boots must be numeric.')}
-  if(nBoot<2){(cat('Your number of boots must be positive'))}
+  if(!is.numeric(nBoot)){cat('Your number of bootstraps must be numeric.')}
+  if(nBoot<2){(cat('Your number of bootstraps must be positive'))}
   nBoot <- round(nBoot)
 
   if(useLM){fitReg <- lm
@@ -60,16 +59,14 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
     boots <- replicate(nBoot,
                        suppressWarnings({
                          curCoef <- NA
-                         while(!is.numeric(curCoef)){
+                         while(!is.numeric(curCoef)){ # ensures robustness to pathological resampling
                            try({
                              curRLM <- suppressWarnings({fitReg(formIn,datIn[sample(nrow(datIn),replace=T),],maxit=50)})
                              curCoef <- curRLM$coefficients
-                             # curPred <- fitted(curRLM)
                            },silent=T)
                          }
-                         return(#list(
+                         return(
                            curCoef=curCoef
-                           #,curPred=curPred)
                          )
                        })
     )
