@@ -15,7 +15,7 @@
 #'
 #' @seealso
 #' \code{\link{TEfit}} for fitting a single model;
-#' \code{\link{tef_fitAll2brms}} to re-fit the TEfitAll output using \code{\link[brms]{brms}}
+#' \code{\link{tef_fitAll2brms}} to re-fit the TEfitAll output using \code{\link[brms]{brms-package}}
 #'
 #' @export
 #'

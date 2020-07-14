@@ -67,7 +67,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                           method='L-BFGS-B',
                           control=list(maxit=100)
            )
-        },error = function(.){
+        },error = function(.){try({
           if(modList$quietErrs){cat('\nL-BFGS-B failed')}
         curFit <- optim(guesses,fn=tef_fitErr,
                         varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
@@ -82,8 +82,8 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                          method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
                         control=list(maxit=100)
         )
+        },silent=T)
         })
-
 
     }
     # cat('\n',names(guesses),'\n',guesses,'--',curFit$value)
@@ -91,7 +91,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     if(exists('curFit')){
       return(c(err=curFit$value,curFit$par))
     }else{
-      return(c(err=Inf,guesses))
+      return(c(err=1E20,guesses))
     }
 
   }
