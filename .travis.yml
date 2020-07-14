@@ -6,3 +6,4 @@ r_packages:
   - stats
   - MASS
   - testthat
+  - V8
