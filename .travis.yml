@@ -1,8 +1,5 @@
 language: r
 
-r: 
-  - 3.6
-   
 warnings_are_errors: false
 
 r_packages:
