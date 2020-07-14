@@ -3,7 +3,11 @@ language: r
 warnings_are_errors: false
 
 r_packages:
-  - stats
   - MASS
   - testthat
-  - V8
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libv8 &&
+    export PATH="/usr/local/opt/libv8/bin:$PATH" &&
+    export LDFLAGS="-L/usr/local/opt/libv8/lib" &&
+    export CFLAGS="-I/usr/local/opt/libv8/include"; fi
