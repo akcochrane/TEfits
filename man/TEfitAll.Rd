@@ -13,7 +13,7 @@ TEfitAll(
   linkFun = list(link = "identity"),
   errFun = "ols",
   changeFun = "expo",
-  bootPars = list(nBoots = 0, bootTries = 0, bootPercent = 0),
+  bootPars = tef_bootList(),
   blockTimeVar = NULL,
   covarTerms = list(),
   control = tef_control()
@@ -51,7 +51,14 @@ returning a list including two summaries and all models; returning
 only a summary is also an option. Arguments (except groupingvar, a grouping vector)
 are identical to, and are passed directly to, \code{\link{TEfit}}.
 }
+\examples{
+\dontrun{
+m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID,groupingVarName = 'subID',bootPars = tef_bootList(resamples = 20))
+summary(m)
+}
+
+}
 \seealso{
 \code{\link{TEfit}} for fitting a single model;
-\code{\link{tef_fitAll2brms}} to re-fit the TEfitAll output using \code{\link[brms]{brms}}
+\code{\link{tef_fitAll2brms}} to re-fit the TEfitAll output using \code{\link[brms]{brms-package}}
 }

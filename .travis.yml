@@ -3,6 +3,5 @@ language: r
 warnings_are_errors: false
 
 r_packages:
-  - stats
   - MASS
   - testthat
