@@ -7,7 +7,7 @@ r_packages:
   - testthat
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libv8 &&
-    export PATH="/usr/local/opt/libv8/bin:$PATH" &&
-    export LDFLAGS="-L/usr/local/opt/libv8/lib" &&
-    export CFLAGS="-I/usr/local/opt/libv8/include"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install v8 &&
+    export PATH="/usr/local/opt/v8/bin:$PATH" &&
+    export LDFLAGS="-L/usr/local/opt/v8/lib" &&
+    export CFLAGS="-I/usr/local/opt/v8/include"; fi
