@@ -1,15 +1,10 @@
 language: r
 
+r: 
+  - 3.6
+   
 warnings_are_errors: false
 
 r_packages:
-  - remotes
-  - V8
   - MASS
   - testthat
-
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install v8 &&
-    export PATH="/usr/local/opt/v8/bin:$PATH" &&
-    export LDFLAGS="-L/usr/local/opt/v8/lib" &&
-    export CFLAGS="-I/usr/local/opt/v8/include"; fi
