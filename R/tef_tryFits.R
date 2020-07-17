@@ -86,8 +86,6 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
         })
 
     }
-    # cat('\n',names(guesses),'\n',guesses,'--',curFit$value)
-    # print(Sys.time()-preRunTime)
     if(exists('curFit')){
       return(c(err=curFit$value,curFit$par))
     }else{
@@ -111,6 +109,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     bestFits <- bestFits[order(bestFits[,1]),][1:max(10,nPerRep),]
 
     ## ## with several parameters
+    try({
     if(ncol(bestFits)>2){
       if (
         max(apply(bestFits[,2:ncol(bestFits)],2,sd)) < modList$convergeTol
@@ -126,6 +125,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
     ){
       converged=T
     }
+    },silent=T)
 
     sumTries <- sumTries+nPerRep
   }

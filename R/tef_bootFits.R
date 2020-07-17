@@ -101,6 +101,16 @@ tef_bootFits <- function(modList){
     },silent=T)
   }
 
+    bootList$nBoots <- modList$bootPars$nBoots
+  bootList$bootPercent <- modList$bootPars$bootPercent
+
+  try({
+      bootList$boots <- apply(bootList$bootFits[,1:(dim(bootList$bootFits)[2]-1)],2,quantile,
+                         c(.01,.025,.1,pnorm(-1),.25,.5,.75,pnorm(1),.9,.975,.99),na.rm=T)
+  bootList$bootCorrel <- cor(bootList$bootFits[,1:(dim(bootList$bootFits)[2]-1)])
+
+    bootList$percent_increasing <- mean((ending_predicted_values-beginning_predicted_values)>0)
+
   ## find the trial at which predicted values diverge from initial values with d>=1
   try({
     curD <- 0
@@ -117,8 +127,6 @@ tef_bootFits <- function(modList){
   (mean(curDat[curDat$group==1,'x']) - mean(curDat[curDat$group==0,'x']))/
         mean(c(sd(curDat[curDat$group==1,'x']),sd(curDat[curDat$group==0,'x'])))
 
-
-
       if(curT==dim(bootList$bootPreds)[2]){curT <- NA}
     }
   },silent=T)
@@ -127,6 +135,9 @@ tef_bootFits <- function(modList){
 
   ending_predicted_values <- bootList$bootPreds[,dim(bootList$bootPreds)[2]]
   beginning_predicted_values <- bootList$bootPreds[,1]
+   bootList$slope_nonzero_D <-
+    (mean(ending_predicted_values) - mean(beginning_predicted_values))/
+    mean(c(sd(ending_predicted_values),sd(beginning_predicted_values)))
 
   curTest  <- wilcox.test(ending_predicted_values,
                           beginning_predicted_values,
@@ -136,16 +147,7 @@ tef_bootFits <- function(modList){
                     p = curTest$p.value, w = curTest$statistic, medDiff = medDiff)
   rownames(bootList$slope_nonzero_nonparametric) <- 'Wilcoxon Signed-Rank Test: '
 
-  bootList$slope_nonzero_D <-
-    (mean(ending_predicted_values) - mean(beginning_predicted_values))/
-    mean(c(sd(ending_predicted_values),sd(beginning_predicted_values)))
+  })
 
-  bootList$percent_increasing <- mean((ending_predicted_values-beginning_predicted_values)>0)
-
-  bootList$boots <- apply(bootList$bootFits[,1:(dim(bootList$bootFits)[2]-1)],2,quantile,
-                         c(.01,.025,.1,pnorm(-1),.25,.5,.75,pnorm(1),.9,.975,.99),na.rm=T)
-  bootList$bootCorrel <- cor(bootList$bootFits[,1:(dim(bootList$bootFits)[2]-1)])
-  bootList$nBoots <- modList$bootPars$nBoots
-  bootList$bootPercent <- modList$bootPars$bootPercent
   return(bootList)
 }
