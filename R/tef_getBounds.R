@@ -147,5 +147,18 @@ tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
 
   }
 
+  ## if NA or infinite, replace with 1E10
+  modList$parLims$parMin[is.na(modList$parLims$parMin)] <- -1E10
+  modList$parLims$parMin[is.infinite(modList$parLims$parMin)] <- -1E10
+
+  modList$parLims$parMax[is.na(modList$parLims$parMax)] <- 1E10
+  modList$parLims$parMax[is.infinite(modList$parLims$parMax)] <- 1E10
+
+  modList$parGuessBounds$parMin[is.na(modList$parGuessBounds$parMin)] <- -1E10
+  modList$parGuessBounds$parMin[is.infinite(modList$parGuessBounds$parMin)] <- -1E10
+
+  modList$parGuessBounds$parMax[is.na(modList$parGuessBounds$parMax)] <- 1E10
+  modList$parGuessBounds$parMax[is.infinite(modList$parGuessBounds$parMax)] <- 1E10
+
   return(modList)
 }

@@ -31,7 +31,7 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
   modList <- tef_getBounds(modList=modList,whichPnames=whichPnames,linkFunX=linkFunX)
 
-
+  #  cat(paste(unlist(modList$parGuessBounds),collapse = ' -- '),'\n')
 
   replTry <- function(modList=modList){
 
