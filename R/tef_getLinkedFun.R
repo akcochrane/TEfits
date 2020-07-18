@@ -11,6 +11,8 @@
 tef_getLinkedFun <- function(modList){
 
 
+  modList$timescale <- mean(diff(modList$varIn[,2]),na.rm=T)
+
   ## ## ## # # ## # # # # #
   ## set up the change funs:
   ## ## ## # # ## # # # # #
@@ -23,11 +25,13 @@ tef_getLinkedFun <- function(modList){
     # # default to min=50% @ sd(timeVar[1:10]) and max=80% @ max(timeVar)
   if(all(modList$rate_lim == 0)){
     modList$rate_lim[1] <- log(sd(
-      sort(unique(na.omit(modList$varIn[,2])))[1:min(10,length(unique(na.omit(modList$varIn[,2]))))]
-      )-1,base=modList$expBase)
+      seq(modList$timescale,modList$timescale*10,modList$timescale)
+      ),base=modList$expBase)
     modList$rate_lim[2] <- log(
       (1-max(modList$varIn[,2],na.rm=T))/log(.25,base=modList$rateBase)
       ,base=modList$expBase)
+
+
   }
   }
 
@@ -43,6 +47,13 @@ tef_getLinkedFun <- function(modList){
      }}
 }
 
+  if(!is.numeric(modList$rate_lim[1]) || is.infinite(modList$rate_lim[1]) || modList$rate_lim[1] < log(modList$timescale)){
+    modList$rate_lim[1] <- 0
+    warning('Rate limits not automatically set appropriately. Please set rate limits manually.')
+  }
+  if(!is.numeric(modList$rate_lim[2]) || is.infinite(modList$rate_lim[2]) || modList$rate_lim[2] > log(max(modList$varIn[,2],na.rm=T)*5)){
+    modList$rate_lim[2] <- log(max(modList$varIn[,2],na.rm=T)*5)
+  }
 
   ## ## ## # # ## # # # # #
   ## the link funs:

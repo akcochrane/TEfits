@@ -56,8 +56,13 @@ tef_checkPars <- function(err,guesses,curDat,pNames,evalFun,errFun,respVar,linkF
   if (exists('thresh_covars',paramTerms)){paramTerms <- paramTerms$thresh_covars}
 
   for (curCovar in names(paramTerms)){
-    paramMinMax <- fivenum(eval(formula(paste('~',paramTerms[curCovar]))[[2]],
-                                envir=curDat))[c(1,5)] # get minimum and maximum predicted values for the parameter
+
+    paramPred <- eval(formula(paste('~',paramTerms[curCovar]))[[2]],
+                                envir=curDat)
+
+    paramMinMax <- c(minVal = max(c(min(paramPred,na.rm=T), -1E10),na.rm = T),
+                     maxVal = min(c(max(paramPred,na.rm=T), 1E10), na.rm=T)
+                     ) # get minimum and maximum predicted values for the parameter
 
     ########%#
     # as yet unused:'pBS','pFatigueTime','pFatigueHWHM'
