@@ -34,7 +34,7 @@
 #'
 #' @param formIn model formula, as in \code{glmer}
 #' @param dat model data, as in \code{glmer}
-#' @param groupingVar String. Indicates which variable in \code{datIn} should have a time=related random effect.
+#' @param groupingVar String. Indicates which variable in \code{datIn} should have a time-related random effect.
 #' @param family model family, as in \code{glmer}
 #' @inheritParams TElmem
 #'
