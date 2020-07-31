@@ -24,7 +24,7 @@ TEfitAll(
 
 \item{groupingVar}{Variable (e.g., participant ID) with which to separate TEfit models. Length must be nrows(varIn)}
 
-\item{groupingVarName}{Name of grouping var}
+\item{groupingVarName}{Name of grouping variable}
 
 \item{returnAll}{Logical. Return only a summary (when T), or that summary plus every model, in a list (when F)}
 
@@ -48,7 +48,7 @@ TEfitAll(
 A wrapper for fitting a \code{\link{TEfit}} model to the data
 for every unique value of groupingVar. Defaults to
 returning a list including two summaries and all models; returning
-only a summary is also an option. Arguments (except groupingvar, a grouping vector)
+only a summary is also an option. Most arguments (except, e.g., \code{groupingVar}, a grouping vector)
 are identical to, and are passed directly to, \code{\link{TEfit}}.
 }
 \examples{

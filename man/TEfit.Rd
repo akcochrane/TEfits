@@ -110,7 +110,7 @@ value of the outcome variable at weibullX==Inf [\code{rhAsymptote}],
 offset of the predicted values to prevent a pathological error calculation [\code{lapseRate}])
 .}
 \item{\code{d_prime} -- implemented by
-\code{linkFun=list(link='weibull',presence='variableName',
+\code{linkFun=list(link='d_prime',presence='variableName',
 max_d_prime=5,smooth_hwhm=3)}
 -- \code{link} and \code{presence} are required, \code{max_d_prime}
 and \code{smooth_hwhm} have default values. The pFA and pH are

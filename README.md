@@ -69,7 +69,7 @@ dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 # fit a `TEfit` model
 mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
-             bootPars=list(nBoots=40))
+             bootPars=tef_bootList(resamples = 40))
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 ```
 
@@ -86,19 +86,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 0.999 1.000    0.000
-    ## pRate     2.738 2.674 2.820    0.037
-    ## pStart    0.231 0.202 0.273    0.018
+    ## pAsym     0.998 0.985 1.000    0.004
+    ## pRate     2.730 2.544 2.808    0.067
+    ## pStart    0.238 0.144 0.284    0.036
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42313 16.83409     3   30 37.04985 37.06937 -0.01952056
+    ## bernoulli 13.42604 16.83409     3   30 37.05566 37.06937 -0.01370674
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.03581758
+    ## response ~ trial_number:          -1               -0.1497219
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.03581758                  0
+    ## response ~ trial_number:                  0.1497219                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -107,11 +107,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate    err
-    ## pAsym   1.000  0.102 -0.063 -0.007
-    ## pStart  0.102  1.000  0.635  0.749
-    ## pRate  -0.063  0.635  1.000  0.254
-    ## err    -0.007  0.749  0.254  1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000 -0.305 0.153 -0.160
+    ## pStart -0.305  1.000 0.652  0.564
+    ## pRate   0.153  0.652 1.000  0.381
+    ## err    -0.160  0.564 0.381  1.000
 
 Fitting multiple models
 -----------------------
@@ -149,16 +149,16 @@ summary(mod_4group)
     ## >> Formula: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
-    ##             pAsym     pStart     pRate
-    ## mean   0.14917782 0.01639250 3.8334249
-    ## stdErr 0.03933358 0.01060408 0.0242443
+    ##            pAsym     pStart      pRate
+    ## mean   0.1492270 0.01639027 3.83366264
+    ## stdErr 0.0393339 0.01060448 0.02431836
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
-    ## mean   3.005960e-04 0.03071614     3   30 1691.6981 1.110223e-16 0.97598425
-    ## stdErr 6.862523e-05 0.01187769     0    0  653.0905 1.110223e-16 0.01661321
+    ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
+    ## stdErr 6.864644e-05 0.01187769     0    0  653.4848 1.110223e-16 0.01661145
     ##                BIC    nullBIC   deltaBIC  linkFun errFun changeFun converged
-    ## mean   -337.326328 -211.91820 -125.40813 identity    ols      expo         1
-    ## stdErr    6.542565   14.35328   19.25863 identity    ols      expo         0
+    ## mean   -337.338970 -211.91820 -125.42077 identity    ols      expo         1
+    ## stdErr    6.548355   14.35328   19.26152 identity    ols      expo         0
     ##        pValSpearmanChange
     ## mean                    0
     ## stdErr                  0
@@ -168,10 +168,10 @@ summary(mod_4group)
     ## 
     ## >> Parameter Pearson product-moment correlations:
 
-    ##        pAsym pStart  pRate
-    ## pAsym   1.00  1.000 -0.760
-    ## pStart  1.00  1.000 -0.765
-    ## pRate  -0.76 -0.765  1.000
+    ##         pAsym pStart  pRate
+    ## pAsym   1.000  1.000 -0.757
+    ## pStart  1.000  1.000 -0.763
+    ## pRate  -0.757 -0.763  1.000
 
 Using a more common linear regression framework
 -----------------------------------------------
@@ -191,9 +191,9 @@ lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 
 TElm parameter estimates:
 
-|  X.Intercept.|  trial\_number|  rate|
-|-------------:|--------------:|-----:|
-|         3.536|         -2.658|  2.89|
+|  X.Intercept.|  trial\_number|   rate|
+|-------------:|--------------:|------:|
+|         3.522|         -2.653|  2.867|
 
 TEfit parameter estimates:
 

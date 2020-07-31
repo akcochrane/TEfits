@@ -67,7 +67,7 @@
 #' offset of the predicted values to prevent a pathological error calculation [\code{lapseRate}])
 #' .}
 #' \item{\code{d_prime} -- implemented by
-#' \code{linkFun=list(link='weibull',presence='variableName',
+#' \code{linkFun=list(link='d_prime',presence='variableName',
 #' max_d_prime=5,smooth_hwhm=3)}
 #' -- \code{link} and \code{presence} are required, \code{max_d_prime}
 #' and \code{smooth_hwhm} have default values. The pFA and pH are
@@ -305,8 +305,10 @@ TEfit <- function(varIn,
   }
   modList$times['vars2forms'] <- Sys.time() - sum(modList$times)
 
+  ## ## ## ## ## ## ## ## ##
+  ## ## > FIT NULL MODEL
 
-  #### FIT NULL MODEL, CAN GET PARAMETER GUESSES FROM HERE
+  # # CAN GET PARAMETER GUESSES FROM HERE
   ### ### ### CAN ALSO DO THINGS LIKE REDUCTION TO 2D SEARCH,
   # # # # NULL LL VALUES, NULL PREDICTED VALUES, ETC
 
@@ -320,6 +322,8 @@ TEfit <- function(varIn,
 
   modList$times['nullFits'] <- Sys.time() - sum(modList$times)
 
+  ## ## ## ## ## ## ## ## ##
+  ## ## > Fit Actual Model:
   bestFit <- tef_tryFits(modList)
 
   modList$times['modFits'] <- Sys.time() - sum(modList$times)
@@ -384,7 +388,7 @@ TEfit <- function(varIn,
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 
   ## ## ## ## ## ## ## ## ##
-  ## ## >Run resampled fits
+  ## ## > Run resampled fits
   if(modList$bootPars$nBoots > 0){
     bootList <- tef_bootFits(modList)
     if(bootList$bootPercent<1){

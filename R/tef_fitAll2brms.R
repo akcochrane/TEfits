@@ -1,8 +1,8 @@
 
 #' Refit a TEfitAll model with brms
 #'
-#' Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using the
-#' \code{\link[brms]{brms-package}} package. Note that, due to the extensive time needed to
+#' Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using
+#' \code{\link[brms]{brms-package}}. Note that, due to the extensive time needed to
 #' fit \code{\link[brms]{brms-package}} models,
 #' this function is less tested than most functions in the \code{TEfits} package. Functionality is
 #' \strong{experimental}.

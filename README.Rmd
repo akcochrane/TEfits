@@ -49,7 +49,7 @@ dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 # fit a `TEfit` model
 mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
-             bootPars=list(nBoots=40))
+             bootPars=tef_bootList(resamples = 40))
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 
 summary(mod_boot)
