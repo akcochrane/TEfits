@@ -21,7 +21,7 @@ TEglmem(
 
 \item{timeVar}{String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed). Must be numeric and positive.}
 
-\item{groupingVar}{String. Indicates which variable in \code{datIn} should have a time=related random effect.}
+\item{groupingVar}{String. Indicates which variable in \code{datIn} should have a time-related random effect.}
 
 \item{family}{model family, as in \code{glmer}}
 
