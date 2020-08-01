@@ -27,6 +27,10 @@ The **TEfits** package has a heavy emphasis on interpretability of parameters. A
 A basic model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
 
 ```{r simple_model, message=FALSE, warning=FALSE}
+
+# If necessary, install package:
+# devtools::install_github('akcochrane/TEfits')
+
 # generate artificial data:
 dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
 
