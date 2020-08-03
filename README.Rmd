@@ -17,7 +17,7 @@ Behavioral data is described, interpreted, and tested using indices such as d pr
 
 The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
-## Installing and loading the package
+## Installing the package
 
 The R package `devtools` includes a very easy way to install packages from Github.
 
