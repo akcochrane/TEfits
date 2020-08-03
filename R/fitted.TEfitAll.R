@@ -7,6 +7,13 @@
 #' @method fitted TEfitAll
 #' @export
 #'
+#' @examples
+#' \dontrun{
+#' m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID)
+#' fitted_data <- fitted(m)
+#' plot(fitted_data$meanPred)
+#' }
+#'
 fitted.TEfitAll <- function(TEs3s){
   # loop through the fits, get the predVals, and calculate the mean/SE
   allPreds <- matrix(NA,length(TEs3s$allFitList),nrow(TEs3s$allFitList[[1]]$data)*10) ## make it plenty big for varieties of sizes

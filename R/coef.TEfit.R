@@ -6,7 +6,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{coef(model_fit_by_TEfit)}
+#' \dontrun{
+#' m <- TEfit(anstrain_s1[,c('acc','trialNum')], bootPars = tef_bootList(resamples = 50))
+#' coef(m)
+#' }
 #'
 coef.TEfit <- function(TEs3){
   parVals <- data.frame(Estimate=round(TEs3$model$par,3))

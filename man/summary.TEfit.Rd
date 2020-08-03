@@ -24,6 +24,9 @@ differences are divided by qnorm(.975) and averaged in order to get the pseudo-S
 pseudo standard deviation of the parameter expected value.
 }
 \examples{
-\dontrun{summary(model_fit_by_TEfit)}
+\dontrun{
+m <- TEfit(anstrain_s1[,c('acc','trialNum')])
+summary(m)
+}
 
 }

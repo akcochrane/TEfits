@@ -43,7 +43,7 @@ when predicting the out-of-sample 20 percent.
 dat <- data.frame(x=rnorm(50))
 dat$y <- dat$x + rnorm(50)
 dat$z <- dat$y - rnorm(50)
-dat$z[2] <- NA
+dat$z[2] <- NA # the function is robust to NAs
 m <- tef_rlm_boot(y~x*z,dat)
 m$bootSummary # to get a summary of the fit[s]
 comment(m$bootSummary) # to get an explanation of the summary data frame

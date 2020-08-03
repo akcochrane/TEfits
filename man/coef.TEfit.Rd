@@ -13,6 +13,9 @@
 Extract coefficients from a TEfit model
 }
 \examples{
-\dontrun{coef(model_fit_by_TEfit)}
+\dontrun{
+m <- TEfit(anstrain_s1[,c('acc','trialNum')], bootPars = tef_bootList(resamples = 50))
+coef(m)
+}
 
 }
