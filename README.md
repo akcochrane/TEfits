@@ -11,14 +11,20 @@ Behavioral data is described, interpreted, and tested using indices such as d pr
 
 The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
+Installing and loading the package
+----------------------------------
+
+The R package `devtools` includes a very easy way to install packages from Github.
+
+    devtools::install_github('akcochrane/TEfits')
+
 Simple model of exponential change
 ----------------------------------
 
 A basic model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
 
 ``` r
-# If necessary, install package:
-# devtools::install_github('akcochrane/TEfits')
+library(TEfits)
 
 # generate artificial data:
 dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
@@ -29,7 +35,7 @@ mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
 plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 ```
 
-![](README_files/figure-markdown_github/simple_model-1.png)
+![](README_files/figure-markdown_github/model_simple-1.png)
 
 ``` r
 summary(mod_simple)
@@ -89,19 +95,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.999 0.983 1.000    0.004
-    ## pRate     2.707 2.586 2.847    0.067
-    ## pStart    0.224 0.179 0.271    0.023
+    ## pAsym     0.997 0.984 1.000    0.004
+    ## pRate     2.712 2.539 2.792    0.065
+    ## pStart    0.236 0.139 0.276    0.035
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42474 16.83409     3   30 37.05307 37.06937 -0.01629702
+    ##                err  nullErr nPars nObs     BIC  nullBIC    deltaBIC
+    ## bernoulli 13.42761 16.83409     3   30 37.0588 37.06937 -0.01056722
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1             -0.002447164
+    ## response ~ trial_number:          -1               -0.1697442
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                0.002447164                  0
+    ## response ~ trial_number:                  0.1697442                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -110,11 +116,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000 -0.211 0.200 -0.341
-    ## pStart -0.211  1.000 0.577  0.726
-    ## pRate   0.200  0.577 1.000  0.296
-    ## err    -0.341  0.726 0.296  1.000
+    ##        pAsym pStart pRate   err
+    ## pAsym  1.000  0.328 0.415 0.175
+    ## pStart 0.328  1.000 0.804 0.435
+    ## pRate  0.415  0.804 1.000 0.212
+    ## err    0.175  0.435 0.212 1.000
 
 Fitting multiple models
 -----------------------
@@ -153,8 +159,8 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922724 0.01639027 3.83366608
-    ## stdErr 0.03933406 0.01060449 0.02431492
+    ## mean   0.14922720 0.01639029 3.83366518
+    ## stdErr 0.03933403 0.01060450 0.02431581
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -196,7 +202,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.541|          -2.66|  2.899|
+|         3.534|         -2.658|  2.888|
 
 TEfit parameter estimates:
 
