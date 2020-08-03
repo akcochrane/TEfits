@@ -12,3 +12,11 @@
 \description{
 Get fitted values and summary statistics from a set of TEfit models
 }
+\examples{
+\dontrun{
+m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID)
+fitted_data <- fitted(m)
+plot(fitted_data$meanPred)
+}
+
+}

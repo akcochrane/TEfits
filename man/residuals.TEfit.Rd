@@ -10,5 +10,5 @@
 \item{modelIn}{A TEfit model}
 }
 \description{
-Plotting of the residuals is also an option.
+Deprecated
 }

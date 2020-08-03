@@ -1,15 +1,16 @@
 #' Extract residuals from a TEfit model
 #'
-#' Plotting of the residuals is also an option.
+#' Deprecated
 #'
 #' @param modelIn A TEfit model
 #'
 #' @method residuals TEfit
+#'
 #' @export
 #'
 residuals.TEfit <- function(modelIn,toPlot=F){
 
-  modelResids <- modelIn$modell$model_residuals
+  modelResids <- modelIn$model$model_residuals
   nullResids <- modelIn$modList$varIn[,modelIn$modList$respVar]-mean(modelIn$modList$varIn[,modelIn$modList$respVar],na.rm=T)
 
   if(toPlot){

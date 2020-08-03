@@ -16,3 +16,10 @@
 \description{
 Plot a collection of models fit by TEfitAll()
 }
+\examples{
+\dontrun{
+m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID)
+plot(m)
+}
+
+}

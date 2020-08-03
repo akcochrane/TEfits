@@ -2,7 +2,7 @@
 #'
 #' \code{\link{TEfit}} internal
 #'
-#' This function takes a modList, formats inputs for tef_fitErr(),
+#' Takes a modList, formats inputs for tef_fitErr(),
 #' and uses optim() to find many fits of the modList. Then all of the
 #' fits are compared in order to determine which are best and whether the
 #' 10 best fits have similar parameters (SD<convergeTol).

@@ -17,7 +17,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{summary(model_fit_by_TEfit)}
+#' \dontrun{
+#' m <- TEfit(anstrain_s1[,c('acc','trialNum')])
+#' summary(m)
+#' }
 #'
 summary.TEfit <- function(TEs3,printOutput=T){
   ### ###

@@ -6,7 +6,14 @@
 #' @param ymax maximum y value
 #'
 #' @method plot TEfitAll
+#'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' m <- TEfitAll(anstrain[,c('acc','trialNum')],groupingVar = anstrain$subID)
+#' plot(m)
+#' }
 #'
 plot.TEfitAll <- function(TEs3s,ymin=NA,ymax=NA){
 

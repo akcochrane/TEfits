@@ -2,7 +2,7 @@
 TEfits
 ======
 
-[![DOI](https://zenodo.org/badge/225967950.svg)](https://zenodo.org/badge/latestdoi/225967950) [![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![DOI](https://zenodo.org/badge/225967950.svg)](https://zenodo.org/badge/latestdoi/225967950) [![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
 
 Overview to Time-Evolving fits
 ------------------------------
@@ -79,12 +79,6 @@ dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=tef_bootList(resamples = 40))
-```
-
-    ## 
-    ## Warning: model did not converge at tol = 0.05 . Consider respecifying, allowing more runs, or increasing the convergence tolerance.
-
-``` r
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 ```
 
@@ -97,24 +91,23 @@ summary(mod_boot)
     ## 
     ## >> Formula: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
-    ## >> Converged: FALSE 
-    ## >> Max runs: 200  -- Tolerance: 0.05 
+    ## >> Converged: TRUE 
     ## 
     ## >> Fit Values:
-    ##        Estimate  Q025 Q975 pseudoSE
-    ## pAsym     1.000 0.987 1.00    0.003
-    ## pRate     2.780 2.562 2.87    0.079
-    ## pStart    0.257 0.172 0.28    0.028
+    ##        Estimate  Q025  Q975 pseudoSE
+    ## pAsym     0.998 0.987 1.000    0.003
+    ## pRate     2.715 2.531 2.827    0.076
+    ## pStart    0.233 0.112 0.279    0.043
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC   deltaBIC
-    ## bernoulli 13.42766 16.83409     3   30 37.05891 37.06937 -0.0104599
+    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
+    ## bernoulli 13.42559 16.83409     3   30 37.05477 37.06937 -0.01460234
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1               -0.3036707
+    ## response ~ trial_number:          -1               -0.1065628
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                  0.3036707                  0
+    ## response ~ trial_number:                  0.1065628                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -123,11 +116,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate   err
-    ## pAsym   1.000 -0.033 0.255 0.161
-    ## pStart -0.033  1.000 0.738 0.449
-    ## pRate   0.255  0.738 1.000 0.159
-    ## err     0.161  0.449 0.159 1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000 -0.211 0.169 -0.230
+    ## pStart -0.211  1.000 0.690  0.471
+    ## pRate   0.169  0.690 1.000  0.110
+    ## err    -0.230  0.471 0.110  1.000
 
 Fitting multiple models
 -----------------------
@@ -166,8 +159,8 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922723 0.01639030 3.83366568
-    ## stdErr 0.03933406 0.01060451 0.02431531
+    ## mean   0.14922724 0.01639031 3.83366584
+    ## stdErr 0.03933406 0.01060452 0.02431516
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -209,7 +202,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.523|         -2.654|  2.869|
+|         3.522|         -2.653|  2.867|
 
 TEfit parameter estimates:
 
