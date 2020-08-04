@@ -2,7 +2,7 @@
 TEfits
 ======
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![DOI](https://zenodo.org/badge/225967950.svg)](https://zenodo.org/badge/latestdoi/225967950) [![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![DOI](https://zenodo.org/badge/225967950.svg)](https://zenodo.org/badge/latestdoi/225967950) [![status](https://joss.theoj.org/papers/0d67da372696cc9a817255858d8bb8a7/status.svg)](https://joss.theoj.org/papers/0d67da372696cc9a817255858d8bb8a7) [![Build Status](https://travis-ci.com/akcochrane/TEfits.svg?branch=master)](https://travis-ci.com/akcochrane/TEfits)
 
 Overview to Time-Evolving fits
 ------------------------------
@@ -95,19 +95,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.998 0.987 1.000    0.003
-    ## pRate     2.715 2.531 2.827    0.076
-    ## pStart    0.233 0.112 0.279    0.043
+    ## pAsym     1.000 0.987 1.000    0.003
+    ## pRate     2.692 2.609 2.824    0.055
+    ## pStart    0.214 0.173 0.293    0.031
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42559 16.83409     3   30 37.05477 37.06937 -0.01460234
+    ## bernoulli 13.42645 16.83409     3   30 37.05649 37.06937 -0.01287798
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1               -0.1065628
+    ## response ~ trial_number:          -1                0.1261402
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                  0.1065628                  0
+    ## response ~ trial_number:                  0.1261402                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -116,11 +116,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000 -0.211 0.169 -0.230
-    ## pStart -0.211  1.000 0.690  0.471
-    ## pRate   0.169  0.690 1.000  0.110
-    ## err    -0.230  0.471 0.110  1.000
+    ##         pAsym pStart  pRate   err
+    ## pAsym   1.000 -0.208 -0.110 0.091
+    ## pStart -0.208  1.000  0.640 0.545
+    ## pRate  -0.110  0.640  1.000 0.031
+    ## err     0.091  0.545  0.031 1.000
 
 Fitting multiple models
 -----------------------
@@ -159,8 +159,8 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922724 0.01639031 3.83366584
-    ## stdErr 0.03933406 0.01060452 0.02431516
+    ## mean   0.14922728 0.01639031 3.83366637
+    ## stdErr 0.03933409 0.01060452 0.02431463
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -202,7 +202,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.522|         -2.653|  2.867|
+|         3.539|          -2.66|  2.895|
 
 TEfit parameter estimates:
 
