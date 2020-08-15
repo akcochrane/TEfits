@@ -20,7 +20,7 @@ test_that("3-parameter expo model params", {
 test_that('model boundaries are correct',{
   expect_equivalent(as.numeric(round(m$modList$y_lim[1],3)),-1E7) # entered 20200502
   expect_equivalent(as.numeric(round(m$modList$y_lim[2],3)), 1E7) # entered 20200502
-  expect_equivalent(as.numeric(round(m$modList$rate_lim[1],2)),1.02) # entered 20200502
+  expect_equivalent(as.numeric(round(m$modList$rate_lim[1],2)),1.60) # entered 20200815 (updated default min rate)
   expect_equivalent(as.numeric(round(m$modList$rate_lim[2],2)), 4.61) # entered 20200502
 })
 
@@ -32,7 +32,7 @@ test_that('tef_getBounds output is correct',{
   expect_equivalent(length(m_bounds$parGuessBounds$parMax),3) # entered 20200502
   expect_equivalent(length(m_bounds$parGuessBounds$parMin),3) # entered 20200502
   expect_equivalent(round(m_bounds$parGuessBounds$parMax,2),c(.92, 0.92, 4.61)) # entered 20200502
-  expect_equivalent(round(m_bounds$parGuessBounds$parMin,2),c(.30, 0.30,1.02)) # entered 20200502
+  expect_equivalent(round(m_bounds$parGuessBounds$parMin,2),c(.30, 0.30,1.60)) # entered 20200815 (updated default min rate)
 })
 
 ## ##
