@@ -18,6 +18,10 @@ The R package `devtools` includes a very easy way to install packages from Githu
 
     devtools::install_github('akcochrane/TEfits')
 
+In addition, you can run automated tests ensuring basic functionality using the `testthat` package.
+
+    testthat::test_package('TEfits')
+
 Simple model of exponential change
 ----------------------------------
 
@@ -95,19 +99,19 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     1.000 0.987 1.000    0.003
-    ## pRate     2.692 2.609 2.824    0.055
-    ## pStart    0.214 0.173 0.293    0.031
+    ## pAsym     0.998 0.987 1.000    0.003
+    ## pRate     2.679 2.566 2.856    0.074
+    ## pStart    0.217 0.187 0.287    0.026
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42645 16.83409     3   30 37.05649 37.06937 -0.01287798
+    ##                err  nullErr nPars nObs      BIC  nullBIC     deltaBIC
+    ## bernoulli 13.42844 16.83409     3   30 37.06048 37.06937 -0.008893169
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1                0.1261402
+    ## response ~ trial_number:          -1                0.0647386
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                  0.1261402                  0
+    ## response ~ trial_number:                  0.0647386                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -116,11 +120,11 @@ summary(mod_boot)
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart  pRate   err
-    ## pAsym   1.000 -0.208 -0.110 0.091
-    ## pStart -0.208  1.000  0.640 0.545
-    ## pRate  -0.110  0.640  1.000 0.031
-    ## err     0.091  0.545  0.031 1.000
+    ##        pAsym pStart pRate   err
+    ## pAsym  1.000  0.284 0.457 0.097
+    ## pStart 0.284  1.000 0.788 0.689
+    ## pRate  0.457  0.788 1.000 0.493
+    ## err    0.097  0.689 0.493 1.000
 
 Fitting multiple models
 -----------------------
@@ -158,9 +162,9 @@ summary(mod_4group)
     ## >> Formula: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
-    ##             pAsym     pStart      pRate
-    ## mean   0.14922728 0.01639031 3.83366637
-    ## stdErr 0.03933409 0.01060452 0.02431463
+    ##             pAsym     pStart     pRate
+    ## mean   0.14922699 0.01639027 3.8336626
+    ## stdErr 0.03933387 0.01060448 0.0243184
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -202,7 +206,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.539|          -2.66|  2.895|
+|         3.526|         -2.655|  2.873|
 
 TEfit parameter estimates:
 

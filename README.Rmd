@@ -27,6 +27,12 @@ The R package `devtools` includes a very easy way to install packages from Githu
 devtools::install_github('akcochrane/TEfits')
 ```
 
+In addition, you can run automated tests ensuring basic functionality using the `testthat` package.
+
+```
+testthat::test_package('TEfits')
+```
+
 ## Simple model of exponential change
 
 A basic model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
