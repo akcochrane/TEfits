@@ -1,6 +1,6 @@
 
 
-context("check_TEfit")
+context("check_TEfitAll")
 
 library(TEfits)
 d <- anstrain
@@ -10,7 +10,7 @@ d$moreCatA <- as.numeric(d$ratio > 0)
 
 m <- list()
 test_that('TEfitAll runs with various link and error functions',{
-  
+
   expect_success({
 m$ident_ols <- TEfitAll(d[,c('acc','trialNum')],
                         bootPars = tef_bootList(resamples = 20),groupingVar = d$subID)
