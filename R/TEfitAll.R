@@ -66,9 +66,15 @@ TEfitAll <- function(varIn,
       summLine,
       TEFitList[[length(TEFitList)]]$model$GoF,
       linkFun=linkFun$link,errFun=errFun,changeFun=changeFun,
-      converged=TEFitList[[length(TEFitList)]]$model$converged,
-      pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
+      converged=TEFitList[[length(TEFitList)]]$model$converged
     ))
+
+    try({
+      TEFit_group <- rbind(TEFit_group,
+                           pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
+      )
+    },silent=T)
+
     rownames(TEFit_group)[nrow(TEFit_group)] <- curGroup
 
     fit_data <- rbind(fit_data,TEFitList[[length(TEFitList)]]$data)
