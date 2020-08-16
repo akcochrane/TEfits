@@ -41,34 +41,17 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
 
     guesses[grep('sigma_param',modList$guessNames)] <- runif(length(grep('sigma_param',modList$guessNames)),
-                                                     0,mad(modList$varIn[,modList$respVar],na.rm=T))
+                                                             0,mad(modList$varIn[,modList$respVar],na.rm=T))
 
     guesses[grep('mu_param',modList$guessNames)] <- runif(length(grep('mu_param',modList$guessNames)),
-                                                  0,min(modList$varIn[,modList$respVar],na.rm=T))
+                                                          0,min(modList$varIn[,modList$respVar],na.rm=T))
     guesses[grep('tau_param',modList$guessNames)] <- runif(length(grep('tau_param',modList$guessNames)),
-                                                   0,min(modList$varIn[,modList$respVar],na.rm=T))
+                                                           0,min(modList$varIn[,modList$respVar],na.rm=T))
 
     names(guesses) <- modList$guessNames
     {
 
-        tryCatch({
-           curFit <- optim(guesses,fn=tef_fitErr,
-                          varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
-                          errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
-                          y_lim=modList$y_lim,rate_lim=modList$rate_lim,
-                          shape_lim=modList$shape_lim,
-                          penalizeMean = c(penalizeMean,mean(nullYhat,na.rm=T)),
-                          penalizeRate = modList$penalizeRate,
-                          parLims=modList$parLims,
-                          thresh_fun = thresh_fun,
-                          paramTerms = paramTerms,
-                          upper = modList$parLims$parMax,
-                          lower = modList$parLims$parMin,
-                          method='L-BFGS-B',
-                          control=list(maxit=100)
-           )
-        },error = function(.){try({
-          if(modList$quietErrs){cat('\nL-BFGS-B failed')}
+      tryCatch({
         curFit <- optim(guesses,fn=tef_fitErr,
                         varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
                         errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
@@ -79,11 +62,28 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
                         parLims=modList$parLims,
                         thresh_fun = thresh_fun,
                         paramTerms = paramTerms,
-                         method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
+                        upper = modList$parLims$parMax,
+                        lower = modList$parLims$parMin,
+                        method='L-BFGS-B',
                         control=list(maxit=100)
         )
-        },silent=T)
-        })
+      },error = function(.){try({
+        if(modList$quietErrs){cat('\nL-BFGS-B failed')}
+        curFit <- optim(guesses,fn=tef_fitErr,
+                        varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
+                        errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
+                        y_lim=modList$y_lim,rate_lim=modList$rate_lim,
+                        shape_lim=modList$shape_lim,
+                        penalizeMean = c(penalizeMean,mean(nullYhat,na.rm=T)),
+                        penalizeRate = modList$penalizeRate,
+                        parLims=modList$parLims,
+                        thresh_fun = thresh_fun,
+                        paramTerms = paramTerms,
+                        method='BFGS',  # use this or L-BFGS-B (with upper and lower) if bounds have been figured out.
+                        control=list(maxit=100)
+        )
+      },silent=T)
+      })
 
     }
     if(exists('curFit')){
@@ -110,21 +110,21 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
     ## ## with several parameters
     try({
-    if(ncol(bestFits)>2){
-      if (
-        max(apply(bestFits[,2:ncol(bestFits)],2,sd)) < modList$convergeTol
+      if(ncol(bestFits)>2){
+        if (
+          max(apply(bestFits[,2:ncol(bestFits)],2,sd)) < modList$convergeTol
+          &&
+          max(bestFits[1,2:ncol(bestFits)]-colMeans(bestFits[2:nrow(bestFits),2:ncol(bestFits)])) < modList$convergeTol
+        ){
+          converged=T
+        }
+      }else if( ## with only time as predictor
+        max(sd(bestFits[,2])) < modList$convergeTol
         &&
-        max(bestFits[1,2:ncol(bestFits)]-colMeans(bestFits[2:nrow(bestFits),2:ncol(bestFits)])) < modList$convergeTol
+        max(bestFits[1,2]-mean(bestFits[2:10,2])) < modList$convergeTol
       ){
         converged=T
       }
-    }else if( ## with only time as predictor
-      max(sd(bestFits[,2])) < modList$convergeTol
-      &&
-      max(bestFits[1,2]-mean(bestFits[2:10,2])) < modList$convergeTol
-    ){
-      converged=T
-    }
     },silent=T)
 
     sumTries <- sumTries+nPerRep
@@ -136,32 +136,40 @@ tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
   bestFit <- as.numeric(bestFits[1,])
 
-# ## ##
-# ensure that the reported error is the actual [unpenalized] error
-bestFit[1] <- tef_fitErr(bestFit[2:length(bestFit)],
-varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
-errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
-y_lim=modList$y_lim,rate_lim=modList$rate_lim,
-shape_lim=modList$shape_lim,
-penalizeMean = c(F,mean(nullYhat,na.rm=T)),
-penalizeRate = F,
-parLims=modList$parLims,
-thresh_fun = thresh_fun,
-paramTerms = paramTerms)
-## ## ##
+  # ## ##
+  # ensure that the reported error is the actual [unpenalized] error
+  bestFit[1] <- tef_fitErr(bestFit[2:length(bestFit)],
+                           varIn=modList$varIn,pNames=modList$guessNames,evalFun=modList[[whichFun]],
+                           errFun=modList$errFun,respVar=modList$respVar,linkFunX=linkFunX,
+                           y_lim=modList$y_lim,rate_lim=modList$rate_lim,
+                           shape_lim=modList$shape_lim,
+                           penalizeMean = c(F,mean(nullYhat,na.rm=T)),
+                           penalizeRate = F,
+                           parLims=modList$parLims,
+                           thresh_fun = thresh_fun,
+                           paramTerms = paramTerms)
+  ## ## ##
 
 
   names(bestFit) <- c('err',modList[[whichPnames]])
 
   ## throw a warning if the rate is within 1% of the limits
-  if(!is.na(bestFit['pRate']) && !modList$penalizeRate && !modList$suppressWarnings){if(
-    (bestFit['pRate']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])<.01 ||
-    (bestFit['pRate']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])>.99
-  ){cat('\nYour rate is very close to the boundary. Consider penalizing the likelihood.')}}
-  if(!is.na(bestFit['pRate_0']) && !modList$penalizeRate && !modList$suppressWarnings){if(
-    (bestFit['pRate_0']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])<.01 ||
-    (bestFit['pRate_0']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])>.99
-  ){cat('\nYour rate is very close to the boundary. Consider penalizing the likelihood.')}}
+  if(!modList$penalizeRate && !modList$suppressWarnings){
+
+      if(!is.na(bestFit['pRate']) ){
+        if(
+          (bestFit['pRate']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])<.01 ||
+          (bestFit['pRate']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])>.99
+        ){cat('\nYour rate is very close to the boundary. Consider penalizing the likelihood.')}}
+
+      if(!is.na(bestFit['pRate_0']) ){
+        if(
+          (bestFit['pRate_0']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])<.01 ||
+          (bestFit['pRate_0']-modList$rate_lim[1])/(modList$rate_lim[2]-modList$rate_lim[1])>.99
+        ){cat('\nYour rate is very close to the boundary. Consider penalizing the likelihood.')}}
+
+    }
+
 
 
 
