@@ -63,7 +63,7 @@ test_that('TEfitAll runs with Weibull link and OLS error function',{
 
 ### ###
 test_that('TEfitAll runs with Weibull link and bernoulli error function',{
-
+  skip_on_travis()
   expect_is({
     m$weib_bern <- TEfitAll(d[,c('acc','trialNum','absRat')],
                             bootPars = tef_bootList(resamples = 20),groupingVar = d$subID,
@@ -89,7 +89,7 @@ test_that('TEfitAll runs with logistic link and OLS error function',{
 
 ### ###
 test_that('TEfitAll runs with logistic link and bernoulli error function',{
-
+  skip_on_travis()
   expect_is({
     m$logist_bern <- TEfitAll(d[,c('acc','trialNum','ratio')],
                               bootPars = tef_bootList(resamples = 20),groupingVar = d$subID,
@@ -102,6 +102,7 @@ test_that('TEfitAll runs with logistic link and bernoulli error function',{
 
 ### ###
 test_that('TEfitAll runs with d prime link function',{
+  skip_on_travis()
   expect_is({
     m$dPrime <- TEfitAll(d[,c('acc','trialNum','moreCatA')],
                          bootPars = tef_bootList(resamples = 20),groupingVar = d$subID,
