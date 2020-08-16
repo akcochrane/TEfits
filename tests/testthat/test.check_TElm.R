@@ -12,8 +12,8 @@ test_that("Check all aspects of the fit to the time variable", {
   expect_equivalent(round(m$bootSummary['timeVar','Estimate'],2),-.74) # entered 20200504
   expect_equivalent(round(m$bootSummary['timeVar','Std..Error'],2),0.02) # entered 20200504
   expect_equivalent(round(m$bootSummary['timeVar','t.value'],1),-39.2) # entered 20200504
-  expect_equivalent(round(m$bootSummary['timeVar','ci025'],2),-0.79) # entered 20200504
-  expect_equivalent(round(m$bootSummary['timeVar','ci975'],3),-0.71) # entered 20200504
+  expect_equivalent(round(m$bootSummary['timeVar','ci025'],1),-0.8) # entered 20200504
+  expect_equivalent(round(m$bootSummary['timeVar','ci975'],1),-0.7) # entered 20200504
   expect_equivalent(round(m$bootSummary['timeVar','bootP'],3),0) # entered 20200504
   expect_equivalent(round(m$bootSummary['timeVar','dRsq_oos'],2),0.97) # entered 20200504
 })
