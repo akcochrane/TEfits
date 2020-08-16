@@ -62,18 +62,22 @@ TEfitAll <- function(varIn,
       summLine <- c(summLine,pseudoSEs,percentIncreasing)
     }
 
-    TEFit_group <- rbind(TEFit_group,c(
+    groupStats <- c(
       summLine,
       TEFitList[[length(TEFitList)]]$model$GoF,
       linkFun=linkFun$link,errFun=errFun,changeFun=changeFun,
       converged=TEFitList[[length(TEFitList)]]$model$converged
-    ))
+    )
+    try({
+      groupStats <- c(groupStats,
+                           pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
+      )
+    },silent=T)
 
-    # try({
-    #   TEFit_group <- rbind(TEFit_group,
-    #                        pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
-    #   )
-    # },silent=T)
+
+    TEFit_group <- rbind(TEFit_group,groupStats)
+
+
 
     rownames(TEFit_group)[nrow(TEFit_group)] <- curGroup
 
