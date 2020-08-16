@@ -115,6 +115,8 @@ TEfit parameter estimates:
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides 
 start as an offset from asymptote (ie., `Intercept`).
 
+For extensions of this framework see `TEglm`, `TElmem`, and `TEglmem`.
+
 # Testing functionality
 
 `TEfits` includes automatic testing using the `testthat` package and [Travis-CI](https://travis-ci.com/github/akcochrane/TEfits). If users wish to run these tests locally, it's recommended to download/clone the repo to a local directory `~/TEfits`. Then install and run tests as follows:
