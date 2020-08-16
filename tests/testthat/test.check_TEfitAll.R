@@ -3,6 +3,7 @@
 context("check_TEfitAll")
 
 library(TEfits)
+
 d <- anstrain
 
 d$absRat <- abs(d$ratio)
