@@ -35,6 +35,8 @@ tef_fitErr(
 
 \item{respVar}{The name of the response variable}
 
+\item{linkFunX}{variable used in link function}
+
 \item{y_lim}{Bounds for the predicted values}
 
 \item{rate_lim}{Bounds for the rate parameter}

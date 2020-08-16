@@ -260,7 +260,7 @@ TEfit <- function(varIn,
     modList$penalizeMean<- control$penalizeMean
     modList$explicit    <- control$explicit
     modList$quietErrs   <- control$quietErrs
-    modList$suppressWarnings<-control$suppressWarnings
+    modList$suppressWarnings <- control$suppressWarnings
   }
   ## ^^ ^^ ^^ ^^ ^^ ^^ ##
 

@@ -24,14 +24,10 @@ The **TEfits** package has a heavy emphasis on interpretability of parameters. A
 The R package `devtools` includes a very easy way to install packages from Github.
 
 ```
-devtools::install_github('akcochrane/TEfits')
+devtools::install_github('akcochrane/TEfits', build_vignettes = TRUE)
 ```
 
-In addition, you can run automated tests ensuring basic functionality using the `testthat` package.
-
-```
-testthat::test_package('TEfits')
-```
+Although having vignettes is nice for exploring the functionality of the package (via `browseVignettes('TEfits')`), building the vignettes takes a minute or two. Remove the `build_vignettes = TRUE` argument to speed up installation.
 
 ## Simple model of exponential change
 
@@ -118,6 +114,16 @@ TEfit parameter estimates:
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides 
 start as an offset from asymptote (ie., `Intercept`).
+
+# Testing functionality
+
+`TEfits` includes automatic testing using the `testthat` package and [Travis-CI](https://travis-ci.com/github/akcochrane/TEfits). If users wish to run these tests locally, it's recommended to download/clone the repo to a local directory `~/TEfits`. Then install and run tests as follows:
+
+```
+devtools::install('~/TEfits') # replace '~' with your filepath
+
+testthat::test_package('TEfits')
+```
 
 # Performance disclaimer
 

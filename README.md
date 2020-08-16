@@ -16,11 +16,9 @@ Installing the package
 
 The R package `devtools` includes a very easy way to install packages from Github.
 
-    devtools::install_github('akcochrane/TEfits')
+    devtools::install_github('akcochrane/TEfits', build_vignettes = TRUE)
 
-In addition, you can run automated tests ensuring basic functionality using the `testthat` package.
-
-    testthat::test_package('TEfits')
+Although having vignettes is nice for exploring the functionality of the package (via `browseVignettes('TEfits')`), building the vignettes takes a minute or two. Remove the `build_vignettes = TRUE` argument to speed up installation.
 
 Simple model of exponential change
 ----------------------------------
@@ -83,6 +81,12 @@ dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=tef_bootList(resamples = 40))
+```
+
+    ## 
+    ## Warning: model did not converge at tol = 0.05 . Consider respecifying, allowing more runs, or increasing the convergence tolerance.
+
+``` r
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 ```
 
@@ -95,23 +99,24 @@ summary(mod_boot)
     ## 
     ## >> Formula: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
-    ## >> Converged: TRUE 
+    ## >> Converged: FALSE 
+    ## >> Max runs: 200  -- Tolerance: 0.05 
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.998 0.987 1.000    0.003
-    ## pRate     2.679 2.566 2.856    0.074
-    ## pStart    0.217 0.187 0.287    0.026
+    ## pAsym     0.996 0.984 1.000    0.004
+    ## pRate     2.737 2.594 2.765    0.044
+    ## pStart    0.231 0.123 0.271    0.038
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC     deltaBIC
-    ## bernoulli 13.42844 16.83409     3   30 37.06048 37.06937 -0.008893169
+    ## bernoulli 13.42851 16.83409     3   30 37.06062 37.06937 -0.008755303
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1                0.0647386
+    ## response ~ trial_number:          -1              -0.09410456
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                  0.0647386                  0
+    ## response ~ trial_number:                 0.09410456                  0
     ##                          pval_KPSS_null pval_KPSS_model
     ## response ~ trial_number:          < .01            > .1
     ## 
@@ -121,10 +126,10 @@ summary(mod_boot)
     ## 
     ## >> Bootstrapped parameter correlations:
     ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.284 0.457 0.097
-    ## pStart 0.284  1.000 0.788 0.689
-    ## pRate  0.457  0.788 1.000 0.493
-    ## err    0.097  0.689 0.493 1.000
+    ## pAsym  1.000  0.076 0.454 0.208
+    ## pStart 0.076  1.000 0.654 0.510
+    ## pRate  0.454  0.654 1.000 0.289
+    ## err    0.208  0.510 0.289 1.000
 
 Fitting multiple models
 -----------------------
@@ -162,9 +167,9 @@ summary(mod_4group)
     ## >> Formula: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
-    ##             pAsym     pStart     pRate
-    ## mean   0.14922699 0.01639027 3.8336626
-    ## stdErr 0.03933387 0.01060448 0.0243184
+    ##             pAsym     pStart      pRate
+    ## mean   0.14922721 0.01639030 3.83366532
+    ## stdErr 0.03933404 0.01060451 0.02431567
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -206,7 +211,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.526|         -2.655|  2.873|
+|         3.527|         -2.655|  2.876|
 
 TEfit parameter estimates:
 
@@ -215,6 +220,15 @@ TEfit parameter estimates:
 | Estimate |  3.522|   0.869|  2.866|
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides start as an offset from asymptote (ie., `Intercept`).
+
+Testing functionality
+=====================
+
+`TEfits` includes automatic testing using the `testthat` package and [Travis-CI](https://travis-ci.com/github/akcochrane/TEfits). If users wish to run these tests locally, it's recommended to download/clone the repo to a local directory `~/TEfits`. Then install and run tests as follows:
+
+    devtools::install('~/TEfits') # replace '~' with your filepath
+
+    testthat::test_package('TEfits')
 
 Performance disclaimer
 ======================
