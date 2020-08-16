@@ -8,6 +8,7 @@
 #' @param evalFun Model function
 #' @param errFun Error function
 #' @param respVar The name of the response variable
+#' @param linkFunX variable used in link function
 #' @param y_lim Bounds for the predicted values
 #' @param rate_lim Bounds for the rate parameter
 #' @param shape_lim Bounds for the shape parameter, if needed.
