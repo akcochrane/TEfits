@@ -69,11 +69,11 @@ TEfitAll <- function(varIn,
       converged=TEFitList[[length(TEFitList)]]$model$converged
     ))
 
-    try({
-      TEFit_group <- rbind(TEFit_group,
-                           pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
-      )
-    },silent=T)
+    # try({
+    #   TEFit_group <- rbind(TEFit_group,
+    #                        pValSpearmanChange=as.numeric(TEFitList[[length(TEFitList)]]$model$conditional_independence['pValSpearmanChange'])
+    #   )
+    # },silent=T)
 
     rownames(TEFit_group)[nrow(TEFit_group)] <- curGroup
 
