@@ -126,7 +126,7 @@ Currently supported \strong{change functions} are:
 \item{\code{expo_block} -- 3-parameter exponential (start, [inverse] rate, and asymptote)
 plus 2-paramter multiplicative changes on timescales that are a subset of the whole}
 \item{\code{expo_double} -- 4-parameter exponential (start, two equally weighted [inverse] rates, and asymptote)}
-\item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, defaulting is log2 of time to 25 percent remaining}
+\item{\code{power} -- 3-parameter power (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, defaulting to log2 of time to 25 percent remaining}
 \item{\code{power4} -- 4-parameter power (start, [inverse] rate, asymptote, and "previous learning time")}
 \item{\code{weibull} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape) -- rate is same as \code{expo}}
 }

@@ -4,7 +4,14 @@
 \alias{TEglm}
 \title{Generalized linear model with nonlinear time predictor}
 \usage{
-TEglm(formIn, dat, timeVar, family = gaussian, fixRate = NA)
+TEglm(
+  formIn,
+  dat,
+  timeVar,
+  family = gaussian,
+  startingOffset = T,
+  fixRate = NA
+)
 }
 \arguments{
 \item{formIn}{model formula, as in glm()}
@@ -14,6 +21,8 @@ TEglm(formIn, dat, timeVar, family = gaussian, fixRate = NA)
 \item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed)}
 
 \item{family}{passed to glm()}
+
+\item{startingOffset}{By default (if T) time is coded to start at 1 and saturate to 0. If startingOffset is F, time starts at 0 and saturates to 1. May assist in interpreting interactions with other variables, etc.}
 
 \item{fixRate}{If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)}
 }

@@ -4,7 +4,15 @@
 \alias{TElm}
 \title{[Robust] linear model with nonlinear time predictor}
 \usage{
-TElm(formIn, dat, timeVar, robust = F, fixRate = NA, nBoot = 250)
+TElm(
+  formIn,
+  dat,
+  timeVar,
+  startingOffset = T,
+  robust = F,
+  fixRate = NA,
+  nBoot = 250
+)
 }
 \arguments{
 \item{formIn}{model formula, as in \code{lm()}}
@@ -12,6 +20,8 @@ TElm(formIn, dat, timeVar, robust = F, fixRate = NA, nBoot = 250)
 \item{dat}{model data, as in \code{lm()}}
 
 \item{timeVar}{String. Indicates which model predictor is time (i.e., should be transformed). Must be numeric and positive.}
+
+\item{startingOffset}{By default (if T) time is coded to start at 1 and saturate to 0. If startingOffset is F, time starts at 0 and saturates to 1. May assist in interpreting interactions with other variables, etc.}
 
 \item{robust}{Logical. Should \code{\link[MASS]{rlm}} be used?}
 

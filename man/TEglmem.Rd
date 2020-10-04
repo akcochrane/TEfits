@@ -10,6 +10,7 @@ TEglmem(
   timeVar,
   groupingVar,
   family = gaussian,
+  startingOffset = T,
   nRuns = 1,
   silent = F
 )
@@ -24,6 +25,8 @@ TEglmem(
 \item{groupingVar}{String. Indicates which variable in \code{datIn} should have a time-related random effect.}
 
 \item{family}{model family, as in \code{glmer}}
+
+\item{startingOffset}{By default (if T) time is coded to start at 1 and saturate to 0. If startingOffset is F, time starts at 0 and saturates to 1. May assist in interpreting interactions with other variables, etc.}
 
 \item{nRuns}{Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})}
 

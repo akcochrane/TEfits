@@ -40,6 +40,7 @@
 #' @param dat model data, as in glm()
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed)
 #' @param family  passed to glm()
+#' @param startingOffset By default (if T) time is coded to start at 1 and saturate to 0. If startingOffset is F, time starts at 0 and saturates to 1. May assist in interpreting interactions with other variables, etc.
 #' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #'
 #' @export
@@ -52,7 +53,7 @@
 #' summary(m_glm$bootRate) # bootstrapped parameter distributions
 #' cor(m_glm$bootRate) # bootstrapped parameter correlations
 #'
-TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
+TEglm <- function(formIn,dat,timeVar,family=gaussian,startingOffset = T, fixRate=NA){
 
   minTime <- min(dat[,timeVar],na.rm = T)
   if(minTime < 0){cat('The earliest time is negative.')}
@@ -87,6 +88,10 @@ TEglm <- function(formIn,dat,timeVar,family=gaussian,fixRate=NA){
   })}
 
   dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))
+
+  if (!startingOffset){ ## if it's desired to have effects be estimated such that time == 0 and time is the change from start to asymptote
+    dat[,timeVar] <- 1-dat[,timeVar]
+  }
 
   modOut <- glm(formIn,dat,family=family)
 
