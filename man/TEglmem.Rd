@@ -55,9 +55,9 @@ rate parameters using \code{\link{TEglm}},
 \code{TEglmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{glmer} model.
 
-May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TEglm}} in order to simply
-use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
-transformed time variable, and use this in a GLMEM.
+May be used, with \code{nRuns=0}, to simply
+use rate estimates from independent \code{groupingVar}-level \code{\link{TEglm}} models, extracting the corresponding
+transformed time variables and using them in a GLMEM.
 }
 \note{
 Random effects and rate estimates may be unstable, and optimization may take
@@ -70,7 +70,8 @@ If reliable by-\code{groupingVar} parameters are desired, it is highly recommend
 The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
 (e.g., \code{(time_variable | grouping_variable)}).
 
-Although the time variable is transformed to exponentially decay toward zero, this does not necessarily mean
+Although the time variable is transformed to exponentially decay from one toward zero
+(or, if \code{startingOffset=F}, from zero toward one), this does not necessarily mean
 that the model prediction involves an exponential change with time. The nonlinear change in time relates
 to the time-associated model coefficients.
 }

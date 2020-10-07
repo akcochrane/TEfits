@@ -12,9 +12,9 @@
 #' \code{TEglmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{glmer} model.
 #'
-#' May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TEglm}} in order to simply
-#' use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
-#' transformed time variable, and use this in a GLMEM.
+#' May be used, with \code{nRuns=0}, to simply
+#' use rate estimates from independent \code{groupingVar}-level \code{\link{TEglm}} models, extracting the corresponding
+#' transformed time variables and using them in a GLMEM.
 #'
 #' @note
 #' Random effects and rate estimates may be unstable, and optimization may take
@@ -27,7 +27,8 @@
 #' The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
 #' (e.g., \code{(time_variable | grouping_variable)}).
 #'
-#' Although the time variable is transformed to exponentially decay toward zero, this does not necessarily mean
+#' Although the time variable is transformed to exponentially decay from one toward zero
+#' (or, if \code{startingOffset=F}, from zero toward one), this does not necessarily mean
 #' that the model prediction involves an exponential change with time. The nonlinear change in time relates
 #' to the time-associated model coefficients.
 #'
@@ -94,13 +95,15 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,startingOffse
   ## initialize a model with the by-group fits:
   {
     curDat <- dat
-    bestRates <- rateVect
+    bestRates <- rateVect ; names(bestRates) <- groupNames
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
         2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^bestRates[curGV]))
       if(!startingOffset){curDat[curDat[,groupingVar]==curGV,timeVar] <- 1-curDat[curDat[,groupingVar]==curGV,timeVar]}
     }
+    suppressMessages({ suppressWarnings({
     initMod <- glmer(formIn,curDat,family=family)
+    })})
     bestNegLL <- -logLik(initMod)
     rm(curGV,curDat)
   }
@@ -108,41 +111,43 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,startingOffse
  if(nRuns==0){if(!silent){cat(']\n')} ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,glmerMod = initMod))}
   # optimize directly
   {
-  fitFun <- function(rates,curDat,formula,timeVar,groupNames,rateBounds,startingOffset){
+  fitFun <- function(rates,curDat,timeVar,groupNames,rateBounds,startingOffset,lme4mod){
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
         2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^rates[curGV]))
       if(!startingOffset){curDat[curDat[,groupingVar]==curGV,timeVar] <- 1-curDat[curDat[,groupingVar]==curGV,timeVar]}
     }
-    modNegLL <- 1E15
+    modNegLL <- 1E16
 
     if(any(rates < rateBounds[1]) || any(rates > rateBounds[2]) ){
-      modNegLL <- 1E15
+      modNegLL <- 1E16
     }else{try({
       suppressMessages({ suppressWarnings({
-        curMod <- glmer(formula,curDat,family=family)
+        curMod <- update(lme4mod,curDat)
         modNegLL <- -logLik(curMod)
+        rm(curMod)
       })})},silent=T)
     }
 
     return(modNegLL)
   }
 
-  bestNegLL <- 1E15; for(. in 1:nRuns){
+  for(. in 1:nRuns){
     rates <- (rateVect*4+runif(nGroups,rateBounds[1],rateBounds[2]))/5
     names(rates) <- groupNames
     mF <- optim(rates,
                 fn=fitFun,
                 curDat=dat,
-                formula=formIn,
                 timeVar=timeVar,
                 groupNames=groupNames,
                 rateBounds=rateBounds,
-                startingOffset=startingOffset)
+                startingOffset=startingOffset,
+                lme4mod = initMod,
+                method="Nelder-Mead",
+                control=list(maxit=50))
     if(!silent){cat('=')}
     if(mF$value < bestNegLL){
-      bestRates <- mF$par
-      names(bestRates) <- groupNames
+      bestRates <- mF$par ;  names(bestRates) <- groupNames
       bestNegLL <- mF$value
       }
   }
@@ -152,7 +157,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,startingOffse
   for(curGV in groupNames){
     dat[dat[,groupingVar]==curGV,timeVar] <-
       2^((minTime-dat[dat[,groupingVar]==curGV,timeVar])/(2^bestRates[curGV]))
-    if(startingOffset){dat[dat[,groupingVar]==curGV,timeVar] <- 1 - dat[dat[,groupingVar]==curGV,timeVar]}
+    if(!startingOffset){dat[dat[,groupingVar]==curGV,timeVar] <- 1 - dat[dat[,groupingVar]==curGV,timeVar]}
   }
 
   outMod <- glmer(formIn,dat,family=family)

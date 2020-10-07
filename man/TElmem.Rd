@@ -52,9 +52,9 @@ rate parameters using \code{\link{TElm}},
 \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 \code{lmer} model.
 
-May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TElm}} in order to simply
-use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
-transformed time variable, and use this in a LMEM.
+May be used, with \code{nRuns=0}, to simply
+use rate estimates from independent \code{groupingVar}-level \code{\link{TElm}} models, extracting the corresponding
+transformed time variables, and using them in a LMEM.
 }
 \note{
 Random effects and rate estimates may be unstable, and optimization may take

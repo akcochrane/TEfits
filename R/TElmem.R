@@ -13,9 +13,9 @@
 #' \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{lmer} model.
 #'
-#' May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TElm}} in order to simply
-#' use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
-#' transformed time variable, and use this in a LMEM.
+#' May be used, with \code{nRuns=0}, to simply
+#' use rate estimates from independent \code{groupingVar}-level \code{\link{TElm}} models, extracting the corresponding
+#' transformed time variables, and using them in a LMEM.
 #'
 #' @note
 #' Random effects and rate estimates may be unstable, and optimization may take
@@ -109,24 +109,25 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,startingOffset=T,sil
   }
   if(!silent){cat('=')}
 
-  if(nRuns==0){cat(']\n') ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,lmerMod = initMod))}
+  if(nRuns==0){cat(']\n') ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,lmerMod=initMod))}
 
   ## define function to optimize (input a vector of rates to minimize negative L)
-  fitFun <- function(rates,curDat,formula,timeVar,groupNames,rateBounds,startingOffset){
+  fitFun <- function(rates,curDat,timeVar,groupNames,rateBounds,startingOffset,lme4mod){
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
         2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^rates[curGV]))
       if(!startingOffset){curDat[curDat[,groupingVar]==curGV,timeVar] <- 1-curDat[curDat[,groupingVar]==curGV,timeVar]}
     }
-    modNegLL <- 1E15
+    modNegLL <- 1E16
     try({
       suppressMessages({ suppressWarnings({
-        curMod <-  lmer(formula,curDat)
+        curMod <-  lmer(formula(lme4mod),curDat) # should switch to update() to follow TEglmem
         modNegLL <- -logLik(curMod)
+        rm(curMod)
       })})},silent=F)
 
     if(any(rates < rateBounds[1]) || any(rates > rateBounds[2]) ){
-      modNegLL <- 1E15 # penalize for being outside of boundaries
+      modNegLL <- 1E16 # penalize for being outside of boundaries
     }
 
     return(modNegLL)
@@ -140,11 +141,13 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,startingOffset=T,sil
     mF <- optim(rates,
                 fn=fitFun,
                 curDat=dat,
-                formula=formIn,
                 timeVar=timeVar,
                 groupNames=groupNames,
                 rateBounds=rateBounds,
-                startingOffset=startingOffset)
+                startingOffset=startingOffset,
+                lme4mod= initMod ,
+                method="Nelder-Mead",
+                control=list(maxit=50))
     if(!silent){cat('=')}
     if(mF$value < bestNegLL){
       bestRates <- mF$par
