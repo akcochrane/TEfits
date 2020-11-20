@@ -56,7 +56,7 @@
 #' # Participant-level rate parameters:
 #' m_TElmem$rates
 #' }
-TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,startingOffset=T,silent=F){
+TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 5,startingOffset=T,silent=F){
   require(lme4)
 
   minTime <- min(dat[,timeVar],na.rm = T)
@@ -147,7 +147,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,startingOffset=T,sil
                 startingOffset=startingOffset,
                 lme4mod= initMod ,
                 method="Nelder-Mead",
-                control=list(maxit=50))
+                control=list(maxit=100))
     if(!silent){cat('=')}
     if(mF$value < bestNegLL){
       bestRates <- mF$par

@@ -59,7 +59,7 @@
 #' m_TEglmem$rates
 #' }
 #'
-TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,startingOffset=T,nRuns = 1,silent=F){
+TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,startingOffset=T,nRuns = 5,silent=F){
   require(lme4)
   origTime <-   dat[,timeVar]
 
@@ -144,7 +144,7 @@ TEglmem <- function(formIn,dat,timeVar,groupingVar,family=gaussian,startingOffse
                 startingOffset=startingOffset,
                 lme4mod = initMod,
                 method="Nelder-Mead",
-                control=list(maxit=50))
+                control=list(maxit=100))
     if(!silent){cat('=')}
     if(mF$value < bestNegLL){
       bestRates <- mF$par ;  names(bestRates) <- groupNames

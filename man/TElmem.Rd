@@ -9,7 +9,7 @@ TElmem(
   dat,
   timeVar,
   groupingVar,
-  nRuns = 1,
+  nRuns = 5,
   startingOffset = T,
   silent = F
 )

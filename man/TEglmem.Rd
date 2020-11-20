@@ -11,7 +11,7 @@ TEglmem(
   groupingVar,
   family = gaussian,
   startingOffset = T,
-  nRuns = 1,
+  nRuns = 5,
   silent = F
 )
 }
