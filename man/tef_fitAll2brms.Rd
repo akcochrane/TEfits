@@ -47,6 +47,9 @@ However, any fixed effects should be minimally influenced by these priors
 distributions in \code{brms} depending on whether the \code{TEfitAll} distrIibution is
 binary. \code{TEfitAll} \code{logcosh} models are fit using a \code{asym_laplace} response distribution
 in brms predicting the .5 quantile.
+
+If sampling issues occur, increased number of iterations are recommended. Also, running one chain at a time
+may help; these models should later be merged using \code{brms::combine_models()}.
 }
 \note{
 Under development. Partial functionality.

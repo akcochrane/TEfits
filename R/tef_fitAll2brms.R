@@ -15,6 +15,9 @@
 #' binary. \code{TEfitAll} \code{logcosh} models are fit using a \code{asym_laplace} response distribution
 #' in brms predicting the .5 quantile.
 #'
+#' If sampling issues occur, increased number of iterations are recommended. Also, running one chain at a time
+#' may help; these models should later be merged using \code{brms::combine_models()}.
+#'
 #' @param TEs3s TEfitAll model
 #' @param fixef Parameters vary as random effects by the TEs3s grouping variable. However, if you have main effects (e.g., group differences), enter them \emph{as a data frame} here.
 #' @param nIter number of iterations
@@ -48,11 +51,9 @@ tef_fitAll2brms <- function(TEs3s,fixef=NA,nIter= 2000,nChains=3,nCores=2,errFun
 
   ## To do:
   ##
-  ## ## have a fixed=c() argument, to wedge between 'pAsym ~' and '(1||groupingVar)' and similar constructions
-  ##
   ## ## fit in a loop that keeps trying until a fit with samples, so that the user won't get something out with no samples
   ##
-  ## ## probably should improve the docs, expecially around cores and chains. Someone who's never used brms should be able to get the broad strokes here.
+  ## ## should improve the docs, expecially around cores and chains. Someone who's never used brms should be able to get the broad strokes here.
   ## ## Also, seriously think about defaulting to one core and one chain. Given the likelihood of pathological sampling (the need for looping to sample), it's better.
 
   require(brms)
@@ -70,24 +71,20 @@ tef_fitAll2brms <- function(TEs3s,fixef=NA,nIter= 2000,nChains=3,nCores=2,errFun
       rownames(TEs3s$allFits)[curGroup]
     varIn <- rbind(varIn,subDat)}
 
-    ## Need to look at a TEs3 object and see whether the full data frame is there, or only the relevant variables.
-  ## ## if only the relevant variables, then need to get fixefs from the names of an input data frame, and
-  ## ## merge the data frames from the TEs3 model and the new data.
   if(!is.data.frame(fixef)){fixefNames <- '1'}else{
     fixefNames <- names(fixef)
     varIn <- cbind(varIn,fixef)
   }
 
-
   fixefs <- paste(paste0(fixefNames,'+'),collapse='')
   parForm <- as.formula(paste(paste(pars,collapse='+'),'~',fixefs,'(1||',groupingVarName,')'))
 
-    brmForm <- brmsformula(as.formula(paste(
-      TEs3s$allFitList[[1]]$modList$respVar,'~',
-      gsub('_','',as.character(TEs3s$allFitList[[1]]$modList$modl_fun)[[3]])
-    ))
-    ,parForm
-    ,nl=T)
+  brmForm <- brmsformula(as.formula(paste(
+    TEs3s$allFitList[[1]]$modList$respVar,'~',
+    gsub('_','',as.character(TEs3s$allFitList[[1]]$modList$modl_fun)[[3]])
+  ))
+  ,parForm
+  ,nl=T)
 
   ## make priors (better to have normal guided by TEfit result and bounded by par_lims)
   se2sd <- sqrt(length(TEs3s$allFitList))
@@ -133,16 +130,28 @@ tef_fitAll2brms <- function(TEs3s,fixef=NA,nIter= 2000,nChains=3,nCores=2,errFun
   }
 
   ## fit model
-  brmModel <- brm(brmForm,
-                  varIn,
-                  prior = brmPriors,
-                  chains = nChains,
-                  family = errorFun,
-                  iter = nIter,
-                  thin=max(c(1,floor(nIter/4000))),
-                  cores = getOption("mc.cores",nCores),
-                  control = list(adapt_delta = .95,
-                                 max_treedepth = 50))
+  modSuccess <- F
+  while(!modSuccess){
+    brmModel <- brm(brmForm,
+                    varIn,
+                    prior = brmPriors,
+                    chains = nChains,
+                    family = errorFun,
+                    iter = nIter,
+                    thin=max(c(1,floor(nIter/4000))),
+                    cores = getOption("mc.cores",nCores),
+                    control = list(adapt_delta = .95,
+                                   max_treedepth = 50))
+
+    if(nChains==1){ ## currently tests for sampling only exist if only one chain is run
+      try({
+        . <- posterior_summary(brmModel )
+        modelSuccess  <- T
+      })
+    }else{
+      modelSuccess <- T
+    }
+  }
 
   return(brmModel)
 }

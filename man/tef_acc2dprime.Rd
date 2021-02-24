@@ -19,13 +19,13 @@ tef_acc2dprime(
 
 \item{by_index}{Should the d-prime be calculated for each index?}
 
-\item{trial_hwhm}{The Gaussian smoother has a half-width-half-max; values are given half weight at this index distance from the center index (as the smoother iterates through each index in turn as the center).}
+\item{trial_hwhm}{The Gaussian smoother has a half-width-half-max; values are given half weight at this index distance from the center index (as the smoother iterates through each index in turn as the center). An arbitrarily small HWHM will lead to the same behavior as linear interpolation.}
 
 \item{max_dprime}{d-prime becomes infinite as accuracy approaches 0 or 1. This value limits the absolute value of d-prime.}
 }
 \description{
 Given paired information regarding accuracy and stimulus presence,
-run a Gaussian-weighted-mean smoother over the accuracy vector separately for
+run a Gaussian-weighted-mean smoother [kernel] over the accuracy vector separately for
 stimulus-present and stimulus-absent indices, then compute an index-wise d-prime.
 Returning and entire-vector d-prime (i.e., stable across time) is also an option.
 }
