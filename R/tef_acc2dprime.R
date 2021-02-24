@@ -1,14 +1,14 @@
 #' Convert an ordered vector of accuracies to d-prime
 #'
 #' Given paired information regarding accuracy and stimulus presence,
-#' run a Gaussian-weighted-mean smoother over the accuracy vector separately for
+#' run a Gaussian-weighted-mean smoother [kernel] over the accuracy vector separately for
 #' stimulus-present and stimulus-absent indices, then compute an index-wise d-prime.
 #' Returning and entire-vector d-prime (i.e., stable across time) is also an option.
 #'
 #' @param accuracy     At each index, what was the accuracy: [bounded at 0 and 1]
 #' @param stim_present At each index, was the stimulus present or absent: [binary; 0 and 1, or logical]
 #' @param by_index     Should the d-prime be calculated for each index?
-#' @param trial_hwhm   The Gaussian smoother has a half-width-half-max; values are given half weight at this index distance from the center index (as the smoother iterates through each index in turn as the center).
+#' @param trial_hwhm   The Gaussian smoother has a half-width-half-max; values are given half weight at this index distance from the center index (as the smoother iterates through each index in turn as the center). An arbitrarily small HWHM will lead to the same behavior as linear interpolation.
 #' @param max_dprime   d-prime becomes infinite as accuracy approaches 0 or 1. This value limits the absolute value of d-prime.
 #'
 #' @export

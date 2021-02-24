@@ -38,6 +38,7 @@
 #' @param formIn model formula, as in \code{lm()}
 #' @param dat model data, as in \code{lm()}
 #' @param timeVar String. Indicates which model predictor is time (i.e., should be transformed). Must be numeric and positive.
+#' @param startingOffset By default (if T) time is coded to start at 1 and saturate to 0. If startingOffset is F, time starts at 0 and saturates to 1. May assist in interpreting interactions with other variables, etc.
 #' @param robust  Logical. Should \code{\link[MASS]{rlm}} be used?
 #' @param fixRate If numeric, use this as a rate parameter [binary-log of 50 percent time constant] rather than estimating it (e.g., to improve reproducibility)
 #' @param nBoot Number of bootstrapped models to fit after rate [time constant] has been estimated (passed to \code{\link{tef_rlm_boot}})
@@ -67,7 +68,7 @@
 #' cor(m_rlm$bootRate)
 #'
 #' @export
-TElm <- function(formIn,dat,timeVar,robust=F,fixRate=NA,nBoot = 250){
+TElm <- function(formIn,dat,timeVar,startingOffset=T,robust=F,fixRate=NA,nBoot = 250){
 
   minTime <- min(dat[,timeVar],na.rm = T)
   if(minTime < 0){cat('The earliest time is negative.')}
@@ -102,6 +103,10 @@ TElm <- function(formIn,dat,timeVar,robust=F,fixRate=NA,nBoot = 250){
   })}
 
   dat[,timeVar] <- 2^((minTime-dat[,timeVar])/(2^fixRate))
+
+  if (!startingOffset){ ## if it's desired to have effects be estimated such that time == 0 and time is the change from start to asymptote
+    dat[,timeVar] <- 1-dat[,timeVar]
+  }
 
   modOut <- TEfits::tef_rlm_boot(formIn,dat,nBoot = nBoot,useLM=!robust)
 

@@ -13,9 +13,9 @@
 #' \code{TElmem} attempts to optimize the vector of rate parameters in conjunction with the full
 #' \code{lmer} model.
 #'
-#' May be used, with \code{nRuns=0}, as a wrapper for \code{\link{TElm}} in order to simply
-#' use rate estimates from independent \code{groupingVar}-level models, extract the corresponding
-#' transformed time variable, and use this in a LMEM.
+#' May be used, with \code{nRuns=0}, to simply
+#' use rate estimates from independent \code{groupingVar}-level \code{\link{TElm}} models, extracting the corresponding
+#' transformed time variables, and using them in a LMEM.
 #'
 #' @note
 #' Random effects and rate estimates may be unstable, and optimization may take
@@ -34,6 +34,7 @@
 #' @param timeVar String. Indicates which variable in \code{datIn} corresponds to time (i.e., should be transformed). Must be numeric and positive.
 #' @param groupingVar String. Indicates which variable in \code{datIn} should have a time=related random effect.
 #' @param nRuns Number of times to run optimization of the rate (i.e., fitting nonlinear transformations of \code{timeVar})
+#' @param startingOffset By default (if T) time is coded to start at 1 and saturate to 0. If startingOffset is F, time starts at 0 and saturates to 1. May assist in interpreting interactions with other variables, etc.
 #' @param silent Progress is printed by default. silent=T to suppress
 #'
 #' @return
@@ -55,7 +56,7 @@
 #' # Participant-level rate parameters:
 #' m_TElmem$rates
 #' }
-TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
+TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 5,startingOffset=T,silent=F){
   require(lme4)
 
   minTime <- min(dat[,timeVar],na.rm = T)
@@ -79,6 +80,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
       groupMods[[curGroupName]] <- TElm(groupForm,
                                         timeVar = timeVar,
                                         dat = dat[dat[,groupingVar]==curGroupName,],
+                                        startingOffset = startingOffset,
                                         nBoot = 20
       )
       rateVect[curGroupName] <- groupMods[[curGroupName]]$rate
@@ -99,6 +101,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
         2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^bestRates[curGV]))
+      if(!startingOffset){curDat[curDat[,groupingVar]==curGV,timeVar] <- 1-curDat[curDat[,groupingVar]==curGV,timeVar]}
     }
     initMod <- lmer(formIn,curDat)
     bestNegLL <- -logLik(initMod)
@@ -106,23 +109,25 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
   }
   if(!silent){cat('=')}
 
-  if(nRuns==0){cat(']\n') ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,lmerMod = initMod))}
+  if(nRuns==0){cat(']\n') ; return(list(models=groupMods,rates=rateVect,timeDat=timeDat,lmerMod=initMod))}
 
   ## define function to optimize (input a vector of rates to minimize negative L)
-  fitFun <- function(rates,curDat,formula,timeVar,groupNames,rateBounds){
+  fitFun <- function(rates,curDat,timeVar,groupNames,rateBounds,startingOffset,lme4mod){
     for(curGV in groupNames){
       curDat[curDat[,groupingVar]==curGV,timeVar] <-
         2^((minTime-curDat[curDat[,groupingVar]==curGV,timeVar])/(2^rates[curGV]))
+      if(!startingOffset){curDat[curDat[,groupingVar]==curGV,timeVar] <- 1-curDat[curDat[,groupingVar]==curGV,timeVar]}
     }
-    modNegLL <- 1E15
+    modNegLL <- 1E16
     try({
       suppressMessages({ suppressWarnings({
-        curMod <-  lmer(formula,curDat)
+        curMod <-  lmer(formula(lme4mod),curDat) # should switch to update() to follow TEglmem
         modNegLL <- -logLik(curMod)
+        rm(curMod)
       })})},silent=F)
 
     if(any(rates < rateBounds[1]) || any(rates > rateBounds[2]) ){
-      modNegLL <- 1E15 # penalize for being outside of boundaries
+      modNegLL <- 1E16 # penalize for being outside of boundaries
     }
 
     return(modNegLL)
@@ -136,10 +141,13 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
     mF <- optim(rates,
                 fn=fitFun,
                 curDat=dat,
-                formula=formIn,
                 timeVar=timeVar,
                 groupNames=groupNames,
-                rateBounds=rateBounds)
+                rateBounds=rateBounds,
+                startingOffset=startingOffset,
+                lme4mod= initMod ,
+                method="Nelder-Mead",
+                control=list(maxit=100))
     if(!silent){cat('=')}
     if(mF$value < bestNegLL){
       bestRates <- mF$par
@@ -151,6 +159,7 @@ TElmem <- function(formIn,dat,timeVar,groupingVar,nRuns = 1,silent=F){
   for(curGV in groupNames){
     dat[dat[,groupingVar]==curGV,timeVar] <-
       2^((minTime-dat[dat[,groupingVar]==curGV,timeVar])/(2^bestRates[curGV]))
+    if(!startingOffset){dat[dat[,groupingVar]==curGV,timeVar] <- 1-dat[dat[,groupingVar]==curGV,timeVar]}
   } ; rm(curGV)
 
   outMod <- lmer(formIn,dat)

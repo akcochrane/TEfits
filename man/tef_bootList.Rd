@@ -14,5 +14,5 @@ tef_bootList(resamples = 0, bootPercent = 1, bootTries = 20)
 \item{bootTries}{Number of optimization runs for each resample}
 }
 \description{
-\code{\link{TEfit}} internal.
+Used to assist the user in the specification of a set of parameters for resampling analyses.
 }

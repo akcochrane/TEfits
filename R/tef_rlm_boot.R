@@ -134,9 +134,9 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
       outDF[curCoef, "bootP"] <- min(curECDF(0),
                                      1 - curECDF(0)) * 2
     } ; rm(curCoef)
-    outDF[, c(1, 2, 4, 5)] <- signif(outDF[, c(1, 2, 4, 5)], 2)
-    outDF[, 3] <- round(outDF[, 3], 2)
-    outDF[, 6] <- round(outDF[, 6], 3)
+    outDF[, c(1, 2, 4, 5)] <- signif(outDF[, c(1, 2, 4, 5)], 3)
+    outDF[, 3] <- round(outDF[,3], 2)
+    outDF[,6] <- round(outDF[,6], 3)
 
     outDF$dRsq_oos[1] <- NA
     for(curCoef in colnames(m$dRsqQs)){

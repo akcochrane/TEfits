@@ -6,6 +6,7 @@
 \usage{
 tef_fitAll2brms(
   TEs3s,
+  fixef = NA,
   nIter = 2000,
   nChains = 3,
   nCores = 2,
@@ -15,6 +16,8 @@ tef_fitAll2brms(
 }
 \arguments{
 \item{TEs3s}{TEfitAll model}
+
+\item{fixef}{Parameters vary as random effects by the TEs3s grouping variable. However, if you have main effects (e.g., group differences), enter them \emph{as a data frame} here.}
 
 \item{nIter}{number of iterations}
 
@@ -37,11 +40,33 @@ this function is less tested than most functions in the \code{TEfits} package. F
 \strong{experimental}.
 }
 \details{
+Priors for nonlinear parameters are informed by the distributions of parameters in the \code{TEfitAll} object [models].
+However, any fixed effects should be minimally influenced by these priors
+
 \code{TEfitAll} \code{bernoulli} models are fit using either \code{bernoulli} or \code{Beta} response
-distributions in \code{brms} depending on whether the \code{TEfitAll} distribution is
+distributions in \code{brms} depending on whether the \code{TEfitAll} distrIibution is
 binary. \code{TEfitAll} \code{logcosh} models are fit using a \code{asym_laplace} response distribution
 in brms predicting the .5 quantile.
+
+If sampling issues occur, increased number of iterations are recommended. Also, running one chain at a time
+may help; these models should later be merged using \code{brms::combine_models()}.
 }
 \note{
 Under development. Partial functionality.
+}
+\examples{
+\dontrun{
+dat <- anstrain
+dat$condition <- rep(c('A','B'),each=500)
+
+# Model with time and one categorical fixed effect
+mod_tef <- TEfitAll(dat[,c('acc','trialNum')], groupingVar = dat$subID)
+mod_brm <- tef_fitAll2brms(mod_tef,nChains=1,fixef=data.frame(condition=dat$condition))
+
+# Model with time, one categorical fixed effect, and one by-groupingVar (subID) random slope
+dat$absRat <- scale(abs(dat$ratio))
+mod_tef <- TEfitAll(dat[,c('acc','trialNum',"absRat")], groupingVar = dat$subID,covarTerms=list(pRate=c(F)))
+mod_brm <- tef_fitAll2brms(mod_tef,nChains=1,fixef=data.frame(condition=dat$condition))
+}
+
 }
