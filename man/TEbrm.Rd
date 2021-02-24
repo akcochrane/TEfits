@@ -37,7 +37,7 @@ Formats and runs a brms model for a time-evolving nonlinear function. Function i
 and is likely to be buggy, and to change frequently.
 }
 \examples{
-
+\dontrun{
 ## Default model formula is exponential change, with no covariates or random effects
 m <- TEbrm(
 acc ~ trialNum
@@ -47,8 +47,6 @@ acc ~ trialNum
 
 summary(m)
 conditional_effects(m)
-
-\dontrun{
 
 ## using the \code{tef_change_expo3} function to construct the model formula, with random effects
 m <- TEbrm(
