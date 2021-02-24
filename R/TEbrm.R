@@ -1,18 +1,21 @@
 
 #' Fit a time-evolving model with Stan using brms
 #'
-#' Formats and runs a brms model for a time-evolving nonlinear function. Function is \strong{under development}
+#' Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear function. Function is \strong{under development}
 #' and is likely to be buggy, and to change frequently.
 #'
 #' @param formIn Formula to fit. See examples.
 #' @param dataIn Data frame, from which to fit the model.
 #' @param iter Number of iterations to run the model.
 #' @param chains Number of chains to run the model.
-#' @param priorIn Optional argument to pass priors to the \code{brms} model, which augment the TEfit-default rate prior.
+#' @param priorIn Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior.
+#' @param algorithm The algorithm to use when fitting the \code{\link[brms]{brm}} model
 #' @param ... Further arguments passed to the brms model
 #' @param tef_control_list A list of control parameters passed in by \code{tef_control()}
 #'
-#' @return
+#' @seealso
+#' For additional flexibility, and full explanations of model options, see \code{\link[brms]{brms-package}}.
+#'
 #' @export
 #'
 #' @examples
@@ -27,7 +30,7 @@
 #' summary(m)
 #' conditional_effects(m)
 #'
-#' ## using the \code{tef_change_expo3} function to construct the model formula, with random effects
+#' ## using the tef_change_expo3 function to construct the model formula, with random effects
 #' m <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
@@ -41,6 +44,7 @@ TEbrm <- function(
   ,iter = 1000
   ,chains = 3
   ,priorIn = c()
+  ,algorithm = "sampling"
   , ...
   ,tef_control_list=TEfits::tef_control()
 ){
@@ -82,8 +86,6 @@ TEbrm <- function(
   }
 
 
-
-
   bPrior <- set_prior(paste0('normal(',round(log(midTime,base=tef_control_list$expBase),3),','
                              ,round(log(midTime,base=tef_control_list$expBase)/2,3),')')
                       ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
@@ -91,25 +93,38 @@ TEbrm <- function(
 
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}
 
-
-  modOut <- brm(bForm
-                ,data = attr(rhs_form,'data')
-                ,iter = iter
-                ,prior = bPrior
-                ,chains=chains
-                ,...
-  )
+  if(algorithm == 'sampling'){
+    modOut <- brm(bForm
+                  ,data = attr(rhs_form,'data')
+                  ,iter = iter
+                  ,prior = bPrior
+                  ,chains=chains
+                  ,...
+    )
+  }else{
+    nFails = 0 ; success = F ; while(!success && nFails < 5){
+      modOut <- brm(bForm
+                    ,data = attr(rhs_form,'data')
+                    ,iter = iter
+                    ,prior = bPrior
+                    ,algorithm = algorithm
+                    ,...
+      )
+      {. <- posterior_summary(modOut)
+        success <- T}
+    }}
 
   return(modOut)
 
-  if(F){
+  if(F){ # for testing
     formIn <- acc ~ tef_change_expo3('trialNum')
 
     m <- TEbrm(
-           acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
-             ,dataIn = anstrain
-             ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
-           )
+      acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
+      ,dataIn = anstrain
+      ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
+      ,algorithm = 'fullrank'
+    )
 
     m <- TEbrm(
       acc ~ trialNum
@@ -118,4 +133,5 @@ TEbrm <- function(
     )
 
   }
-  }
+
+}

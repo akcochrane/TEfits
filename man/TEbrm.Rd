@@ -10,6 +10,7 @@ TEbrm(
   iter = 1000,
   chains = 3,
   priorIn = c(),
+  algorithm = "sampling",
   ...,
   tef_control_list = TEfits::tef_control()
 )
@@ -23,17 +24,16 @@ TEbrm(
 
 \item{chains}{Number of chains to run the model.}
 
-\item{priorIn}{Optional argument to pass priors to the \code{brms} model, which augment the TEfit-default rate prior.}
+\item{priorIn}{Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior.}
+
+\item{algorithm}{The algorithm to use when fitting the \code{\link[brms]{brm}} model}
 
 \item{...}{Further arguments passed to the brms model}
 
 \item{tef_control_list}{A list of control parameters passed in by \code{tef_control()}}
 }
-\value{
-
-}
 \description{
-Formats and runs a brms model for a time-evolving nonlinear function. Function is \strong{under development}
+Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear function. Function is \strong{under development}
 and is likely to be buggy, and to change frequently.
 }
 \examples{
@@ -48,7 +48,7 @@ acc ~ trialNum
 summary(m)
 conditional_effects(m)
 
-## using the \code{tef_change_expo3} function to construct the model formula, with random effects
+## using the tef_change_expo3 function to construct the model formula, with random effects
 m <- TEbrm(
 acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 ,dataIn = anstrain
@@ -56,4 +56,7 @@ acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 )
 
 }
+}
+\seealso{
+For additional flexibility, and full explanations of model options, see \code{\link[brms]{brms-package}}.
 }
