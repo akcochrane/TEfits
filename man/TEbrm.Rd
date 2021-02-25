@@ -7,11 +7,12 @@
 TEbrm(
   formIn,
   dataIn,
+  ...,
   iter = 1000,
   chains = 3,
   priorIn = c(),
   algorithm = "sampling",
-  ...,
+  link_start_asym = "",
   tef_control_list = TEfits::tef_control()
 )
 }
@@ -20,15 +21,17 @@ TEbrm(
 
 \item{dataIn}{Data frame, from which to fit the model.}
 
+\item{...}{Further arguments passed to the brms model}
+
 \item{iter}{Number of iterations to run the model.}
 
 \item{chains}{Number of chains to run the model.}
 
-\item{priorIn}{Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior.}
+\item{priorIn}{Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior. If you provide any, you will likely need to provide priors for all nonlinear parameters. \code{brm} error messages tend to be very helpful in this regard.}
 
 \item{algorithm}{The algorithm to use when fitting the \code{\link[brms]{brm}} model}
 
-\item{...}{Further arguments passed to the brms model}
+\item{link_start_asym}{Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, most likely to be 'log' or 'inv_logit'}
 
 \item{tef_control_list}{A list of control parameters passed in by \code{tef_control()}}
 }
@@ -36,11 +39,15 @@ TEbrm(
 Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear function. Function is \strong{under development}
 and is likely to be buggy, and to change frequently.
 }
+\details{
+When specifying statistical families, it is \emph{extremely highly recommended} to use an "identity" link function,
+and then [if appropriate] specifying a link function using \code{link_start_asym}.
+}
 \examples{
 \dontrun{
 ## Default model formula is exponential change, with no covariates or random effects
 m <- TEbrm(
-acc ~ trialNum
+acc ~ trialNum # equivalent to `acc ~ tef_change_expo3('trialNum')`
 ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
 ,dataIn = anstrain_s1
 )
@@ -53,6 +60,15 @@ m <- TEbrm(
 acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 ,dataIn = anstrain
 ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
+)
+
+## Estimate accuracy using a more appropriate [bernoulli] response function,
+## ## and also estimate the start and asymptote parameters using invert-logit links
+m <- TEbrm(
+acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
+,dataIn = anstrain
+,link_start_asym = 'inv_logit'
+,family=bernoulli(link='identity')
 )
 
 }
