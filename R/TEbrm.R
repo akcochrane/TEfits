@@ -4,13 +4,8 @@
 #' Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear function. Function is \strong{under development}
 #' and is likely to be buggy, and to change frequently.
 #'
-#' When specifying statistical families, it is \emph{extremely highly recommended} to use an "identity" link function,
-#' and then [if appropriate] specifying a link function using \code{link_start_asym}.
-#'
-#' \code{formIn} is a formula, with the time-varying response variable on the left, followed by \code{~}.
-#' The right side must be either [A] a single variable corresponding to the dimension of time, or
-#' [B] a call to a \code{TEfits} constructor function such as \code{\link{tef_change_expo3}}. See
-#' examples.
+#' When specifying statistical families, it is \emph{extremely highly recommended} to specify an "identity" link function,
+#' and then [if appropriate] specifying a link function using the \code{link_start_asym} argument. See example.
 #'
 #' Currently supported model constructor functions  are:
 #' \itemize{
@@ -30,9 +25,9 @@
 #' log of the mean of the time variable (with the base of the log defined in \code{tef_control_list}).
 #' The SD of this prior is 1/3 of the mean, and boundaries are implemented at extreme values. All
 #' other priors are \code{\link[brms]{brm}} defaults.
-#' Use \code{brms::prior_summary} to extract priors from a fitted model object.
+#' Use \code{brms::prior_summary} to examine priors from a fitted model object.
 #'
-#' @param formIn Formula to fit. See examples.
+#' @param formIn A formula, with the time-varying response variable on the left, followed by \code{~}.  The right side must be either [A] a single variable corresponding to the dimension of time, or [B] a call to a \code{TEfits} constructor function such as \code{\link{tef_change_expo3}}. See examples.
 #' @param dataIn Data frame, from which to fit the model.
 #' @param ... Further arguments passed to the brms model
 #' @param iter Number of iterations to run the model.
@@ -45,23 +40,26 @@
 #' @seealso
 #' For additional flexibility, and full explanations of model options, see \code{\link[brms]{brms-package}}.
 #'
+#' For other approaches to time-evolving models, see \code{\link{TEfits}}.
+#'
 #' @export
 #'
 #' @examples
 #' \dontrun{
+#'
 #' ## Default model formula is exponential change, with no covariates or random effects
-#' m <- TEbrm(
+#' m1 <- TEbrm(
 #' acc ~ trialNum # equivalent to `acc ~ tef_change_expo3('trialNum')`
 #' ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
 #' ,dataIn = anstrain_s1
 #' )
 #'
-#' prior_summary(m)
-#' summary(m)
-#' conditional_effects(m)
+#' prior_summary(m1)
+#' summary(m1)
+#' conditional_effects(m1)
 #'
 #' ## using the tef_change_expo3 function to construct the model formula, with random effects
-#' m <- TEbrm(
+#' m2 <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
 #' ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
@@ -69,11 +67,21 @@
 #'
 #' ## Estimate accuracy using a more appropriate [bernoulli] response function,
 #' ## ## and also estimate the start and asymptote parameters using invert-logit links
-#' m <- TEbrm(
+#' m3 <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
 #' ,link_start_asym = 'inv_logit'
 #' ,family=bernoulli(link='identity')
+#' )
+#'
+#' ## Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w)
+#' m4 <- TEbrm(
+#' resp ~ tef_link_logistic(
+#' tef_change_expo3('trialNum', parForm = ~ (1|subID))
+#' , linkX = 'ratio' )
+#' ,family=bernoulli(link='identity')
+#' ,iter = 4000
+#' ,dataIn = anstrain
 #' )
 #'
 #' }
@@ -110,20 +118,17 @@ TEbrm <- function(
     attr(rhs_form,'data') <- dataIn ; rm(dataIn)
   }
 
-  if(link_start_asym == ''){
-
-    attr(rhs,'link_start_asym') <- 'identity' ##ISSUE## need to add this to the various constructor functions
-
-    link_start_asym <- attr(rhs,'link_start_asym')
-  }
-
+  # if(link_start_asym == ''){
+  #   attr(rhs,'link_start_asym') <- 'identity' ##ISSUE## need to add this to the various constructor functions
+  # }
+link_start_asym <- attr(rhs,'link_start_asym')
 
   ##ISSUE##  THIS WILL BREAK IF RATE ISN'T EXACTLY IDENTIFIED BY ONE PARAMETER, so need to have the changefun constructor ID the "main" names for the rate, asym, and start (the things that should have priors)
   ##ISSUE## THERE'S ALSO NO GUARANTEE THIS IS GOOD FOR NON-EXPO3
   ##ISSUE## Need to make this play nicely with the tef_control_list
   ##ISSUE## make sure that adding another prior overwrites it, and doesn't break it
 
-  bPrior <- set_prior(paste0('normal(',round(log(midTime,base=tef_control_list$expBase),3),','
+  bPrior <- set_prior(paste0('normal(',round(log(midTime,base=tef_control_list$expBase),3),',' ##ISSUE##  The base is already (and should be) defined in the constructor
                              ,round(log(midTime,base=tef_control_list$expBase)/3,3),')')
                       ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
                       ,ub = round(log((maxTime-minTime)*2,base=tef_control_list$expBase),3)
@@ -181,6 +186,10 @@ TEbrm <- function(
     })
   }
 
+  if(!is.null(attr(rhs,'constantPar_prior'))){
+    bPrior <- bPrior + attr(rhs,'constantPar_prior')
+  }
+
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}
 
   if(algorithm == 'sampling'){
@@ -235,6 +244,16 @@ TEbrm <- function(
       ,dataIn = anstrain_s1
       ,link_start_asym = 'inv_logit'
     )
+
+    source('c:/users/ac/google drive/functions/fitPack/tef_link_logistic.R')
+    formIn <- resp~ tef_link_logistic( tef_change_expo3('trialNum') , linkX = 'ratio' )
+    formIn_r <- eval(formIn[[3]])
+
+    m5 <- TEbrm(
+      resp ~ tef_link_logistic( tef_change_expo3('trialNum') , linkX = 'ratio' )
+      ,dataIn = anstrain_s1
+    )
+
 
   }
 
