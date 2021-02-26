@@ -123,7 +123,9 @@ TEbrm <- function(
     attr(rhs_form,'data') <- dataIn ; rm(dataIn)
   }
 
+  if(link_start_asym == ''){
   link_start_asym <- 'identity'##ISSUE## need to add this to the various constructor functions
+  }
   if(!is.null(attr(rhs,'link_start_asym'))){
     link_start_asym <- attr(rhs,'link_start_asym')
   }
