@@ -42,6 +42,31 @@ and is likely to be buggy, and to change frequently.
 \details{
 When specifying statistical families, it is \emph{extremely highly recommended} to use an "identity" link function,
 and then [if appropriate] specifying a link function using \code{link_start_asym}.
+
+\code{formIn} is a formula, with the time-varying response variable on the left, followed by \code{~}.
+The right side must be either [A] a single variable corresponding to the dimension of time, or
+[B] a call to a \code{TEfits} constructor function such as \code{\link{tef_change_expo3}}. See
+examples.
+
+Currently supported model constructor functions  are:
+\itemize{
+\item{\code{tef_change_expo3} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is log2 of time to 50 percent remaining}
+}
+}
+\note{
+Default priors and parameter boundaries are implemented, but all users would benefit from
+re-fitting models with different priors in order to ensure that inferences are not biased
+by defaults. The assumptions that guided the creation of the default priors may not be
+appropriate for your data. If no \code{link_start_asym} function is used (i.e., the default
+'identity') then start and asymptote priors are Gaussian with the response variable's mean, and double
+the response variable's SD. If a \code{link_start_asym} function is used (e.g., 'log' or
+'inv_logit') then start and asymptote priors are Gaussian with a mean of zero and a SD of 3 (which
+may place quite a bit of the prior density at values more extreme than appropriate for many
+users' data). Default [log time constant] rate parameter's prior is Gaussian centered at the
+log of the mean of the time variable (with the base of the log defined in \code{tef_control_list}).
+The SD of this prior is 1/3 of the mean, and boundaries are implemented at extreme values. All
+other priors are \code{\link[brms]{brm}} defaults.
+Use \code{brms::prior_summary} to extract priors from a fitted model object.
 }
 \examples{
 \dontrun{
@@ -52,6 +77,7 @@ acc ~ trialNum # equivalent to `acc ~ tef_change_expo3('trialNum')`
 ,dataIn = anstrain_s1
 )
 
+prior_summary(m)
 summary(m)
 conditional_effects(m)
 

@@ -125,6 +125,9 @@
 #'
 #' \code{\link{TEfitAll}} for fitting a set of \code{TEfit} models.
 #'
+#' \code{\link{TEbrm}} for fitting a Bayesian regression model, with many options
+#' including fixed and random effects.
+#'
 #' For including a nonlinear time predictor in [generalized] linear regression frameworks:
 #' \code{\link{TElm}}; \code{\link{TEglm}}; \code{\link{TElmem}}; \code{\link{TEglmem}}
 #'
