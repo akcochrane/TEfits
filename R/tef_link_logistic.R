@@ -35,7 +35,8 @@ tef_link_logistic <- function(changeForm,
 
   changeStr <- eval(changeForm)
 
-  if(changePar == 'threshold' || all(changePar == c('threshold','bias'))){
+  if(length(changePar)>1){changePar <- changePar[1]}
+  if(changePar == 'threshold'){
   rhs <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
                                                        'bias)-',linkX,')/(',
                                                        changeStr,')))'
