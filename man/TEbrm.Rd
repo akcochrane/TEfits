@@ -31,7 +31,7 @@ TEbrm(
 
 \item{algorithm}{The algorithm to use when fitting the \code{\link[brms]{brm}} model}
 
-\item{link_start_asym}{Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, most likely to be 'log' or 'inv_logit'}
+\item{link_start_asym}{Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'log' or 'inv_logit'.}
 
 \item{tef_control_list}{A list of control parameters passed in by \code{tef_control()}}
 }
@@ -43,9 +43,14 @@ and is likely to be buggy, and to change frequently.
 When specifying statistical families, it is \emph{extremely highly recommended} to specify an "identity" link function,
 and then [if appropriate] specifying a link function using the \code{link_start_asym} argument. See example.
 
-Currently supported model constructor functions  are:
+Currently supported model constructor functions are:
 \itemize{
 \item{\code{tef_change_expo3} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is log2 of time to 50 percent remaining}
+}
+
+Currently supported link functions are:
+\itemize{
+\item{\code{tef_link_logistic} -- logistic psychometric function, parameterized in terms of threshold and asymptote. Takes the output of a \code{tef_change_} function and augments it prior to use by \code{TEbrm}}
 }
 }
 \note{
@@ -65,10 +70,10 @@ Use \code{brms::prior_summary} to examine priors from a fitted model object.
 }
 \examples{
 \dontrun{
+
 ## Default model formula is exponential change, with no covariates or random effects
 m1 <- TEbrm(
 acc ~ trialNum # equivalent to `acc ~ tef_change_expo3('trialNum')`
-,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
 ,dataIn = anstrain_s1
 )
 
@@ -84,7 +89,7 @@ acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 )
 
 ## Estimate accuracy using a more appropriate [bernoulli] response function,
-## ## and also estimate the start and asymptote parameters using invert-logit links
+## # and also estimate the start and asymptote parameters using invert-logit links
 m3 <- TEbrm(
 acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 ,dataIn = anstrain
@@ -92,9 +97,12 @@ acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 ,family=bernoulli(link='identity')
 )
 
-## Fit a time-evolving logistic mixed-effects model (see, e.g., \link[https://doi.org/10.3758/s13414-018-01636-w]{Cochrane et al., 2019, AP&P})
+## Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w).
+## # May take a few minutes to run.
 m4 <- TEbrm(
-resp ~ tef_link_logistic( tef_change_expo3('trialNum', parForm = ~ (1|subID)) , linkX = 'ratio' )
+resp ~ tef_link_logistic(
+tef_change_expo3('trialNum', parForm = ~ (1|subID))
+, linkX = 'ratio' )
 ,family=bernoulli(link='identity')
 ,iter = 4000
 ,dataIn = anstrain

@@ -7,9 +7,14 @@
 #' When specifying statistical families, it is \emph{extremely highly recommended} to specify an "identity" link function,
 #' and then [if appropriate] specifying a link function using the \code{link_start_asym} argument. See example.
 #'
-#' Currently supported model constructor functions  are:
+#' Currently supported model constructor functions are:
 #' \itemize{
 #' \item{\code{tef_change_expo3} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is log2 of time to 50 percent remaining}
+#' }
+#'
+#' Currently supported link functions are:
+#' \itemize{
+#' \item{\code{tef_link_logistic} -- logistic psychometric function, parameterized in terms of threshold and asymptote. Takes the output of a \code{tef_change_} function and augments it prior to use by \code{TEbrm}}
 #' }
 #'
 #' @note
@@ -34,7 +39,7 @@
 #' @param chains Number of chains to run the model.
 #' @param priorIn Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior. If you provide any, you will likely need to provide priors for all nonlinear parameters. \code{brm} error messages tend to be very helpful in this regard.
 #' @param algorithm The algorithm to use when fitting the \code{\link[brms]{brm}} model
-#' @param link_start_asym Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, most likely to be 'log' or 'inv_logit'
+#' @param link_start_asym Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'log' or 'inv_logit'.
 #' @param tef_control_list A list of control parameters passed in by \code{tef_control()}
 #'
 #' @seealso
@@ -50,7 +55,6 @@
 #' ## Default model formula is exponential change, with no covariates or random effects
 #' m1 <- TEbrm(
 #' acc ~ trialNum # equivalent to `acc ~ tef_change_expo3('trialNum')`
-#' ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
 #' ,dataIn = anstrain_s1
 #' )
 #'
@@ -66,7 +70,7 @@
 #' )
 #'
 #' ## Estimate accuracy using a more appropriate [bernoulli] response function,
-#' ## ## and also estimate the start and asymptote parameters using invert-logit links
+#' ## # and also estimate the start and asymptote parameters using invert-logit links
 #' m3 <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
@@ -74,7 +78,8 @@
 #' ,family=bernoulli(link='identity')
 #' )
 #'
-#' ## Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w)
+#' ## Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w).
+#' ## # May take a few minutes to run.
 #' m4 <- TEbrm(
 #' resp ~ tef_link_logistic(
 #' tef_change_expo3('trialNum', parForm = ~ (1|subID))
@@ -118,10 +123,10 @@ TEbrm <- function(
     attr(rhs_form,'data') <- dataIn ; rm(dataIn)
   }
 
-  # if(link_start_asym == ''){
-  #   attr(rhs,'link_start_asym') <- 'identity' ##ISSUE## need to add this to the various constructor functions
-  # }
-link_start_asym <- attr(rhs,'link_start_asym')
+  link_start_asym <- 'identity'##ISSUE## need to add this to the various constructor functions
+  if(!is.null(attr(rhs,'link_start_asym'))){
+    link_start_asym <- attr(rhs,'link_start_asym')
+  }
 
   ##ISSUE##  THIS WILL BREAK IF RATE ISN'T EXACTLY IDENTIFIED BY ONE PARAMETER, so need to have the changefun constructor ID the "main" names for the rate, asym, and start (the things that should have priors)
   ##ISSUE## THERE'S ALSO NO GUARANTEE THIS IS GOOD FOR NON-EXPO3
@@ -170,7 +175,7 @@ link_start_asym <- attr(rhs,'link_start_asym')
             ,paste(attr(rhs,'parForm')[[curPar]],collapse='')
           ))
           if(length(priorIn) == 0){
-          bPrior <- bPrior + set_prior('normal(0,3)', nlpar = paste0(curPar,transformed))}
+            bPrior <- bPrior + set_prior('normal(0,3)', nlpar = paste0(curPar,transformed))}
         }else{
           if(length(priorIn) == 0){
             bPrior <- bPrior + set_prior(paste0('normal('
