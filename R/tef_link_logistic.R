@@ -28,9 +28,6 @@ tef_link_logistic <- function(changeForm,
                               boundScale = 2,
                               constantPar_prior = 'normal(0,3)'){
 
-  ##ISSUE## I'm getting some "Error evaluating the log probability at the initial value" when using bernoulli, which should
-  ## never be the case with this link function. So, there may be something wrong.
-
   threshBase <- threshVal/(1-threshVal)
 
   changeStr <- eval(changeForm)
@@ -52,7 +49,7 @@ tef_link_logistic <- function(changeForm,
 
   attr(rhs,'allPars') <- c(attr(rhs,'allPars'),bias = 'bias')
   attr(rhs,'nullForm')  <-    paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                     'bias)-',linkX,')/log(',
+                                     'bias)-',linkX,')/exp(',
                                      attr(rhs,'nullFun') ,')))'
   )
 
@@ -66,12 +63,12 @@ tef_link_logistic <- function(changeForm,
 
   }else if(changePar == 'bias'){
     rhs <-   paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                    changeStr,')-',linkX,')/log(',
+                    changeStr,')-',linkX,')/exp(',
                     'logThreshold)))'
     )
     ## formula for TEbrm
     attr(rhs,'formula') <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                  attr(changeStr,'formula'),'-',linkX,')/log(',
+                                  attr(changeStr,'formula'),'-',linkX,')/exp(',
                                   'logThreshold)))'
     )
 
@@ -85,7 +82,7 @@ tef_link_logistic <- function(changeForm,
 
     attr(rhs,'allPars') <- c(attr(rhs,'allPars'),threshold = 'threshold')
     attr(rhs,'nullForm')  <-    paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                       attr(rhs,'nullFun') ,')-',linkX,')/log(',
+                                       attr(rhs,'nullFun') ,')-',linkX,')/exp(',
                                        'logThreshold)))'
     )
 
@@ -97,7 +94,7 @@ tef_link_logistic <- function(changeForm,
   try({
     attr(rhs,'constantPar_prior') <- brms::set_prior(constantPar_prior, nlpar = attr(rhs,'constantPar'))
   },silent=T)
-  attr(rhs,'link_start_asym') <- 'log'
+  attr(rhs,'link_start_asym') <- 'exp'
   attr(rhs,'boundScale') <- boundScale
   attr(rhs,'linkX') <- linkX
 

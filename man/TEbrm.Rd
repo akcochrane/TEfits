@@ -31,7 +31,7 @@ TEbrm(
 
 \item{algorithm}{The algorithm to use when fitting the \code{\link[brms]{brm}} model}
 
-\item{link_start_asym}{Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'log' or 'inv_logit'.}
+\item{link_start_asym}{Inverse of the link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'exp' or 'inv_logit'.}
 
 \item{tef_control_list}{A list of control parameters passed in by \code{tef_control()}}
 }
@@ -66,7 +66,8 @@ users' data). Default [log time constant] rate parameter's prior is Gaussian cen
 log of the mean of the time variable (with the base of the log defined in \code{tef_control_list}).
 The SD of this prior is 1/3 of the mean, and boundaries are implemented at extreme values. All
 other priors are \code{\link[brms]{brm}} defaults.
-Use \code{brms::prior_summary} to examine priors from a fitted model object.
+Use \code{\link[brms]{prior_summary}} to examine priors from a fitted model object; see
+\code{\link[brms]{set_prior}} for setting priors.
 }
 \examples{
 \dontrun{

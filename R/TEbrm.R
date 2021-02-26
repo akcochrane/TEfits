@@ -30,7 +30,8 @@
 #' log of the mean of the time variable (with the base of the log defined in \code{tef_control_list}).
 #' The SD of this prior is 1/3 of the mean, and boundaries are implemented at extreme values. All
 #' other priors are \code{\link[brms]{brm}} defaults.
-#' Use \code{brms::prior_summary} to examine priors from a fitted model object.
+#' Use \code{\link[brms]{prior_summary}} to examine priors from a fitted model object; see
+#' \code{\link[brms]{set_prior}} for setting priors.
 #'
 #' @param formIn A formula, with the time-varying response variable on the left, followed by \code{~}.  The right side must be either [A] a single variable corresponding to the dimension of time, or [B] a call to a \code{TEfits} constructor function such as \code{\link{tef_change_expo3}}. See examples.
 #' @param dataIn Data frame, from which to fit the model.
@@ -39,7 +40,7 @@
 #' @param chains Number of chains to run the model.
 #' @param priorIn Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior. If you provide any, you will likely need to provide priors for all nonlinear parameters. \code{brm} error messages tend to be very helpful in this regard.
 #' @param algorithm The algorithm to use when fitting the \code{\link[brms]{brm}} model
-#' @param link_start_asym Link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'log' or 'inv_logit'.
+#' @param link_start_asym Inverse of the link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'exp' or 'inv_logit'.
 #' @param tef_control_list A list of control parameters passed in by \code{tef_control()}
 #'
 #' @seealso
@@ -120,8 +121,9 @@ TEbrm <- function(
 
     ## Add the rest of the formula (dataIn and LHS)
     attr(rhs_form,'lhs')  <- as.character(formIn[[2]])
-    attr(rhs_form,'data') <- dataIn ; rm(dataIn)
-  }
+
+    ##ISSUE## it would be nice to have the brm model say the data "name" is the same as the input, rather than the attr(..etc). Would this take a match.call() or something?
+    attr(rhs_form,'data') <- dataIn ; rm(dataIn)   }
 
   if(link_start_asym == ''){
   link_start_asym <- 'identity'##ISSUE## need to add this to the various constructor functions
@@ -259,6 +261,7 @@ TEbrm <- function(
     m5 <- TEbrm(
       resp ~ tef_link_logistic( tef_change_expo3('trialNum') , linkX = 'ratio' )
       ,dataIn = anstrain_s1
+      ,family=bernoulli(link='identity')
     )
 
 
