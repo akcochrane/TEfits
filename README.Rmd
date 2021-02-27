@@ -38,10 +38,10 @@ A basic maximum-likelihood model nonlinearly relating time to an outcome variabl
 library(TEfits)
 
 # generate artificial data:
-dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
+dat_simple  <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 
 # fit a `TEfit` model
-mod_simple <- TEfit(dat[,c('response','trial_number')])
+mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
 
 plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 
@@ -50,15 +50,15 @@ summary(mod_simple)
 
 Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
 
-`mod_TEbrm <- TEbrm(response ~ trial_number, dat)`
+`mod_TEbrm <- TEbrm(response ~ trial_number, dat_simple)`
 
-```{r model_simple_TEbrm, message=FALSE, warning=FALSE, echo=F}
+```{r model_simple_TEbrm, message=FALSE, warning=FALSE, results='hide'}
 
 # fit a `TEbrm` model
-mod_TEbrm <- TEbrm(response ~ trial_number, dat)
+mod_TEbrm <- TEbrm(response ~ trial_number, dat_simple)
 ```
 
-```{r model_simple_TEbrm_output, message=FALSE, warning=FALSE, echo=F}
+```{r model_simple_TEbrm_output, message=FALSE, warning=FALSE}
 conditional_effects(mod_TEbrm)
 
 summary(mod_TEbrm)
@@ -71,7 +71,7 @@ An example of a maximum-likelihood fit using a Bernoulli response distribution, 
 ```{r model_boot, message=FALSE, warning=FALSE}
 
 # fit a `TEfit` model
-mod_boot <- TEfit(dat[,c('response','trial_number')], 
+mod_boot <- TEfit(dat_simple[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=tef_bootList(resamples = 40))
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
@@ -85,7 +85,7 @@ An example of fitting a given model to subsets of data (e.g., individual partici
 
 ```{r model_groups, message=FALSE, warning=FALSE}
 # generate artificial data:
-dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
+dat <- data.frame(response=rep(dat_simple$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 # fit a `TEfitAll` model
 mod_4group <- TEfitAll(dat[,c('response','trial_number')], 
@@ -110,17 +110,17 @@ An analogous model, this time fitting "participant-level" models as random effec
                           `tef_change_expo3('trial_number',parForm = ~ (1|group))`
                           `,dataIn = dat)`
 
-```{r model_groups_TEbrm, message=FALSE, warning=FALSE, echo=F}
+```{r model_groups_TEbrm, message=FALSE, warning=FALSE, results='hide'}
 
-mod_4group_TEbrm <- TEbrm(response ~ 
-                            tef_change_expo3('trial_number',parForm = ~ (1|group))
-                          ,dataIn = dat
-)
+# mod_4group_TEbrm <- TEbrm(response ~ 
+#                             tef_change_expo3('trial_number',parForm = ~ (1|group))
+#                           ,dataIn = dat
+# )
 ```
 ```{r model_groups_TEbrm_output, message=FALSE, warning=FALSE}
-conditional_effects(mod_4group_TEbrm)
-
-summary(mod_4group_TEbrm)
+# conditional_effects(mod_4group_TEbrm)
+# 
+# summary(mod_4group_TEbrm)
 ```
 
 ## Using a more common linear regression framework
@@ -129,11 +129,11 @@ In some cases (such as `mod_simple` above), similar performance can be attained 
 
 ```{r TElm}
 # Fit a `lm` model, first computing the best nonlinear transformation for time:
-mod_lm <- TElm(response~trial_number,dat,timeVar = 'trial_number')
+mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
+lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 
 ```
 
