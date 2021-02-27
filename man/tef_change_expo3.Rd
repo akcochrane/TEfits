@@ -30,10 +30,26 @@ tef_change_expo3(
 \item{rateBase}{Number. The base of the log (e.g., 2 or exp(1)) of the rate [time constant].}
 }
 \description{
+By defining the model variable associated with time (e.g., trial number), and
+formulas defining each of the nonlinear parameters of time-related change,
+this function constructs a model that can then be passed to functions for fitting
+the model (e.g., \code{\link{TEbrm}}).
+}
+\details{
 Function is \strong{under development}
 and is likely to be buggy, and to change frequently.
 }
 \examples{
-equation_to_fit <- tef_change_expo3('timeVar',rateForm = ~ xvar1*xvar2) # both variables should be numeric!
+equation_to_fit <- tef_change_expo3('timeVar',rateForm = ~ xvar1*xvar2) # both variables should be numeric for TEfit methods! TEbrm should work with factorsas well
 
+equation_to_fit <- tef_change_expo3('timeVar'
+, parForm = ~ xvar1   # overall parameter formula; overwritten for time-evolving formulas below, leaving this as just the null model
+, startForm = ~ xvar2 # start parameter's regression model
+, rateForm = ~ (1|participantID)  # rate parameter's [mixed-effects] regression model
+, asymForm = ~ xvar3 # asymptote parameter's regression model
+)
+
+}
+\seealso{
+\code{\link{TEbrm}} for examples of how to use this function in specifying models.
 }

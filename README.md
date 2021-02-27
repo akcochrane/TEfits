@@ -23,13 +23,13 @@ Although having vignettes is nice for exploring the functionality of the package
 Simple model of exponential change
 ----------------------------------
 
-A basic model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
+A basic maximum-likelihood model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
 
 ``` r
 library(TEfits)
 
 # generate artificial data:
-dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
+dat_simple  <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 
 # fit a `TEfit` model
 mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
@@ -50,13 +50,13 @@ summary(mod_simple)
     ## 
     ## >> Fit Values:
     ##        Estimate
-    ## pAsym     3.522
-    ## pStart    0.869
+    ## pAsym     1.016
+    ## pStart    0.251
     ## pRate     2.866
     ## 
     ## >> Goodness-of-fit:
-    ##          err nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
-    ## ols 0.093557 15.2815     3   30 2191.575    0 0.9938778 -162.9079 -16.83544
+    ##             err  nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
+    ## ols 0.007789065 1.272257     3   30 2191.575    0 0.9938778 -237.4834 -91.41094
     ##      deltaBIC
     ## ols -146.0724
     ## 
@@ -65,20 +65,56 @@ summary(mod_simple)
     ## response ~ trial_number:          -1               0.03537264
     ##                          proportionalSpearmanChange pValSpearmanChange
     ## response ~ trial_number:                 0.03537264                  0
-    ##                          pval_KPSS_null pval_KPSS_model
-    ## response ~ trial_number:          < .01            > .1
+
+Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
+
+``` r
+# fit a `TEbrm` model
+mod_TEbrm <- TEbrm(response ~ trial_number, dat_simple)
+```
+
+``` r
+conditional_effects(mod_TEbrm)
+```
+
+![](README_files/figure-markdown_github/model_simple_TEbrm_output-1.png)
+
+``` r
+summary(mod_TEbrm)
+```
+
+    ##  Family: gaussian 
+    ##   Links: mu = identity; sigma = identity 
+    ## Formula: response ~ pAsym + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))) 
+    ##          pStart ~ 1
+    ##          pRate ~ 1
+    ##          pAsym ~ 1
+    ##    Data: attr(rhs_form, "data") (Number of observations: 30) 
+    ## Samples: 3 chains, each with iter = 1000; warmup = 500; thin = 1;
+    ##          total post-warmup samples = 1500
+    ## 
+    ## Population-Level Effects: 
+    ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## pStart_Intercept     0.25      0.01     0.23     0.28 1.01      542      557
+    ## pRate_Intercept      2.88      0.08     2.72     3.06 1.00      401      437
+    ## pAsym_Intercept      1.02      0.01     0.99     1.05 1.00      460      491
+    ## 
+    ## Family Specific Parameters: 
+    ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## sigma     0.02      0.00     0.01     0.02 1.01      564      480
+    ## 
+    ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+    ## and Tail_ESS are effective sample size measures, and Rhat is the potential
+    ## scale reduction factor on split chains (at convergence, Rhat = 1).
 
 Bootstrapped model with Bernoulli error function
 ------------------------------------------------
 
-An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
+An example of a maximum-likelihood fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
 ``` r
-# generate artificial data:
-dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
-
 # fit a `TEfit` model
-mod_boot <- TEfit(dat[,c('response','trial_number')], 
+mod_boot <- TEfit(dat_simple[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=tef_bootList(resamples = 40))
 ```
@@ -104,32 +140,30 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.996 0.984 1.000    0.004
-    ## pRate     2.737 2.594 2.765    0.044
-    ## pStart    0.231 0.123 0.271    0.038
+    ## pAsym     0.998 0.988 1.000    0.003
+    ## pRate     2.706 2.576 2.836    0.066
+    ## pStart    0.233 0.160 0.262    0.026
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC     deltaBIC
-    ## bernoulli 13.42851 16.83409     3   30 37.06062 37.06937 -0.008755303
+    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
+    ## bernoulli 13.42648 16.83409     3   30 37.05655 37.06937 -0.01282454
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.09410456
+    ## response ~ trial_number:          -1              -0.09499444
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.09410456                  0
-    ##                          pval_KPSS_null pval_KPSS_model
-    ## response ~ trial_number:          < .01            > .1
+    ## response ~ trial_number:                 0.09499444                  0
     ## 
     ## >> Percent of resamples predicting an increase in values: 100 
     ## 
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.076 0.454 0.208
-    ## pStart 0.076  1.000 0.654 0.510
-    ## pRate  0.454  0.654 1.000 0.289
-    ## err    0.208  0.510 0.289 1.000
+    ##         pAsym pStart  pRate    err
+    ## pAsym   1.000 -0.258 -0.026 -0.305
+    ## pStart -0.258  1.000  0.661  0.506
+    ## pRate  -0.026  0.661  1.000  0.056
+    ## err    -0.305  0.506  0.056  1.000
 
 Fitting multiple models
 -----------------------
@@ -138,7 +172,7 @@ An example of fitting a given model to subsets of data (e.g., individual partici
 
 ``` r
 # generate artificial data:
-dat <- data.frame(response=rep(dat$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
+dat <- data.frame(response=rep(dat_simple$response,4)*seq(0,.2,length=120),trial_number=rep(1:30,4),group=rep(letters[1:4],each=30))
 
 # fit a `TEfitAll` model
 mod_4group <- TEfitAll(dat[,c('response','trial_number')], 
@@ -167,9 +201,9 @@ summary(mod_4group)
     ## >> Formula: response ~ ((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
     ## >> Overall effects:
-    ##             pAsym     pStart      pRate
-    ## mean   0.14922721 0.01639030 3.83366532
-    ## stdErr 0.03933404 0.01060451 0.02431567
+    ##             pAsym     pStart     pRate
+    ## mean   0.14922722 0.01639029 3.8336655
+    ## stdErr 0.03933405 0.01060450 0.0243155
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -191,6 +225,60 @@ summary(mod_4group)
     ## pStart  1.000  1.000 -0.763
     ## pRate  -0.757 -0.763  1.000
 
+An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm`.
+
+``` r
+mod_4group_TEbrm <- TEbrm(response ~
+                            tef_change_expo3('trial_number',parForm = ~ (1|group))
+                          ,dataIn = dat
+)
+```
+
+``` r
+conditional_effects(mod_4group_TEbrm)
+```
+
+![](README_files/figure-markdown_github/model_groups_TEbrm_output-1.png)
+
+``` r
+summary(mod_4group_TEbrm)
+```
+
+    ##  Family: gaussian 
+    ##   Links: mu = identity; sigma = identity 
+    ## Formula: response ~ pAsym + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))) 
+    ##          pStart ~ (1 | group)
+    ##          pRate ~ (1 | group)
+    ##          pAsym ~ (1 | group)
+    ##    Data: attr(rhs_form, "data") (Number of observations: 120) 
+    ## Samples: 3 chains, each with iter = 1000; warmup = 500; thin = 1;
+    ##          total post-warmup samples = 1500
+    ## 
+    ## Group-Level Effects: 
+    ## ~group (Number of levels: 4) 
+    ##                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+    ## sd(pStart_Intercept)     0.04      0.03     0.01     0.12 1.01      483
+    ## sd(pRate_Intercept)      1.62      0.71     0.71     3.41 1.01      580
+    ## sd(pAsym_Intercept)      0.07      0.06     0.01     0.27 1.00      389
+    ##                      Tail_ESS
+    ## sd(pStart_Intercept)      378
+    ## sd(pRate_Intercept)       714
+    ## sd(pAsym_Intercept)       580
+    ## 
+    ## Population-Level Effects: 
+    ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## pStart_Intercept     0.02      0.02    -0.02     0.06 1.01      635      463
+    ## pRate_Intercept      4.63      0.63     3.20     5.69 1.00      583      533
+    ## pAsym_Intercept      0.22      0.04     0.12     0.29 1.00      584      426
+    ## 
+    ## Family Specific Parameters: 
+    ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## sigma     0.00      0.00     0.00     0.00 1.00     1240      958
+    ## 
+    ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+    ## and Tail_ESS are effective sample size measures, and Rhat is the potential
+    ## scale reduction factor on split chains (at convergence, Rhat = 1).
+
 Using a more common linear regression framework
 -----------------------------------------------
 
@@ -209,17 +297,19 @@ lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 
 TElm parameter estimates:
 
-|  X.Intercept.|  trial\_number|   rate|
-|-------------:|--------------:|------:|
-|         3.527|         -2.655|  2.876|
+|  X.Intercept.|  trial\_number|  rate|
+|-------------:|--------------:|-----:|
+|         1.017|         -0.766|  2.87|
 
 TEfit parameter estimates:
 
 |          |  pAsym|  pStart|  pRate|
-|----------|------:|-------:|------:|
-| Estimate |  3.522|   0.869|  2.866|
+|:---------|------:|-------:|------:|
+| Estimate |  1.016|   0.251|  2.866|
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides start as an offset from asymptote (ie., `Intercept`).
+
+For extensions of this framework see `TEglm`, `TElmem`, and `TEglmem`.
 
 Testing functionality
 =====================
