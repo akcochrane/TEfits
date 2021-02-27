@@ -68,10 +68,7 @@ summary(mod_simple)
 
 Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
 
-``` r
-# fit a `TEbrm` model
-mod_TEbrm <- TEbrm(response ~ trial_number, dat)
-```
+`mod_TEbrm <- TEbrm(response ~ trial_number, dat)`
 
     ## 
     ## SAMPLING FOR MODEL '24fb7a14b096f1389976e4d28e0094dc' NOW (CHAIN 1).
@@ -94,9 +91,9 @@ mod_TEbrm <- TEbrm(response ~ trial_number, dat)
     ## Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
     ## Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
     ## Chain 1: 
-    ## Chain 1:  Elapsed Time: 0.215 seconds (Warm-up)
-    ## Chain 1:                0.153 seconds (Sampling)
-    ## Chain 1:                0.368 seconds (Total)
+    ## Chain 1:  Elapsed Time: 0.256 seconds (Warm-up)
+    ## Chain 1:                0.212 seconds (Sampling)
+    ## Chain 1:                0.468 seconds (Total)
     ## Chain 1: 
     ## 
     ## SAMPLING FOR MODEL '24fb7a14b096f1389976e4d28e0094dc' NOW (CHAIN 2).
@@ -119,9 +116,9 @@ mod_TEbrm <- TEbrm(response ~ trial_number, dat)
     ## Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
     ## Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
     ## Chain 2: 
-    ## Chain 2:  Elapsed Time: 0.233 seconds (Warm-up)
-    ## Chain 2:                0.202 seconds (Sampling)
-    ## Chain 2:                0.435 seconds (Total)
+    ## Chain 2:  Elapsed Time: 0.251 seconds (Warm-up)
+    ## Chain 2:                0.197 seconds (Sampling)
+    ## Chain 2:                0.448 seconds (Total)
     ## Chain 2: 
     ## 
     ## SAMPLING FOR MODEL '24fb7a14b096f1389976e4d28e0094dc' NOW (CHAIN 3).
@@ -144,20 +141,12 @@ mod_TEbrm <- TEbrm(response ~ trial_number, dat)
     ## Chain 3: Iteration: 900 / 1000 [ 90%]  (Sampling)
     ## Chain 3: Iteration: 1000 / 1000 [100%]  (Sampling)
     ## Chain 3: 
-    ## Chain 3:  Elapsed Time: 0.212 seconds (Warm-up)
-    ## Chain 3:                0.2 seconds (Sampling)
-    ## Chain 3:                0.412 seconds (Total)
+    ## Chain 3:  Elapsed Time: 0.255 seconds (Warm-up)
+    ## Chain 3:                0.213 seconds (Sampling)
+    ## Chain 3:                0.468 seconds (Total)
     ## Chain 3:
 
-``` r
-conditional_effects(mod_TEbrm)
-```
-
-![](README_files/figure-markdown_github/model_simple_TEbrm-1.png)
-
-``` r
-summary(mod_TEbrm)
-```
+![](README_files/figure-markdown_github/model_simple_TEbrm_output-1.png)
 
     ##  Family: gaussian 
     ##   Links: mu = identity; sigma = identity 
@@ -171,13 +160,13 @@ summary(mod_TEbrm)
     ## 
     ## Population-Level Effects: 
     ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## pStart_Intercept     0.25      0.01     0.23     0.27 1.00      671      556
-    ## pRate_Intercept      2.88      0.08     2.72     3.04 1.00      575      643
-    ## pAsym_Intercept      1.02      0.02     0.99     1.05 1.00      628      736
+    ## pStart_Intercept     0.25      0.01     0.23     0.28 1.00      562      565
+    ## pRate_Intercept      2.88      0.09     2.72     3.06 1.00      397      345
+    ## pAsym_Intercept      1.02      0.02     0.99     1.05 1.00      448      369
     ## 
     ## Family Specific Parameters: 
     ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## sigma     0.02      0.00     0.01     0.02 1.00      679      955
+    ## sigma     0.02      0.00     0.01     0.02 1.01      587      708
     ## 
     ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
     ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -210,18 +199,18 @@ summary(mod_boot)
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
     ## pAsym     0.999 0.987 1.000    0.003
-    ## pRate     2.738 2.589 2.823    0.060
-    ## pStart    0.235 0.187 0.284    0.025
+    ## pRate     2.716 2.538 2.802    0.067
+    ## pStart    0.237 0.179 0.291    0.029
     ## 
     ## >> Goodness-of-fit:
     ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42437 16.83409     3   30 37.05234 37.06937 -0.01703134
+    ## bernoulli 13.42573 16.83409     3   30 37.05505 37.06937 -0.01432375
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1               -0.1016685
+    ## response ~ trial_number:          -1                -0.127475
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                  0.1016685                  0
+    ## response ~ trial_number:                   0.127475                  0
     ## 
     ## >> Percent of resamples predicting an increase in values: 100 
     ## 
@@ -229,10 +218,10 @@ summary(mod_boot)
     ## 
     ## >> Bootstrapped parameter correlations:
     ##         pAsym pStart pRate    err
-    ## pAsym   1.000  0.084 0.385 -0.012
-    ## pStart  0.084  1.000 0.647  0.480
-    ## pRate   0.385  0.647 1.000  0.290
-    ## err    -0.012  0.480 0.290  1.000
+    ## pAsym   1.000 -0.092 0.277 -0.028
+    ## pStart -0.092  1.000 0.658  0.308
+    ## pRate   0.277  0.658 1.000  0.153
+    ## err    -0.028  0.308 0.153  1.000
 
 Fitting multiple models
 -----------------------
@@ -271,8 +260,8 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922721 0.01639030 3.83366541
-    ## stdErr 0.03933404 0.01060451 0.02431558
+    ## mean   0.14922721 0.01639028 3.83366521
+    ## stdErr 0.03933404 0.01060450 0.02431579
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -296,12 +285,7 @@ summary(mod_4group)
 
 An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm`.
 
-``` r
-mod_4group_TEbrm <- TEbrm(response ~ 
-                            tef_change_expo3('trial_number',parForm = ~ (1|group))
-                          ,dataIn = dat
-)
-```
+`mod_4group_TEbrm <- TEbrm(response ~` `tef_change_expo3('trial_number',parForm = ~ (1|group))` `,dataIn = dat)`
 
     ## 
     ## SAMPLING FOR MODEL 'ec7a53ce60e88c9f52bc73902e26264a' NOW (CHAIN 1).
@@ -324,15 +308,15 @@ mod_4group_TEbrm <- TEbrm(response ~
     ## Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
     ## Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
     ## Chain 1: 
-    ## Chain 1:  Elapsed Time: 29.295 seconds (Warm-up)
-    ## Chain 1:                34.505 seconds (Sampling)
-    ## Chain 1:                63.8 seconds (Total)
+    ## Chain 1:  Elapsed Time: 34.169 seconds (Warm-up)
+    ## Chain 1:                41.87 seconds (Sampling)
+    ## Chain 1:                76.039 seconds (Total)
     ## Chain 1: 
     ## 
     ## SAMPLING FOR MODEL 'ec7a53ce60e88c9f52bc73902e26264a' NOW (CHAIN 2).
     ## Chain 2: 
-    ## Chain 2: Gradient evaluation took 0 seconds
-    ## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 2: Gradient evaluation took 0.001 seconds
+    ## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.
     ## Chain 2: Adjust your expectations accordingly!
     ## Chain 2: 
     ## Chain 2: 
@@ -349,15 +333,15 @@ mod_4group_TEbrm <- TEbrm(response ~
     ## Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
     ## Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
     ## Chain 2: 
-    ## Chain 2:  Elapsed Time: 30.861 seconds (Warm-up)
-    ## Chain 2:                41.867 seconds (Sampling)
-    ## Chain 2:                72.728 seconds (Total)
+    ## Chain 2:  Elapsed Time: 34.695 seconds (Warm-up)
+    ## Chain 2:                42.055 seconds (Sampling)
+    ## Chain 2:                76.75 seconds (Total)
     ## Chain 2: 
     ## 
     ## SAMPLING FOR MODEL 'ec7a53ce60e88c9f52bc73902e26264a' NOW (CHAIN 3).
     ## Chain 3: 
-    ## Chain 3: Gradient evaluation took 0 seconds
-    ## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 3: Gradient evaluation took 0.001 seconds
+    ## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.
     ## Chain 3: Adjust your expectations accordingly!
     ## Chain 3: 
     ## Chain 3: 
@@ -374,16 +358,16 @@ mod_4group_TEbrm <- TEbrm(response ~
     ## Chain 3: Iteration: 900 / 1000 [ 90%]  (Sampling)
     ## Chain 3: Iteration: 1000 / 1000 [100%]  (Sampling)
     ## Chain 3: 
-    ## Chain 3:  Elapsed Time: 30.849 seconds (Warm-up)
-    ## Chain 3:                38.142 seconds (Sampling)
-    ## Chain 3:                68.991 seconds (Total)
+    ## Chain 3:  Elapsed Time: 33.687 seconds (Warm-up)
+    ## Chain 3:                40.23 seconds (Sampling)
+    ## Chain 3:                73.917 seconds (Total)
     ## Chain 3:
 
 ``` r
 conditional_effects(mod_4group_TEbrm)
 ```
 
-![](README_files/figure-markdown_github/model_groups_TEbrm-1.png)
+![](README_files/figure-markdown_github/model_groups_TEbrm_output-1.png)
 
 ``` r
 summary(mod_4group_TEbrm)
@@ -402,23 +386,23 @@ summary(mod_4group_TEbrm)
     ## Group-Level Effects: 
     ## ~group (Number of levels: 4) 
     ##                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-    ## sd(pStart_Intercept)     0.04      0.04     0.01     0.13 1.01      349
-    ## sd(pRate_Intercept)      1.76      0.89     0.74     4.19 1.00      648
-    ## sd(pAsym_Intercept)      0.08      0.08     0.01     0.32 1.01      248
+    ## sd(pStart_Intercept)     0.04      0.03     0.01     0.12 1.00      471
+    ## sd(pRate_Intercept)      1.71      0.80     0.73     3.69 1.00      508
+    ## sd(pAsym_Intercept)      0.07      0.08     0.01     0.31 1.00      529
     ##                      Tail_ESS
-    ## sd(pStart_Intercept)      422
-    ## sd(pRate_Intercept)       731
-    ## sd(pAsym_Intercept)       276
+    ## sd(pStart_Intercept)      733
+    ## sd(pRate_Intercept)       549
+    ## sd(pAsym_Intercept)       560
     ## 
     ## Population-Level Effects: 
     ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## pStart_Intercept     0.02      0.02    -0.02     0.07 1.00      472      438
-    ## pRate_Intercept      4.57      0.66     3.02     5.66 1.01      657      806
-    ## pAsym_Intercept      0.21      0.05     0.09     0.29 1.02      232       93
+    ## pStart_Intercept     0.02      0.02    -0.01     0.07 1.01      440      554
+    ## pRate_Intercept      4.63      0.66     3.16     5.72 1.00      403      399
+    ## pAsym_Intercept      0.22      0.04     0.12     0.30 1.00      618      360
     ## 
     ## Family Specific Parameters: 
     ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## sigma     0.00      0.00     0.00     0.00 1.00      995      642
+    ## sigma     0.00      0.00     0.00     0.00 1.00     1366      926
     ## 
     ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
     ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -444,7 +428,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         0.131|         -0.118|  3.378|
+|          0.13|         -0.118|  3.355|
 
 TEfit parameter estimates:
 

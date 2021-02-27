@@ -50,11 +50,15 @@ summary(mod_simple)
 
 Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
 
-```{r model_simple_TEbrm, message=FALSE, warning=FALSE}
+`mod_TEbrm <- TEbrm(response ~ trial_number, dat)`
+
+```{r model_simple_TEbrm, message=FALSE, warning=FALSE, echo=F}
 
 # fit a `TEbrm` model
 mod_TEbrm <- TEbrm(response ~ trial_number, dat)
+```
 
+```{r model_simple_TEbrm_output, message=FALSE, warning=FALSE, echo=F}
 conditional_effects(mod_TEbrm)
 
 summary(mod_TEbrm)
@@ -102,13 +106,18 @@ summary(mod_4group)
 
 An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm`.
 
-```{r model_groups_TEbrm, message=FALSE, warning=FALSE}
+`mod_4group_TEbrm <- TEbrm(response ~` 
+                          `tef_change_expo3('trial_number',parForm = ~ (1|group))`
+                          `,dataIn = dat)`
+
+```{r model_groups_TEbrm, message=FALSE, warning=FALSE, echo=F}
 
 mod_4group_TEbrm <- TEbrm(response ~ 
                             tef_change_expo3('trial_number',parForm = ~ (1|group))
                           ,dataIn = dat
 )
-
+```
+```{r model_groups_TEbrm_output, message=FALSE, warning=FALSE}
 conditional_effects(mod_4group_TEbrm)
 
 summary(mod_4group_TEbrm)
