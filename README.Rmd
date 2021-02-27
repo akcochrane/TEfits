@@ -66,12 +66,14 @@ summary(mod_TEbrm)
 
 An example of a maximum-likelihood fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
-```{r model_boot, message=FALSE, warning=FALSE}
-
+```{r model_boot, message=FALSE, warning=FALSE, results='hide'}
 # fit a `TEfit` model
 mod_boot <- TEfit(dat_simple[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=tef_bootList(resamples = 40))
+```
+
+```{r model_boot_output, message=FALSE, warning=FALSE}
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 
 summary(mod_boot)
