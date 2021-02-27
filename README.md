@@ -23,16 +23,16 @@ Although having vignettes is nice for exploring the functionality of the package
 Simple model of exponential change
 ----------------------------------
 
-A basic model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
+A basic maximum-likelihood model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
 
 ``` r
 library(TEfits)
 
 # generate artificial data:
-dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
+dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 
 # fit a `TEfit` model
-mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
+mod_simple <- TEfit(dat[,c('response','trial_number')])
 
 plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 ```
@@ -50,13 +50,13 @@ summary(mod_simple)
     ## 
     ## >> Fit Values:
     ##        Estimate
-    ## pAsym     3.522
-    ## pStart    0.869
+    ## pAsym     1.016
+    ## pStart    0.251
     ## pRate     2.866
     ## 
     ## >> Goodness-of-fit:
-    ##          err nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
-    ## ols 0.093557 15.2815     3   30 2191.575    0 0.9938778 -162.9079 -16.83544
+    ##             err  nullErr nPars nObs     Fval Pval  Rsquared       BIC   nullBIC
+    ## ols 0.007789065 1.272257     3   30 2191.575    0 0.9938778 -237.4834 -91.41094
     ##      deltaBIC
     ## ols -146.0724
     ## 
@@ -65,28 +65,134 @@ summary(mod_simple)
     ## response ~ trial_number:          -1               0.03537264
     ##                          proportionalSpearmanChange pValSpearmanChange
     ## response ~ trial_number:                 0.03537264                  0
-    ##                          pval_KPSS_null pval_KPSS_model
-    ## response ~ trial_number:          < .01            > .1
+
+Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
+
+``` r
+# fit a `TEbrm` model
+mod_TEbrm <- TEbrm(response ~ trial_number, dat)
+```
+
+    ## 
+    ## SAMPLING FOR MODEL '24fb7a14b096f1389976e4d28e0094dc' NOW (CHAIN 1).
+    ## Chain 1: 
+    ## Chain 1: Gradient evaluation took 0 seconds
+    ## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 1: Adjust your expectations accordingly!
+    ## Chain 1: 
+    ## Chain 1: 
+    ## Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
+    ## Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
+    ## Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
+    ## Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
+    ## Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
+    ## Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
+    ## Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
+    ## Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
+    ## Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
+    ## Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
+    ## Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
+    ## Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
+    ## Chain 1: 
+    ## Chain 1:  Elapsed Time: 0.215 seconds (Warm-up)
+    ## Chain 1:                0.153 seconds (Sampling)
+    ## Chain 1:                0.368 seconds (Total)
+    ## Chain 1: 
+    ## 
+    ## SAMPLING FOR MODEL '24fb7a14b096f1389976e4d28e0094dc' NOW (CHAIN 2).
+    ## Chain 2: 
+    ## Chain 2: Gradient evaluation took 0 seconds
+    ## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 2: Adjust your expectations accordingly!
+    ## Chain 2: 
+    ## Chain 2: 
+    ## Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
+    ## Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
+    ## Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
+    ## Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
+    ## Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
+    ## Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
+    ## Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
+    ## Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
+    ## Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
+    ## Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
+    ## Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
+    ## Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
+    ## Chain 2: 
+    ## Chain 2:  Elapsed Time: 0.233 seconds (Warm-up)
+    ## Chain 2:                0.202 seconds (Sampling)
+    ## Chain 2:                0.435 seconds (Total)
+    ## Chain 2: 
+    ## 
+    ## SAMPLING FOR MODEL '24fb7a14b096f1389976e4d28e0094dc' NOW (CHAIN 3).
+    ## Chain 3: 
+    ## Chain 3: Gradient evaluation took 0 seconds
+    ## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 3: Adjust your expectations accordingly!
+    ## Chain 3: 
+    ## Chain 3: 
+    ## Chain 3: Iteration:   1 / 1000 [  0%]  (Warmup)
+    ## Chain 3: Iteration: 100 / 1000 [ 10%]  (Warmup)
+    ## Chain 3: Iteration: 200 / 1000 [ 20%]  (Warmup)
+    ## Chain 3: Iteration: 300 / 1000 [ 30%]  (Warmup)
+    ## Chain 3: Iteration: 400 / 1000 [ 40%]  (Warmup)
+    ## Chain 3: Iteration: 500 / 1000 [ 50%]  (Warmup)
+    ## Chain 3: Iteration: 501 / 1000 [ 50%]  (Sampling)
+    ## Chain 3: Iteration: 600 / 1000 [ 60%]  (Sampling)
+    ## Chain 3: Iteration: 700 / 1000 [ 70%]  (Sampling)
+    ## Chain 3: Iteration: 800 / 1000 [ 80%]  (Sampling)
+    ## Chain 3: Iteration: 900 / 1000 [ 90%]  (Sampling)
+    ## Chain 3: Iteration: 1000 / 1000 [100%]  (Sampling)
+    ## Chain 3: 
+    ## Chain 3:  Elapsed Time: 0.212 seconds (Warm-up)
+    ## Chain 3:                0.2 seconds (Sampling)
+    ## Chain 3:                0.412 seconds (Total)
+    ## Chain 3:
+
+``` r
+conditional_effects(mod_TEbrm)
+```
+
+![](README_files/figure-markdown_github/model_simple_TEbrm-1.png)
+
+``` r
+summary(mod_TEbrm)
+```
+
+    ##  Family: gaussian 
+    ##   Links: mu = identity; sigma = identity 
+    ## Formula: response ~ pAsym + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))) 
+    ##          pStart ~ 1
+    ##          pRate ~ 1
+    ##          pAsym ~ 1
+    ##    Data: attr(rhs_form, "data") (Number of observations: 30) 
+    ## Samples: 3 chains, each with iter = 1000; warmup = 500; thin = 1;
+    ##          total post-warmup samples = 1500
+    ## 
+    ## Population-Level Effects: 
+    ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## pStart_Intercept     0.25      0.01     0.23     0.27 1.00      671      556
+    ## pRate_Intercept      2.88      0.08     2.72     3.04 1.00      575      643
+    ## pAsym_Intercept      1.02      0.02     0.99     1.05 1.00      628      736
+    ## 
+    ## Family Specific Parameters: 
+    ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## sigma     0.02      0.00     0.01     0.02 1.00      679      955
+    ## 
+    ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+    ## and Tail_ESS are effective sample size measures, and Rhat is the potential
+    ## scale reduction factor on split chains (at convergence, Rhat = 1).
 
 Bootstrapped model with Bernoulli error function
 ------------------------------------------------
 
-An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
+An example of a maximum-likelihood fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
 ``` r
-# generate artificial data:
-dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
-
 # fit a `TEfit` model
 mod_boot <- TEfit(dat[,c('response','trial_number')], 
              errFun='bernoulli',
              bootPars=tef_bootList(resamples = 40))
-```
-
-    ## 
-    ## Warning: model did not converge at tol = 0.05 . Consider respecifying, allowing more runs, or increasing the convergence tolerance.
-
-``` r
 plot(mod_boot,plot_title='Time-evolving fit of artificial data with 95% CI from 40 bootstrapped fits')
 ```
 
@@ -99,37 +205,34 @@ summary(mod_boot)
     ## 
     ## >> Formula: response~((pAsym) + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))))
     ## 
-    ## >> Converged: FALSE 
-    ## >> Max runs: 200  -- Tolerance: 0.05 
+    ## >> Converged: TRUE 
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.996 0.984 1.000    0.004
-    ## pRate     2.737 2.594 2.765    0.044
-    ## pStart    0.231 0.123 0.271    0.038
+    ## pAsym     0.999 0.987 1.000    0.003
+    ## pRate     2.738 2.589 2.823    0.060
+    ## pStart    0.235 0.187 0.284    0.025
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC     deltaBIC
-    ## bernoulli 13.42851 16.83409     3   30 37.06062 37.06937 -0.008755303
+    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
+    ## bernoulli 13.42437 16.83409     3   30 37.05234 37.06937 -0.01703134
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1              -0.09410456
+    ## response ~ trial_number:          -1               -0.1016685
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                 0.09410456                  0
-    ##                          pval_KPSS_null pval_KPSS_model
-    ## response ~ trial_number:          < .01            > .1
+    ## response ~ trial_number:                  0.1016685                  0
     ## 
     ## >> Percent of resamples predicting an increase in values: 100 
     ## 
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##        pAsym pStart pRate   err
-    ## pAsym  1.000  0.076 0.454 0.208
-    ## pStart 0.076  1.000 0.654 0.510
-    ## pRate  0.454  0.654 1.000 0.289
-    ## err    0.208  0.510 0.289 1.000
+    ##         pAsym pStart pRate    err
+    ## pAsym   1.000  0.084 0.385 -0.012
+    ## pStart  0.084  1.000 0.647  0.480
+    ## pRate   0.385  0.647 1.000  0.290
+    ## err    -0.012  0.480 0.290  1.000
 
 Fitting multiple models
 -----------------------
@@ -168,8 +271,8 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922721 0.01639030 3.83366532
-    ## stdErr 0.03933404 0.01060451 0.02431567
+    ## mean   0.14922721 0.01639030 3.83366541
+    ## stdErr 0.03933404 0.01060451 0.02431558
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -191,6 +294,136 @@ summary(mod_4group)
     ## pStart  1.000  1.000 -0.763
     ## pRate  -0.757 -0.763  1.000
 
+An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm`.
+
+``` r
+mod_4group_TEbrm <- TEbrm(response ~ 
+                            tef_change_expo3('trial_number',parForm = ~ (1|group))
+                          ,dataIn = dat
+)
+```
+
+    ## 
+    ## SAMPLING FOR MODEL 'ec7a53ce60e88c9f52bc73902e26264a' NOW (CHAIN 1).
+    ## Chain 1: 
+    ## Chain 1: Gradient evaluation took 0 seconds
+    ## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 1: Adjust your expectations accordingly!
+    ## Chain 1: 
+    ## Chain 1: 
+    ## Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
+    ## Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
+    ## Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
+    ## Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
+    ## Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
+    ## Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
+    ## Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
+    ## Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
+    ## Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
+    ## Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
+    ## Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
+    ## Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
+    ## Chain 1: 
+    ## Chain 1:  Elapsed Time: 29.295 seconds (Warm-up)
+    ## Chain 1:                34.505 seconds (Sampling)
+    ## Chain 1:                63.8 seconds (Total)
+    ## Chain 1: 
+    ## 
+    ## SAMPLING FOR MODEL 'ec7a53ce60e88c9f52bc73902e26264a' NOW (CHAIN 2).
+    ## Chain 2: 
+    ## Chain 2: Gradient evaluation took 0 seconds
+    ## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 2: Adjust your expectations accordingly!
+    ## Chain 2: 
+    ## Chain 2: 
+    ## Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
+    ## Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
+    ## Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
+    ## Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
+    ## Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
+    ## Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
+    ## Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
+    ## Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
+    ## Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
+    ## Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
+    ## Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
+    ## Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
+    ## Chain 2: 
+    ## Chain 2:  Elapsed Time: 30.861 seconds (Warm-up)
+    ## Chain 2:                41.867 seconds (Sampling)
+    ## Chain 2:                72.728 seconds (Total)
+    ## Chain 2: 
+    ## 
+    ## SAMPLING FOR MODEL 'ec7a53ce60e88c9f52bc73902e26264a' NOW (CHAIN 3).
+    ## Chain 3: 
+    ## Chain 3: Gradient evaluation took 0 seconds
+    ## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+    ## Chain 3: Adjust your expectations accordingly!
+    ## Chain 3: 
+    ## Chain 3: 
+    ## Chain 3: Iteration:   1 / 1000 [  0%]  (Warmup)
+    ## Chain 3: Iteration: 100 / 1000 [ 10%]  (Warmup)
+    ## Chain 3: Iteration: 200 / 1000 [ 20%]  (Warmup)
+    ## Chain 3: Iteration: 300 / 1000 [ 30%]  (Warmup)
+    ## Chain 3: Iteration: 400 / 1000 [ 40%]  (Warmup)
+    ## Chain 3: Iteration: 500 / 1000 [ 50%]  (Warmup)
+    ## Chain 3: Iteration: 501 / 1000 [ 50%]  (Sampling)
+    ## Chain 3: Iteration: 600 / 1000 [ 60%]  (Sampling)
+    ## Chain 3: Iteration: 700 / 1000 [ 70%]  (Sampling)
+    ## Chain 3: Iteration: 800 / 1000 [ 80%]  (Sampling)
+    ## Chain 3: Iteration: 900 / 1000 [ 90%]  (Sampling)
+    ## Chain 3: Iteration: 1000 / 1000 [100%]  (Sampling)
+    ## Chain 3: 
+    ## Chain 3:  Elapsed Time: 30.849 seconds (Warm-up)
+    ## Chain 3:                38.142 seconds (Sampling)
+    ## Chain 3:                68.991 seconds (Total)
+    ## Chain 3:
+
+``` r
+conditional_effects(mod_4group_TEbrm)
+```
+
+![](README_files/figure-markdown_github/model_groups_TEbrm-1.png)
+
+``` r
+summary(mod_4group_TEbrm)
+```
+
+    ##  Family: gaussian 
+    ##   Links: mu = identity; sigma = identity 
+    ## Formula: response ~ pAsym + ((pStart) - (pAsym)) * 2^((1 - trial_number)/(2^(pRate))) 
+    ##          pStart ~ (1 | group)
+    ##          pRate ~ (1 | group)
+    ##          pAsym ~ (1 | group)
+    ##    Data: attr(rhs_form, "data") (Number of observations: 120) 
+    ## Samples: 3 chains, each with iter = 1000; warmup = 500; thin = 1;
+    ##          total post-warmup samples = 1500
+    ## 
+    ## Group-Level Effects: 
+    ## ~group (Number of levels: 4) 
+    ##                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+    ## sd(pStart_Intercept)     0.04      0.04     0.01     0.13 1.01      349
+    ## sd(pRate_Intercept)      1.76      0.89     0.74     4.19 1.00      648
+    ## sd(pAsym_Intercept)      0.08      0.08     0.01     0.32 1.01      248
+    ##                      Tail_ESS
+    ## sd(pStart_Intercept)      422
+    ## sd(pRate_Intercept)       731
+    ## sd(pAsym_Intercept)       276
+    ## 
+    ## Population-Level Effects: 
+    ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## pStart_Intercept     0.02      0.02    -0.02     0.07 1.00      472      438
+    ## pRate_Intercept      4.57      0.66     3.02     5.66 1.01      657      806
+    ## pAsym_Intercept      0.21      0.05     0.09     0.29 1.02      232       93
+    ## 
+    ## Family Specific Parameters: 
+    ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+    ## sigma     0.00      0.00     0.00     0.00 1.00      995      642
+    ## 
+    ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+    ## and Tail_ESS are effective sample size measures, and Rhat is the potential
+    ## scale reduction factor on split chains (at convergence, Rhat = 1).
+
 Using a more common linear regression framework
 -----------------------------------------------
 
@@ -198,11 +431,11 @@ In some cases (such as `mod_simple` above), similar performance can be attained 
 
 ``` r
 # Fit a `lm` model, first computing the best nonlinear transformation for time:
-mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
+mod_lm <- TElm(response~trial_number,dat,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
+lines(dat$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 ```
 
 ![](README_files/figure-markdown_github/TElm-1.png)
@@ -211,15 +444,17 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         3.527|         -2.655|  2.876|
+|         0.131|         -0.118|  3.378|
 
 TEfit parameter estimates:
 
 |          |  pAsym|  pStart|  pRate|
-|----------|------:|-------:|------:|
-| Estimate |  3.522|   0.869|  2.866|
+|:---------|------:|-------:|------:|
+| Estimate |  1.016|   0.251|  2.866|
 
 Note that `TEfit` provides start and asymptote parameters directly, while `TElm` provides start as an offset from asymptote (ie., `Intercept`).
+
+For extensions of this framework see `TEglm`, `TElmem`, and `TEglmem`.
 
 Testing functionality
 =====================

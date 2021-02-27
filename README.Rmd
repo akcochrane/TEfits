@@ -31,30 +31,40 @@ Although having vignettes is nice for exploring the functionality of the package
 
 ## Simple model of exponential change
 
-A basic model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
+A basic maximum-likelihood model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
 
 ```{r model_simple, message=FALSE, warning=FALSE}
 
 library(TEfits)
 
 # generate artificial data:
-dat_simple <- data.frame(response=log(2:31),trial_number=1:30)
+dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 
 # fit a `TEfit` model
-mod_simple <- TEfit(dat_simple[,c('response','trial_number')])
+mod_simple <- TEfit(dat[,c('response','trial_number')])
 
 plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 
 summary(mod_simple)
 ```
 
+Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
+
+```{r model_simple_TEbrm, message=FALSE, warning=FALSE}
+
+# fit a `TEbrm` model
+mod_TEbrm <- TEbrm(response ~ trial_number, dat)
+
+conditional_effects(mod_TEbrm)
+
+summary(mod_TEbrm)
+```
+
 ## Bootstrapped model with Bernoulli error function
 
-An example of a learning fit using a Bernoulli response distribution, with 40 bootstrapped fits.
+An example of a maximum-likelihood fit using a Bernoulli response distribution, with 40 bootstrapped fits.
 
 ```{r model_boot, message=FALSE, warning=FALSE}
-# generate artificial data:
-dat <- data.frame(response=log(2:31)/log(32),trial_number=1:30)
 
 # fit a `TEfit` model
 mod_boot <- TEfit(dat[,c('response','trial_number')], 
@@ -90,17 +100,31 @@ plot(mod_4group)
 summary(mod_4group)
 ```
 
+An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm`.
+
+```{r model_groups_TEbrm, message=FALSE, warning=FALSE}
+
+mod_4group_TEbrm <- TEbrm(response ~ 
+                            tef_change_expo3('trial_number',parForm = ~ (1|group))
+                          ,dataIn = dat
+)
+
+conditional_effects(mod_4group_TEbrm)
+
+summary(mod_4group_TEbrm)
+```
+
 ## Using a more common linear regression framework
 
 In some cases (such as `mod_simple` above), similar performance can be attained using a nonlinear transformation of time as a predictor in a linear model. This method is plotted in green on top of the `mod_simple` results, with clearly near-identical fits.
 
 ```{r TElm}
 # Fit a `lm` model, first computing the best nonlinear transformation for time:
-mod_lm <- TElm(response~trial_number,dat_simple,timeVar = 'trial_number')
+mod_lm <- TElm(response~trial_number,dat,timeVar = 'trial_number')
 
 plot(mod_simple)
 
-lines(dat_simple$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
+lines(dat$trial_number,fitted(mod_lm),col='green',lty=2,lwd=2)
 
 ```
 

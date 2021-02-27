@@ -28,38 +28,40 @@ tef_link_logistic <- function(changeForm,
                               boundScale = 2,
                               constantPar_prior = 'normal(0,3)'){
 
+  ##ISSUE## Make bias inherit from the null model, not asymptote
+
   threshBase <- threshVal/(1-threshVal)
 
   changeStr <- eval(changeForm)
 
   if(length(changePar)>1){changePar <- changePar[1]}
   if(changePar == 'threshold'){
-  rhs <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                                       'bias)-',linkX,')/(',
-                                                       changeStr,')))'
-  )
+    rhs <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
+                  'bias)-',linkX,')/(',
+                  changeStr,')))'
+    )
 
-  {
-  attributes(rhs) <- attributes(changeStr)
-  attr(rhs,'changePar') <- 'threshold'
-  attr(rhs,'constantPar') <- 'bias'
-  attr(rhs,'parForm')[['bias']] <- attr(rhs,'parForm')$pAsym
-  attr(attr(rhs,'parForm')[['bias']],'parameters') <- '' ##ISSUE## may need to include something here
-  attr(attr(rhs,'parForm')[['bias']],'equation') <- '' ##ISSUE## may need to include something here
+    {
+      attributes(rhs) <- attributes(changeStr)
+      attr(rhs,'changePar') <- 'threshold'
+      attr(rhs,'constantPar') <- 'bias'
+      attr(rhs,'parForm')[['bias']] <- attr(rhs,'parForm')$pAsym
+      attr(attr(rhs,'parForm')[['bias']],'parameters') <- '' ##ISSUE## may need to include something here
+      attr(attr(rhs,'parForm')[['bias']],'equation') <- '' ##ISSUE## may need to include something here
 
-  attr(rhs,'allPars') <- c(attr(rhs,'allPars'),bias = 'bias')
-  attr(rhs,'nullForm')  <-    paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                     'bias)-',linkX,')/exp(',
-                                     attr(rhs,'nullFun') ,')))'
-  )
+      attr(rhs,'allPars') <- c(attr(rhs,'allPars'),bias = 'bias')
+      attr(rhs,'nullForm')  <-    paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
+                                         'bias)-',linkX,')/exp(',
+                                         attr(rhs,'nullFun') ,')))'
+      )
 
-  ## formula for TEbrm
-  attr(rhs,'formula') <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                'bias)-',linkX,')/(',
-                                attr(changeStr,'formula'),')))'
-  )
+      ## formula for TEbrm
+      attr(rhs,'formula') <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
+                                    'bias)-',linkX,')/(',
+                                    attr(changeStr,'formula'),')))'
+      )
 
-  } # collapse the attributes for the thresh
+    } # collapse the attributes for the thresh
 
   }else if(changePar == 'bias'){
     rhs <-   paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
@@ -74,7 +76,7 @@ tef_link_logistic <- function(changeForm,
 
     attributes(rhs) <- attributes(changeStr)
     attr(rhs,'changePar') <- 'bias'
-   attr(rhs,'constantPar') <- 'logThreshold'
+    attr(rhs,'constantPar') <- 'logThreshold'
     attr(rhs,'parForm')[['threshold']] <- attr(rhs,'parForm')$pAsym
     attr(attr(rhs,'parForm')[['threshold']],'parameters') <- '' ##ISSUE## may need to include something here
     attr(attr(rhs,'parForm')[['threshold']],'equation') <- '' ##ISSUE## may need to include something here
@@ -88,7 +90,7 @@ tef_link_logistic <- function(changeForm,
 
   }else(stop('Please identify changePar as threshold or bias within tef_link_logistic()'))
 
-    ## ## NEED TO DOUBLE AND TRIPLE CHECK, TO BE APPROPRIATE FOR THE LINK
+  ## ## NEED TO DOUBLE AND TRIPLE CHECK, TO BE APPROPRIATE FOR THE LINK
   ## STILL NEED TO WORK WITH PARAMETER BOUNDARIES FOR THE THRESH / BIAS
 
   try({

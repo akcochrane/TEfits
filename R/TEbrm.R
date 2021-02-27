@@ -206,7 +206,7 @@ TEbrm <- function(
   }
 
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}
-  if(exists('prior')){bPrior <- prior} ##ISSUE## check to see if this works under various conditions.
+  # if(exists('prior')){bPrior <- prior} ##ISSUE## make sure this works under various conditions.
 
   if(algorithm == 'sampling'){
     modOut <- brm(bForm
@@ -231,7 +231,7 @@ TEbrm <- function(
 
   return(modOut)
 
-  if(F){ # for testing
+  if(F){ # for testing ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
     library(TEfits)
     formIn <- acc ~ tef_change_expo3('trialNum')
