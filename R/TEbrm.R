@@ -4,6 +4,13 @@
 #' Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear regression. Function is \strong{under development}
 #' and is likely to be buggy, and to change frequently.
 #'
+#' The variable of time should be positive and numeric, with the nonlinear model providing a regression as a
+#' function of that time variable.
+#'
+#' The default number of iterations and chains is very small, and intended largely for testing model specifications.
+#' For final inferences from a model, it is highly recommended to run a model for many more iterations
+#' (e.g., 5000 or 10000).
+#'
 #' When specifying statistical families, it is \emph{extremely highly recommended} to specify an "identity" link function,
 #' and then [if appropriate] specifying a link function using the \code{link_start_asym} argument. See example.
 #'
@@ -43,7 +50,7 @@
 #' @param iter Number of iterations to run the model.
 #' @param chains Number of chains to run the model.
 #' @param priorIn Optional argument to pass priors to the \code{brms} model, alongside the TEfit-default rate prior. If you provide any, you will likely need to provide priors for all nonlinear parameters. \code{brm} error messages tend to be very helpful in this regard. For more explicit and full control of priors, define all desired priors directly with the \code{prior} argument (which passes straight to \code{brm} and overwrites all other defined priors).
-#' @param algorithm The algorithm to use when fitting the \code{\link[brms]{brm}} model
+#' @param algorithm The algorithm to use when fitting the \code{\link[brms]{brm}} model. See \code{\link{TEbrm_advi}} for warnings and implementation of 'meanfield' or 'fullrank.'
 #' @param link_start_asym Inverse of the link function to use for the start and asymptote parameters. Defaults to what is passed from formIn. Otherwise, the user would most likely to want to use 'exp' or 'inv_logit'.
 #' @param tef_control_list A list of control parameters passed in by \code{tef_control()}
 #'
@@ -87,25 +94,28 @@
 #' ## # May take a few minutes to run.
 #' m4 <- TEbrm(
 #' resp ~ tef_link_logistic(
-#' tef_change_expo3('trialNum', parForm = ~ (1|subID))
-#' , linkX = 'ratio' )
+#'    tef_change_expo3('trialNum', parForm = ~ (1|subID))
+#'    ,linkX = 'ratio' )
 #' ,family=bernoulli(link='identity')
 #' ,iter = 4000
 #' ,dataIn = anstrain
 #' )
 #'
-#' summary(m4) # note the `exp` inverse link function (i.e., log link for threshold values)
+#' summary(m4) # note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
+#'
+#' conditional_effects(m4, 'ratio:trialNum') # The psychometric function steepens with learning
 #'
 #' }
 TEbrm <- function(
   formIn
   ,dataIn
   , ...
-  ,iter = 1000
+  ,iter = 2000
   ,chains = 3
   ,priorIn = c()
   ,algorithm = "sampling"
   ,link_start_asym = ''
+  ,quiet=F
   ,tef_control_list=tef_control()
 ){
 
@@ -214,20 +224,19 @@ TEbrm <- function(
                   ,iter = iter
                   ,prior = bPrior
                   ,chains=chains
+                  ,init_r = .02
                   ,...
     )
   }else{
-    nFails = 0 ; success = F ; while(!success && nFails < 5){
-      modOut <- brm(bForm
-                    ,data = attr(rhs_form,'data')
-                    ,iter = iter
-                    ,prior = bPrior
-                    ,algorithm = algorithm
-                    ,...
+      modOut <- TEbrm_advi(
+        bForm
+        ,dataIn = attr(rhs_form,'data')
+        ,prior = bPrior
+        ,algorithm = algorithm
+        ,...
+        ,quiet=quiet
       )
-      {. <- posterior_summary(modOut)
-        success <- T}
-    }}
+    }
 
   return(modOut)
 
