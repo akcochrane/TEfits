@@ -4,7 +4,14 @@
 \alias{TEbrm_advi}
 \title{Run a brm model with ADVI}
 \usage{
-TEbrm_advi(formIn, dataIn, ..., algorithm = "fullrank", quiet = F)
+TEbrm_advi(
+  formIn,
+  dataIn = data.frame(),
+  ...,
+  algorithm = "fullrank",
+  conv_thresh = 0.1,
+  quiet = F
+)
 }
 \arguments{
 \item{formIn}{Model formula, as in \code{\link[brms]{brm}}.}
@@ -20,7 +27,7 @@ TEbrm_advi(formIn, dataIn, ..., algorithm = "fullrank", quiet = F)
 \description{
 Uses Stan's stochastic gradient ascent methods "fullrank" or "meanfield" rather than full
 Bayesian sampling. Is likely to be much faster than typical sampling, but somewhat
-less accurate. This function fits the model 10 times and returns the output
+less accurate. This function fits the model several times and returns the output
 with the highest Bayesian R-squared. \strong{Beware: This
 has a tendency to crash R sometimes.}
 }
@@ -28,7 +35,7 @@ has a tendency to crash R sometimes.}
 Stochastic gradient ascent in Stan uses Automatic Differentiation Variational Inference (ADVI).
 }
 \note{
-Re-fitting a model 10 times is not comprehensive. If using ADVI, it is recommended
+Re-fitting a model within this function is not comprehensive. If using ADVI, it is recommended
 to use \code{TEbrm_advi} multiple times, and choose the best using a comparison such as
 \code{\link[brms]{add_criterion}(model,'loo')}.
 }
