@@ -2,16 +2,18 @@
 #'
 #' Uses Stan's stochastic gradient ascent methods "fullrank" or "meanfield" rather than full
 #' Bayesian sampling. Is likely to be faster than typical sampling, but possibly
-#' less accurate. This function fits the model several times and returns the output
-#' with the highest Bayesian R-squared. \strong{Beware: This
+#' less accurate. This function fits the model several times and returns the best model
+#' (initial model selection uses Bayesian R-squared, final model selection uses 10-fold
+#' cross-validation). \strong{Beware: This re-fitting
 #' has a tendency to crash R sometimes.}
 #'
 #' Stochastic gradient ascent in Stan uses Automatic Differentiation Variational Inference (ADVI).
 #'
 #' @note
 #' Re-fitting a model within this function is not comprehensive. If using ADVI, it is recommended
-#' to use \code{TEbrm_advi} multiple times, and choose the best using a comparison such as
-#' \code{\link[brms]{add_criterion}(model,'loo')}.
+#' to use \code{TEbrm_advi} multiple times, and choose the best using comparisons of fit, such as
+#' \code{fit_model$criteria$kfold} (estimated using
+#'  \code{\link[brms]{add_criterion}(fit_model,'kfold')}).
 #'
 #' @seealso
 #'
@@ -21,6 +23,7 @@
 #' @param dataIn Data, as in \code{\link[brms]{brm}}.
 #' @param ...   Any other argument to pass to \code{\link[brms]{brm}}.
 #' @param algorithm which ADVI algorithm to use: "meanfield" or "fullrank".
+#' @param conv_thresh Re-fit models are compared, with the standardized distance (mean_diff / SD) being calculated. Models keep being re-fit until at least 2 models' largest standardized differences are smaller than this value (or until a certain number of models has been fit in total, which scales with this value). The better-fitting of these two models is then returned.
 #' @param quiet Progress is printed by default, but can be suppressed with quiet=T.
 #'
 #' @export
@@ -73,11 +76,12 @@ TEbrm_advi <- function(formIn,
   tryNum = 0 ;
   modList <- list()
   tmpMod <- NULL ; max_mod_diff_d <- 1E3
+  maxTries <- round(20/conv_thresh)
   if(!quiet){ cat('Setting up the model...\n') }
 
-  while( (max_mod_diff_d > conv_thresh) && tryNum < 100){
+  while( (max_mod_diff_d > conv_thresh) && tryNum < maxTries){
     m_fr <- list() ; m_fr_r2 <- c()  ;
-    while(length(m_fr) < 4 && tryNum < 100){
+    while(length(m_fr) < 2 && tryNum < maxTries){
       try({suppressMessages({suppressWarnings({
 
         if(is.null(tmpMod)){
@@ -88,6 +92,9 @@ TEbrm_advi <- function(formIn,
                         ,grad_samples = 3
                         ,init_r = .02
                         , output_samples = 2000
+                        ,elbo_samples = 500 # X samples to get ELBO
+                        ,eval_elbo = 50 # Every X iterations
+                        ,adapt_iter = 200 # X samples to get the stepsize
                         , silent = T
                         ,refresh = 0
                         ,algorithm = algorithm)
@@ -96,6 +103,9 @@ TEbrm_advi <- function(formIn,
           tmpMod <- update(tmpMod
                            ,grad_samples = 3
                            , output_samples = 2000
+                           ,elbo_samples = 500
+                           ,eval_elbo = 50
+                           ,adapt_iter = 200
                            ,silent = T
                            ,refresh = 0
           )
@@ -126,16 +136,27 @@ TEbrm_advi <- function(formIn,
 
   }
 
-  if(!quiet){ cat(']')}
-
   if(max_mod_diff_d == 1E3){stop('Something went wrong. Please check your data and model specification.')}
 
-  mod1 <- modList[[compDF$mod1]]
-  mod2 <- modList[[compDF$mod2]]
+  suppressMessages({
+  mod1 <- add_criterion( modList[[compDF$mod1]] , 'kfold', seed=T)
+  mod2 <- add_criterion( modList[[compDF$mod2]] , 'kfold', seed=T)
+  })
 
-  mod1$max_mod_diff_d <- mod1$max_mod_diff_d <- max_mod_diff_d
+  if(!quiet){ cat(']')}
 
-  if(mean(mod1$criteria$bayes_R2) > mean(mod2$criteria$bayes_R2)){
+  mod1$crit_compare <- mod2$crit_compare <- loo_compare(mod1$criteria$kfold, mod2$criteria$kfold)
+
+  mod1$max_mod_diff_d <- mod2$max_mod_diff_d <- max_mod_diff_d
+
+
+  # # choose the best with add_criterion(m2, 'kfold', seed=T) instead!
+
+  if(
+    mod1$criteria$kfold$estimates['elpd_kfold','Estimate']
+     >
+    mod2$criteria$kfold$estimates['elpd_kfold','Estimate']
+     ){
     return(mod1)
   }else{
     return(mod2)}

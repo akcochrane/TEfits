@@ -9,7 +9,7 @@ TEbrm_advi(
   dataIn = data.frame(),
   ...,
   algorithm = "fullrank",
-  conv_thresh = 0.1,
+  conv_thresh = 0.2,
   quiet = F
 )
 }
@@ -22,13 +22,16 @@ TEbrm_advi(
 
 \item{algorithm}{which ADVI algorithm to use: "meanfield" or "fullrank".}
 
+\item{conv_thresh}{Re-fit models are compared, with the standardized distance (mean_diff / SD) being calculated. Models keep being re-fit until at least 2 models' largest standardized differences are smaller than this value (or until a certain number of models has been fit in total, which scales with this value). The better-fitting of these two models is then returned.}
+
 \item{quiet}{Progress is printed by default, but can be suppressed with quiet=T.}
 }
 \description{
 Uses Stan's stochastic gradient ascent methods "fullrank" or "meanfield" rather than full
-Bayesian sampling. Is likely to be much faster than typical sampling, but somewhat
-less accurate. This function fits the model several times and returns the output
-with the highest Bayesian R-squared. \strong{Beware: This
+Bayesian sampling. Is likely to be faster than typical sampling, but possibly
+less accurate. This function fits the model several times and returns the best model
+(initial model selection uses Bayesian R-squared, final model selection uses 10-fold
+cross-validation). \strong{Beware: This re-fitting
 has a tendency to crash R sometimes.}
 }
 \details{
@@ -36,8 +39,9 @@ Stochastic gradient ascent in Stan uses Automatic Differentiation Variational In
 }
 \note{
 Re-fitting a model within this function is not comprehensive. If using ADVI, it is recommended
-to use \code{TEbrm_advi} multiple times, and choose the best using a comparison such as
-\code{\link[brms]{add_criterion}(model,'loo')}.
+to use \code{TEbrm_advi} multiple times, and choose the best using comparisons of fit, such as
+\code{fit_model$criteria$kfold} (estimated using
+ \code{\link[brms]{add_criterion}(fit_model,'kfold')}).
 }
 \examples{
 \dontrun{

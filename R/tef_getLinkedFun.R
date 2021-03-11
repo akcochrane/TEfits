@@ -6,6 +6,8 @@
 #'
 #' @param modList List of TEfit model details
 #'
+#' @noRd
+#'
 #' @export
 #'
 tef_getLinkedFun <- function(modList){
@@ -108,7 +110,7 @@ tef_getLinkedFun <- function(modList){
     modList$null_pNames <- c('bias','thresh')
   }
 
-  if(modList$linkFun$link=='weibull'){ #### #### ## BARELY TESTED
+  if(modList$linkFun$link=='weibull'){ ####
 
     if(exists('yIntercept',modList$linkFun)){
       yIntercept <- modList$linkFun$yIntercept

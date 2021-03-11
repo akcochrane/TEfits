@@ -12,6 +12,8 @@
 #'
 #' @param modList List of TEfit model details
 #'
+#' @noRd
+#'
 #' @export
 #'
 tef_bootFits <- function(modList){
