@@ -122,8 +122,30 @@ resp ~ tef_link_logistic(
 )
 
 summary(m4) # note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
-
 conditional_effects(m4, 'ratio:trialNum') # The psychometric function steepens with learning
+
+## Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change
+m5 <- TEbrm(
+acc ~ tef_change_power3('trialNum',parForm = ~ (1|subID))
+,dataIn = anstrain
+)
+
+## Model change in a Weibull psychometric function's threshold
+## # (change in the absolute stimulus strength at which accuracy is 75\%)
+d_temp <- anstrain_s1 # make temporary data
+d_temp$absRat <- abs(d_temp$ratio) # calculate absolute stimulus strength
+m6 <- TEbrm(
+acc ~ tef_link_weibull(tef_change_expo3('trialNum'),linkX = 'absRat')
+,dataIn = d_temp
+)
+
+## Model change in d-prime
+ d_tmp <- anstrain_s1 # make temporary data
+ d_tmp$dprime <- tef_acc2dprime(d_tmp$resp, d_tmp$ratio > 0) # calculate by-trial d-prime; perhaps not the *most appropriate* data for d-prime, but it shows the method
+ m7 <- TEbrm(
+dprime ~  tef_change_expo3('trialNum')
+,dataIn = d_tmp
+)
 
 }
 }
