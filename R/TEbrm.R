@@ -41,8 +41,8 @@
 #' \code{\link[brms]{set_prior}} for setting priors.
 #'
 #' It is \emph{highly recommended} that, if additional customization is desired (e.g., regarding priors),
-#' to run \code{TEbrm} to create a model that is "close enough" to the desired model, then use
-#' \code{\link[brms]{update.brmsfit}} to "fine-tune" your model directly.
+#' to run \code{TEbrm} to create a model with a small number of iterations that is "close enough" to the
+#' desired model specification, then use \code{\link[brms]{update.brmsfit}} to "fine-tune" your model directly.
 #'
 #' @param formIn A formula, with the time-varying response variable on the left, followed by \code{~}.  The right side must be either [A] a single variable corresponding to the dimension of time, or [B] a call to a \code{TEfits} constructor function such as \code{\link{tef_change_expo3}}. See examples.
 #' @param dataIn Data frame, from which to fit the model.
@@ -55,7 +55,9 @@
 #' @param tef_control_list A list of control parameters passed in by \code{tef_control()}
 #'
 #' @seealso
-#' For additional flexibility, and full explanations of model options, see \code{\link[brms]{brms-package}}.
+#' For additional flexibility, and full explanations of model options, see \code{\link[brms]{brms-package}}. In
+#' particular, the "..." argument that is passed to \code{\link[brms]{brm}} includes many important options, such
+#' as parallelization (e.g., \code{cores = 3}).
 #'
 #' For other approaches to time-evolving models, see \code{\link{TEfits}}.
 #'
@@ -63,10 +65,10 @@
 #'
 #' @examples
 #' \dontrun{
-#'
-#' ## Default model formula is exponential change, with no covariates or random effects
+#' #-- #--
+#' #> Default model formula is exponential change, with no covariates or random effects
 #' m1 <- TEbrm(
-#' acc ~ trialNum # equivalent to `acc ~ tef_change_expo3('trialNum')`
+#' acc ~ trialNum   #> equivalent to `acc ~ tef_change_expo3('trialNum')`
 #' ,dataIn = anstrain_s1
 #' )
 #'
@@ -74,15 +76,17 @@
 #' summary(m1)
 #' conditional_effects(m1)
 #'
-#' ## using the tef_change_expo3 function to construct the model formula, with random effects
+#' #-- #--
+#' #> using the tef_change_expo3 function to construct the model formula, with random effects
 #' m2 <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
-#' ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')
+#' ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')   #> for demonstration, also include non-default priors
 #' )
 #'
-#' ## Estimate accuracy using a more appropriate [bernoulli] response function,
-#' ## # and also estimate the start and asymptote parameters using invert-logit links
+#' #-- #--
+#' #> Estimate accuracy using a more appropriate [bernoulli] response function,
+#' #> > and also estimate the start and asymptote parameters using invert-logit links
 #' m3 <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
@@ -90,42 +94,57 @@
 #' ,family=bernoulli(link='identity')
 #' )
 #'
-#' ## Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w).
-#' ## # May take a few minutes to run.
+#' #-- #--
+#' #> Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w).
+#' #> > May take a few minutes to run.
 #' m4 <- TEbrm(
 #' resp ~ tef_link_logistic(
 #'    tef_change_expo3('trialNum', parForm = ~ (1|subID))
 #'    ,linkX = 'ratio' )
 #' ,family=bernoulli(link='identity')
-#' ,iter = 4000
+#' ,iter = 4000   #> most models, in practice, will need more than the default number of iterations in order to converge as well as have a sufficient effective sample size (ESS)
 #' ,dataIn = anstrain
 #' )
 #'
 #' summary(m4) # note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
 #' conditional_effects(m4, 'ratio:trialNum') # The psychometric function steepens with learning
+#' cat(attr(m4$right_hand_side,'link_explanation')) # An explanation of the link function is included
 #'
-#' ## Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change
+#' #-- #--
+#' #> Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change
 #' m5 <- TEbrm(
 #' acc ~ tef_change_power3('trialNum',parForm = ~ (1|subID))
 #' ,dataIn = anstrain
 #' )
 #'
-#' ## Model change in a Weibull psychometric function's threshold
-#' ## # (change in the absolute stimulus strength at which accuracy is 75%)
-#' d_temp <- anstrain_s1 # make temporary data
-#' d_temp$absRat <- abs(d_temp$ratio) # calculate absolute stimulus strength
+#' #-- #--
+#' #> Model change in a Weibull psychometric function's threshold
+#' #> > (learning is change in the absolute stimulus strength at which accuracy is 75%)
+#' d_temp <- anstrain_s1   #> make temporary data
+#' d_temp$absRat <- abs(d_temp$ratio)   #> calculate absolute stimulus strength
 #' m6 <- TEbrm(
 #' acc ~ tef_link_weibull(tef_change_expo3('trialNum'),linkX = 'absRat')
 #' ,dataIn = d_temp
 #' )
 #'
-#' ## Model change in d-prime
+#' #-- #--
+#' #> Model change in d-prime
 #'  d_tmp <- anstrain_s1 # make temporary data
-#'  d_tmp$dprime <- tef_acc2dprime(d_tmp$resp, d_tmp$ratio > 0) # calculate by-trial d-prime; perhaps not the *most appropriate* data for d-prime, but it shows the method
+#'  d_tmp$dprime <- tef_acc2dprime(d_tmp$acc, d_tmp$ratio > 0)   #> calculate by-trial d-prime; it isn't prototypical data for d-prime because `resp` doesn't categorize `acc` into "hits" and "false alarms", but it's a decent demonstration of the method.
 #'  m7 <- TEbrm(
 #' dprime ~  tef_change_expo3('trialNum')
 #' ,dataIn = d_tmp
 #' )
+#'
+#' #-- #--
+#' #> Model learning as a Weibull function of time (3-parameter exponential with one additional "acceleration" or "deceleration" parameter, "pShape")
+#' #> > May take a few minutes to run.
+#' m8 <- TEbrm(
+#' acc ~ tef_change_weibull('trialNum',parForm = ~ (1|subID) )
+#' ,anstrain)
+#'
+#' #> Test whether learning is accelerating or decelerating, relative to a 3-parameter exponential
+#' hypothesis(m8, 'pShape_Intercept = 0')    #> acceleration or deceleration is not evident in this task on this timescale
 #'
 #' }
 TEbrm <- function(
@@ -258,7 +277,9 @@ TEbrm <- function(
         ,...
         ,quiet=quiet
       )
-    }
+  }
+
+  modOut$right_hand_side <- rhs
 
   return(modOut)
 

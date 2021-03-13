@@ -8,6 +8,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 
 tef_getTermsExpoBlock <- function(modList,pPrefix){
 

@@ -7,6 +7,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 
 tef_getTermsExpoDouble <- function(modList,pPrefix){
 

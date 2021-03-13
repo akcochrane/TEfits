@@ -8,6 +8,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 tef_getDatTerms <- function(modList,pPrefix,whichChange='expo'){
 
   if(whichChange=='expo'){datTerms <- tef_getTermsExpo(modList,pPrefix)}

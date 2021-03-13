@@ -18,7 +18,7 @@ tef_link_weibull(
 \arguments{
 \item{changeForm}{The formula describing the change in either}
 
-\item{linkX}{Character. The name of the "x" variable in the weibull link function (e.g., stimulus strength in a psychometric function)}
+\item{linkX}{Character. The name of the "x" variable in the weibull link function (e.g., stimulus strength in a psychometric function). May only work with positive real numeric variables (e.g., presentation time or number of targets).}
 
 \item{threshVal}{The threshold at which to evaluate the weibull function (i.e., the y-value for which threshold describes the x-value).}
 

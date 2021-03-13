@@ -9,6 +9,7 @@
 #'
 #' @export
 #'
+#' @noRd
 #'
 
 tef_getTermsPower4 <- function(modList,pPrefix){

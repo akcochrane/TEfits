@@ -30,6 +30,10 @@ tef_link_logistic <- function(changeForm,
 
   ##ISSUE## Make bias inherit from the null model, not asymptote
 
+  ##ISSUE## don't paste `attr(changeStr,'formula')` into the right hand side? At least, not to start.
+  # # # # for TEbrm, need to have it be modular.... passing in the "clean" link and change functions, and
+  # # # # having the LHS of the change function be one of the components of the link function
+
   threshBase <- threshVal/(1-threshVal)
 
   changeStr <- eval(changeForm)
@@ -99,6 +103,21 @@ tef_link_logistic <- function(changeForm,
   attr(rhs,'link_start_asym') <- 'exp'
   attr(rhs,'boundScale') <- boundScale
   attr(rhs,'linkX') <- linkX
+  attr(rhs,'threshVal') <- threshVal
+
+  attr(rhs,'link_explanation') <- paste('The link function is logistic. This means that a variable "',linkX
+                                        ,'" defines the [inverse-logit] interpolation of predicted values between'
+                                        ,'zero and one (with a small lapse rate included). In psychometric functions'
+                                        ,'this is often a "stimulus strength" variable that is related to one of'
+                                        ,'two responses. The link function then allows the relationship between variables'
+                                        ,'to be estimated in terms of a location [bias] and scale [threshold] parameter,'
+                                        ,'with the threshold parameter usually being of primary interest. The threshold parameter'
+                                        ,'can be interpreted as "the magnitude of',linkX,'that will produce'
+                                        ,threshVal,'percent `1` responses and',1-threshVal,'percent `0` responses."'
+                                        ,'Within TEfits, then, change over time is usually considered in the threshold'
+                                        ,'parameter, although change in the bias parameter can also be fit. For further'
+                                        ,'reading on time-changing psychometric functions see `Kattner, Cochrane,'
+                                        ,'& Green, (2017) Journal of Vision, https://doi.org/10.1167/17.11.3`')
 
   return(rhs)
 
