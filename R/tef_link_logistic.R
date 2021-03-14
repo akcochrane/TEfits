@@ -4,11 +4,11 @@
 #' and is likely to be buggy, and to change frequently.
 #'
 #' If bias is changing, threshold inherits its formula from asymptotic bias.
-#' If threshold is changing, bias inherits its formula from asymptotic threhold.
+#' If threshold is changing, bias inherits its formula from asymptotic threshold.
 #'
-#' @param changeForm The formula describing the change in either
+#' @param changeForm The formula describing the change in either threshold or bias
 #' @param linkX      Character. The name of the "x" variable in the logistic link function (e.g., stimulus strength in a psychometric function)
-#' @param changePar  Character. Which variable, "threshold" or "bias", changes over time. The other one is stable over time; \emph{the stable component inherits its formula from the asymptote component}.
+#' @param changePar  Character. Which variable, "threshold" or "bias", changes over time. The other one is stable over time; \emph{the stable component inherits its formula from the asymptote parameter of the changing component}.
 #' @param threshVal  The threshold at which to evaluate the logistic function (i.e., the y-value for which threshold describes the x-value).
 #' @param lapseRate  The offset, from 0 or 1, of the logistic function at arbitrarily large (positive or negative) values of \code{linkX}. A small lapse rate improves model fit (see Wichmann and Hill, 2001, P&P).
 #' @param boundScale Currently not implemented. Upper threshold of threshold estimates, as a multiple of the maximum absolute \code{linkX}.

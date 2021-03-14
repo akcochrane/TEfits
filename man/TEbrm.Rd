@@ -37,8 +37,10 @@ TEbrm(
 \item{tef_control_list}{A list of control parameters passed in by \code{tef_control()}}
 }
 \description{
-Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear regression. Function is \strong{under development}
-and is likely to be buggy, and to change frequently.
+Formats and runs a \code{\link[brms]{brm}s} model for a time-evolving nonlinear regression.
+This is the recommended way to fit models using \code{TEfits}.
+Function is \strong{under development}
+and is likely to change frequently.
 }
 \details{
 The variable of time should be positive and numeric, with the nonlinear model providing a regression as a
@@ -53,12 +55,16 @@ and then [if appropriate] specifying a link function using the \code{link_start_
 
 Currently supported model constructor functions are:
 \itemize{
-\item{\code{tef_change_expo3} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is log2 of time to 50 percent remaining}
+\item{\code{\link{tef_change_expo3}} -- 3-parameter exponential (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is \code{log2} of time to 50 percent remaining}
+\item{\code{\link{tef_change_weibull}} -- 4-parameter weibull (start, [inverse] rate, asymptote, and shape) -- Augmented exponential function. Rate is log of time to some proportion remaining, default is \code{log2} of time to 50 percent remaining. Shape indicates acceleration (>0) or deceleration (<0) of the hazard function (which is constant in an exponential function).}
+\item{\code{\link{tef_change_power3}} -- 3-parameter power (start, [inverse] rate, and asymptote) -- rate is log of time to some proportion remaining, default is \code{log2} of time to 25 percent remaining, in order to have parameter ranges be similar to the 3-parameter exponential.}
+\item{\code{\link{tef_change_power4}} -- 4-parameter power (start, [inverse] rate, asymptote, and "previous learning time") -- Augmented power function, with a "amount of previous learning time" parameter that is estimated on the same scale as \code{rate}. Rate is log of time to some proportion remaining, default is \code{log2} of time to 25 percent remaining, in order to have parameter ranges be similar to the 3-parameter exponential.}
 }
 
 Currently supported link functions are:
 \itemize{
-\item{\code{tef_link_logistic} -- logistic psychometric function, parameterized in terms of threshold and asymptote. Takes the output of a \code{tef_change_} function and augments it before passing to \code{TEbrm}}
+\item{\code{\link{tef_link_logistic}} -- logistic psychometric function, parameterized in terms of threshold and bias. Takes the output of a \code{tef_change_} function and augments it before passing to \code{TEbrm}}
+\item{\code{\link{tef_link_weibull}} -- weibull (AKA Quick) psychometric function, parameterized in terms of threshold and shape. Takes the output of a \code{tef_change_} function and augments it before passing to \code{TEbrm}}
 }
 }
 \note{

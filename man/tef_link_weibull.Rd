@@ -16,9 +16,9 @@ tef_link_weibull(
 )
 }
 \arguments{
-\item{changeForm}{The formula describing the change in either}
+\item{changeForm}{The formula describing the change in threshold}
 
-\item{linkX}{Character. The name of the "x" variable in the weibull link function (e.g., stimulus strength in a psychometric function). May only work with positive real numeric variables (e.g., presentation time or number of targets).}
+\item{linkX}{Character. The name of the "x" variable in the weibull link function (e.g., stimulus strength in a psychometric function). Should be a positive real numeric variable (e.g., presentation time or number of targets).}
 
 \item{threshVal}{The threshold at which to evaluate the weibull function (i.e., the y-value for which threshold describes the x-value).}
 
@@ -37,7 +37,7 @@ Function is \strong{under development}
 and is likely to be buggy, and to change frequently.
 }
 \details{
-\strong{\code{shape}} is a parameter in the weibull function, and \strong{\code{must not}} be
+\strong{\code{shape}} is a parameter in the weibull function, and \strong{must not} be
 used as a name of data variables (e.g., \code{linkX} or within \code{changeForm}).
 }
 \examples{

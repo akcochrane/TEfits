@@ -3,11 +3,11 @@
 #' Function is \strong{under development}
 #' and is likely to be buggy, and to change frequently.
 #'
-#' \strong{\code{shape}} is a parameter in the weibull function, and \strong{\code{must not}} be
+#' \strong{\code{shape}} is a parameter in the weibull function, and \strong{must not} be
 #' used as a name of data variables (e.g., \code{linkX} or within \code{changeForm}).
 #'
-#' @param changeForm The formula describing the change in either
-#' @param linkX      Character. The name of the "x" variable in the weibull link function (e.g., stimulus strength in a psychometric function). May only work with positive real numeric variables (e.g., presentation time or number of targets).
+#' @param changeForm The formula describing the change in threshold
+#' @param linkX      Character. The name of the "x" variable in the weibull link function (e.g., stimulus strength in a psychometric function). Should be a positive real numeric variable (e.g., presentation time or number of targets).
 #' @param threshVal  The threshold at which to evaluate the weibull function (i.e., the y-value for which threshold describes the x-value).
 #' @param rhAsymptote The asymptotic value of the weibull function with large \code{linkX} values (e.g., accuracy at infinitely large stimulus strength).
 #' @param yIntercept The origin value of the weibull function (with a \code{linkX} value of zero, e.g., accuracy at a stimulus strength of zero; in behavioral data is likely to be "guessing rate").
