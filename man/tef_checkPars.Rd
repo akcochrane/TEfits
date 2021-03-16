@@ -64,7 +64,7 @@ starting and ending values. This ensures that the starting and ending values com
 the \emph{y_lim} boundaries; \emph{y_lim} may be user-defined, defined by another model feature (e.g.,
 \emph{bernoulli} error function is limited to predicted values of 0 or 1; Weibull link thresholds must be
 above 0).}
-\item{\code{rate parameter} -- If not user-input, then defined in \code{\link{tef_getLinkedFun}}.
+\item{\code{rate parameter} -- If not user-input, then defined by \code{TEfits::tef_getLinkedFun}.
 Defaults, with exponential change, to a minimum that would provide 50% of model change in \code{sd(timeVar[1:10])}
 amount of time, and to a maximum value that would provide 80% of model change at \code{max(timeVar)}. Other change
 functions have limits that, with their respective parameterizations, are intended to imitate the limits of the

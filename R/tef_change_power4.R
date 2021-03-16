@@ -50,16 +50,16 @@ tef_change_power4 <- function(timeVar
       }
 
       # # for specific covars
-      if(as.character(startForm)[2] != '1'){
+      if(as.character(startForm)[2] != '1' || is.numeric(startForm)){
         parForms[['pStart']] <- tef_parseParFormula(startForm, label = 'pStart')
       }
-      if(as.character(rateForm)[2] != '1'){
+      if(as.character(rateForm)[2] != '1' || is.numeric(rateForm)){
         parForms[['pRate']] <- tef_parseParFormula(rateForm, label = 'pRate')
       }
-      if(as.character(asymForm)[2] != '1'){
+      if(as.character(asymForm)[2] != '1' || is.numeric(asymForm)){
         parForms[['pAsym']] <- tef_parseParFormula(asymForm, label = 'pAsym')
       }
-      if(as.character(prevTimeForm)[2] != '1'){
+      if(as.character(prevTimeForm)[2] != '1' || is.numeric(prevTimeForm)){
         parForms[['plogPrevTime']] <- tef_parseParFormula(prevTimeForm, label = 'plogPrevTime')
       }
     }
@@ -68,7 +68,7 @@ tef_change_power4 <- function(timeVar
     rhs <-  # # #  is parameterized in terms of logX of time to % remaining.
       paste0('pAsym+((pStart)-(pAsym))*((',
              timeVar,'- TIMEVAR_MINIMUM + 1)^(log(',propRemain,
-             ')/log(',rateBase,'^pRate)))*(1/((',rateBase,'^pPrevTime+1)^(log(',propRemain,
+             ')/log(',rateBase,'^(pRate))))*(1/((',rateBase,'^(pPrevTime)+1)^(log(',propRemain,
              ')/log(',rateBase,'^(pRate)))))')
 
 
@@ -126,6 +126,15 @@ tef_change_power4 <- function(timeVar
                                             ,'It augments the basic 3-parameter power function with the addition of a theoretical'
                                             ,'amount of "previous learning" that is assumed to happen prior to the measured timescale.'
                                             ,'see Heathcote, Brown, & Mewhort (2000), Psychonomic Bulletin & Review, https://doi.org/10.3758/BF03212979')
+
+    # # replace with fixed, if relevant
+    for(curPar in 1:length(attr(rhsString, 'parForm'))){
+      if(attr(attr(rhsString, 'parForm')[[curPar]],'is_fixed')){
+        attr(rhsString,'formula') <- gsub(names(attr(rhsString, 'parForm'))[curPar]
+                                          ,as.numeric(attr(rhsString, 'parForm')[[curPar]])
+                                          ,attr(rhsString,'formula'),fixed = T)
+      }
+    }
 
     return(
       rhsString

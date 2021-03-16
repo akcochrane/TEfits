@@ -136,7 +136,6 @@ By default, the mean of the time-evolving model's fit values should be very simi
 This is enforced by penalizing the time-evolving model's error multiplicatively by 1 + the square of the difference
 between the average of the model prediction and the average of the null [non-time-evolving] prediction. This is intended to
 constrain model predictions to a "sane" range. This constraint can be removed with \code{control=tef_control(penalizeMean=F)}.
-For this and other default model constraints see \code{?\link{tef_getBounds}}.
 
 Currently \strong{known bugs} are:
 \itemize{

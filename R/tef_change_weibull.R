@@ -53,16 +53,16 @@ tef_change_weibull <- function(timeVar
       }
 
       # # for specific covars
-      if(as.character(startForm)[2] != '1'){
+      if(as.character(startForm)[2] != '1' || is.numeric(startForm)){
         parForms[['pStart']] <- tef_parseParFormula(startForm, label = 'pStart')
       }
-      if(as.character(rateForm)[2] != '1'){
+      if(as.character(rateForm)[2] != '1' || is.numeric(rateForm)){
         parForms[['pRate']] <- tef_parseParFormula(rateForm, label = 'pRate')
       }
-      if(as.character(asymForm)[2] != '1'){
+      if(as.character(asymForm)[2] != '1' || is.numeric(asymForm)){
         parForms[['pAsym']] <- tef_parseParFormula(asymForm, label = 'pAsym')
       }
-      if(as.character(shapeForm)[2] != '1'){
+      if(as.character(shapeForm)[2] != '1' || is.numeric(shapeForm)){
         parForms[['pShape']] <- tef_parseParFormula(shapeForm, label = 'pShape')
       }
     }
@@ -87,7 +87,7 @@ tef_change_weibull <- function(timeVar
       ,rateBase
       ,'^(pRate'
       ,') ) )^( ',rateBase
-      ,'^pShape) )'
+      ,'^(pShape)) )'
     )
 
     rhsString <- rhs
@@ -117,7 +117,6 @@ tef_change_weibull <- function(timeVar
       rhsString <- gsub('pRate',attr(parForms[['pRate']], "equation"),rhsString,fixed = T)
       rhsString <- gsub('pAsym',attr(parForms[['pAsym']], "equation"),rhsString,fixed = T)
 
-
       ## ## Here, include two vectors as attributes to this vector: first, logical of isIntercept, second, named of whichPar
       ## then can use these later to generate proposal values etc.
       ## should probably have genGuess be a function that is an attribute as well.
@@ -133,6 +132,15 @@ tef_change_weibull <- function(timeVar
 
       attr(rhsString,'isIntercept') <- grepl('Intercept',attr(rhsString,'allPars'))
 
+    }
+
+    # # replace with fixed, if relevant ##ISSUE## Need to put this into Weibull
+    for(curPar in 1:length(attr(rhsString, 'parForm'))){
+      if(attr(attr(rhsString, 'parForm')[[curPar]],'is_fixed')){
+        attr(rhsString,'formula') <- gsub(names(attr(rhsString, 'parForm'))[curPar]
+                                          ,as.numeric(attr(rhsString, 'parForm')[[curPar]])
+                                          ,attr(rhsString,'formula'),fixed = T)
+      }
     }
 
     return(

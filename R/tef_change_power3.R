@@ -55,13 +55,13 @@ tef_change_power3 <- function(timeVar
       }
 
       # # for specific covars
-      if(as.character(startForm)[2] != '1'){
+      if(as.character(startForm)[2] != '1' || is.numeric(startForm)){
         parForms[['pStart']] <- tef_parseParFormula(startForm, label = 'pStart')
       }
-      if(as.character(rateForm)[2] != '1'){
+      if(as.character(rateForm)[2] != '1' || is.numeric(rateForm)){
         parForms[['pRate']] <- tef_parseParFormula(rateForm, label = 'pRate')
       }
-      if(as.character(asymForm)[2] != '1'){
+      if(as.character(asymForm)[2] != '1' || is.numeric(asymForm)){
         parForms[['pAsym']] <- tef_parseParFormula(asymForm, label = 'pAsym')
       }
     }
@@ -108,6 +108,15 @@ tef_change_power3 <- function(timeVar
       )
 
       attr(rhsString,'isIntercept') <- grepl('Intercept',attr(rhsString,'allPars'))
+    }
+
+    # # replace with fixed, if relevant
+    for(curPar in 1:length(attr(rhsString, 'parForm'))){
+      if(attr(attr(rhsString, 'parForm')[[curPar]],'is_fixed')){
+        attr(rhsString,'formula') <- gsub(names(attr(rhsString, 'parForm'))[curPar]
+                                          ,as.numeric(attr(rhsString, 'parForm')[[curPar]])
+                                          ,attr(rhsString,'formula'),fixed = T)
+      }
     }
 
     return(
