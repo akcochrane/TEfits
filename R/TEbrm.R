@@ -193,6 +193,8 @@ TEbrm <- function(
   formIn <- formula ; rm(formula)
   dataIn <- data ; rm(data)
 
+  ##ISSUE## should match.call() or something, to get the original call and include it in the output (and TEfits version, etc.)
+
   require(brms)
 
   ## ## Get RHS of formula
@@ -222,11 +224,12 @@ TEbrm <- function(
     link_start_asym <- attr(rhs,'link_start_asym')
   }
 
-  ##ISSUE## THIS WILL BREAK IF RATE ISN'T EXACTLY IDENTIFIED BY ONE PARAMETER, so need to have the changefun constructor ID the "main" names for the rate, asym, and start (the things that should have priors)... but as long as each changefun has exact matches to pStart, pAsym, and pRate, it should be OK right? does it work OK with fixed pars?rm()
+  ##ISSUE## THIS WILL BREAK IF RATE ISN'T EXACTLY IDENTIFIED BY ONE PARAMETER, so need to have the changefun constructor ID the "main" names for the rate, asym, and start (the things that should have priors)... but as long as each changefun has exact matches to pStart, pAsym, and pRate, it should be OK right? does it work OK with fixed pars?
   ##ISSUE## THERE'S ALSO NO GUARANTEE THIS IS GOOD FOR NON-EXPO3
   ##ISSUE## Need to make this play nicely with the tef_control_list
   ##ISSUE## make sure that adding another prior overwrites it, and doesn't break it
   ##ISSUE## Split the prior definition into a different function for less ugliness and disorganization
+  ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best...
 
   bPrior <- set_prior(paste0('normal(',round(log(midTime,base=tef_control_list$expBase),3),',' ##ISSUE##  The base is already (and should be) defined in the constructor
                              ,round(log(midTime,base=tef_control_list$expBase)/3,3),')')
