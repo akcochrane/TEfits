@@ -9,7 +9,7 @@ Overview to Time-Evolving fits
 
 Behavioral data is described, interpreted, and tested using indices such as d prime, mean, or psychometric function threshold. The **TEfits** package serves to allow the same questions to be asked about time-evolving aspects of these indices, such as the starting level, the amount of time that the index takes to change, and the asymptotic level of that index. Nonlinear regression applied to time-evolving functions is made as intuitive and painless as is feasible, with many extensions if desired.
 
-The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary function, `TEfit()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
+The **TEfits** package has a heavy emphasis on interpretability of parameters. As far as possible, parameters fit by **TEfits** are meant to reflect human-interpretable representations of time-evolving processes. Error functions, nonlinear ("change") functions linking predicted values to parameters and time, parameter and prediction boundaries, and goodness-of-fit indices are intended to be clear and adjustable. An equal emphasis is on ease of use: minimal arguments are necessary to begin using the primary functions, `TEfit()` and `TEbrm()`, and many common tasks are fully automated (e.g., optimization starting points, bootstrapping).
 
 Installing the package
 ----------------------
@@ -90,18 +90,18 @@ summary(mod_TEbrm)
     ##          pRate ~ 1
     ##          pAsym ~ 1
     ##    Data: attr(rhs_form, "data") (Number of observations: 30) 
-    ## Samples: 3 chains, each with iter = 1000; warmup = 500; thin = 1;
-    ##          total post-warmup samples = 1500
+    ## Samples: 3 chains, each with iter = 2000; warmup = 1000; thin = 1;
+    ##          total post-warmup samples = 3000
     ## 
     ## Population-Level Effects: 
     ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## pStart_Intercept     0.25      0.01     0.23     0.27 1.00      517      708
-    ## pRate_Intercept      2.87      0.08     2.72     3.02 1.01      438      634
-    ## pAsym_Intercept      1.02      0.01     0.99     1.04 1.00      527      777
+    ## pStart_Intercept     0.25      0.01     0.23     0.28 1.00     1360     1596
+    ## pRate_Intercept      2.88      0.08     2.73     3.04 1.00     1103     1359
+    ## pAsym_Intercept      1.02      0.01     0.99     1.05 1.00     1142     1467
     ## 
     ## Family Specific Parameters: 
     ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## sigma     0.02      0.00     0.01     0.02 1.00      482      475
+    ## sigma     0.02      0.00     0.01     0.02 1.00     1604     1383
     ## 
     ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
     ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -136,30 +136,30 @@ summary(mod_boot)
     ## 
     ## >> Fit Values:
     ##        Estimate  Q025  Q975 pseudoSE
-    ## pAsym     0.998 0.988 0.999    0.003
-    ## pRate     2.746 2.597 2.845    0.063
-    ## pStart    0.224 0.177 0.288    0.028
+    ## pAsym     0.998 0.982 1.000    0.005
+    ## pRate     2.711 2.555 2.819    0.067
+    ## pStart    0.230 0.157 0.290    0.034
     ## 
     ## >> Goodness-of-fit:
-    ##                err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
-    ## bernoulli 13.42633 16.83409     3   30 37.05624 37.06937 -0.01312702
+    ##               err  nullErr nPars nObs      BIC  nullBIC    deltaBIC
+    ## bernoulli 13.4256 16.83409     3   30 37.05478 37.06937 -0.01458791
     ## 
     ## >> Test of change in nonindependence:
     ##                          rawSpearman modelConditionalSpearman
-    ## response ~ trial_number:          -1                0.0269188
+    ## response ~ trial_number:          -1              -0.07630701
     ##                          proportionalSpearmanChange pValSpearmanChange
-    ## response ~ trial_number:                  0.0269188                  0
+    ## response ~ trial_number:                 0.07630701                  0
     ## 
     ## >> Percent of resamples predicting an increase in values: 100 
     ## 
     ## >> Timepoint at which resampled estimates diverge from timepoint 1, with Cohen's d>1: 2 
     ## 
     ## >> Bootstrapped parameter correlations:
-    ##         pAsym pStart pRate    err
-    ## pAsym   1.000 -0.032 0.235 -0.304
-    ## pStart -0.032  1.000 0.462  0.565
-    ## pRate   0.235  0.462 1.000  0.143
-    ## err    -0.304  0.565 0.143  1.000
+    ##         pAsym pStart  pRate    err
+    ## pAsym   1.000  0.021  0.490 -0.374
+    ## pStart  0.021  1.000  0.509  0.250
+    ## pRate   0.490  0.509  1.000 -0.211
+    ## err    -0.374  0.250 -0.211  1.000
 
 Fitting multiple models
 -----------------------
@@ -198,8 +198,8 @@ summary(mod_4group)
     ## 
     ## >> Overall effects:
     ##             pAsym     pStart      pRate
-    ## mean   0.14922713 0.01639029 3.83366412
-    ## stdErr 0.03933398 0.01060450 0.02431687
+    ## mean   0.14922698 0.01639038 3.83366346
+    ## stdErr 0.03933386 0.01060457 0.02431753
     ## 
     ##                 err    nullErr nPars nObs      Fval         Pval   Rsquared
     ## mean   3.005041e-04 0.03071614     3   30 1692.5939 1.110223e-16 0.97598962
@@ -226,7 +226,7 @@ An analogous model, this time fitting "participant-level" models as random effec
 ``` r
 mod_4group_TEbrm <- TEbrm(response ~
                             tef_change_expo3('trial_number',parForm = ~ (1|group))
-                          ,dataIn = dat
+                          ,data = dat
 )
 ```
 
@@ -247,29 +247,29 @@ summary(mod_4group_TEbrm)
     ##          pRate ~ (1 | group)
     ##          pAsym ~ (1 | group)
     ##    Data: attr(rhs_form, "data") (Number of observations: 120) 
-    ## Samples: 3 chains, each with iter = 1000; warmup = 500; thin = 1;
-    ##          total post-warmup samples = 1500
+    ## Samples: 3 chains, each with iter = 2000; warmup = 1000; thin = 1;
+    ##          total post-warmup samples = 3000
     ## 
     ## Group-Level Effects: 
     ## ~group (Number of levels: 4) 
     ##                      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-    ## sd(pStart_Intercept)     0.03      0.03     0.01     0.11 1.01      478
-    ## sd(pRate_Intercept)      1.67      0.78     0.70     3.63 1.00      618
-    ## sd(pAsym_Intercept)      0.08      0.08     0.01     0.33 1.02      202
+    ## sd(pStart_Intercept)     0.04      0.03     0.01     0.12 1.00      999
+    ## sd(pRate_Intercept)      1.67      0.75     0.74     3.58 1.00     1499
+    ## sd(pAsym_Intercept)      0.08      0.09     0.01     0.34 1.01      475
     ##                      Tail_ESS
-    ## sd(pStart_Intercept)      523
-    ## sd(pRate_Intercept)       662
-    ## sd(pAsym_Intercept)       234
+    ## sd(pStart_Intercept)     1097
+    ## sd(pRate_Intercept)      2045
+    ## sd(pAsym_Intercept)       201
     ## 
     ## Population-Level Effects: 
     ##                  Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## pStart_Intercept     0.02      0.02    -0.01     0.06 1.00      633      621
-    ## pRate_Intercept      4.64      0.61     3.20     5.64 1.00      514      563
-    ## pAsym_Intercept      0.22      0.04     0.11     0.29 1.01      280      186
+    ## pStart_Intercept     0.02      0.02    -0.02     0.07 1.00      807     1040
+    ## pRate_Intercept      4.63      0.65     3.22     5.71 1.00      989     1217
+    ## pAsym_Intercept      0.21      0.04     0.09     0.29 1.00      664      195
     ## 
     ## Family Specific Parameters: 
     ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-    ## sigma     0.00      0.00     0.00     0.00 1.00     1322     1032
+    ## sigma     0.00      0.00     0.00     0.00 1.00     2897     1904
     ## 
     ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
     ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -295,7 +295,7 @@ TElm parameter estimates:
 
 |  X.Intercept.|  trial\_number|   rate|
 |-------------:|--------------:|------:|
-|         1.017|         -0.766|  2.873|
+|         1.021|         -0.767|  2.896|
 
 TEfit parameter estimates:
 
