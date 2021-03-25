@@ -69,7 +69,7 @@ tef_change_power4 <- function(timeVar
       paste0('pAsym+((pStart)-(pAsym))*((',
              timeVar,'- TIMEVAR_MINIMUM + 1)^(log(',propRemain,
              ')/log(',rateBase,'^(pRate))))*(1/((',rateBase,'^(pPrevTime)+1)^(log(',propRemain,
-             ')/log(',rateBase,'^(pRate)))))')
+             ')/log(',rateBase,'^(pRate)))))') ##ISSUE## double check that this parameterization is good, especially with the 'TIMEVAR_LOG_MEDIAN' bits
 
 
 

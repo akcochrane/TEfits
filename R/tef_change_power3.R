@@ -70,7 +70,7 @@ tef_change_power3 <- function(timeVar
     rhs <-  # # #  is parameterized in terms of logX of time to % remaining.
       paste0('(pAsym+((pStart)-(pAsym))*(',
              timeVar,'- TIMEVAR_MINIMUM + 1)^(log(',propRemain,
-             ')/log(',rateBase,'^pRate)))')
+             ')/log(',rateBase,'^(pRate))))')
 
     rhsString <- rhs
     attr(rhsString,'parForm') <- parForms

@@ -8,7 +8,6 @@ TEbrm(
   formula,
   data,
   ...,
-  iter = 2000,
   chains = 3,
   priorIn = c(),
   algorithm = "sampling",
@@ -22,9 +21,7 @@ TEbrm(
 
 \item{data}{Data frame, from which to fit the model.}
 
-\item{...}{Further arguments passed to the brms model}
-
-\item{iter}{Number of iterations to run the model.}
+\item{...}{Further arguments passed to the \code{\link[brms]{brm}s} model}
 
 \item{chains}{Number of chains to run the model.}
 
@@ -48,10 +45,13 @@ function of that time variable.
 
 The default number of iterations and chains is small, and intended largely for testing model specifications.
 For final inferences from a model, it is highly recommended to run a model for many more iterations
-(e.g., 5000 or 10000).
+(e.g., \code{iter=5000} or \code{iter=10000}).
 
 When specifying statistical families, it is \emph{extremely highly recommended} to specify an "identity" link function,
 and then [if appropriate] specifying a link function using the \code{link_start_asym} argument. See example.
+
+Rates [time constants] are estimated on log scales. Within the exponent of the log estimation, the rates have an additive
+offset corresponding to the median of the time variable; this allows the rate parameter priors and estimation to be zero-centered.
 
 Currently supported model constructor functions are:
 \itemize{
@@ -92,8 +92,8 @@ desired model specification, then use \code{\link[brms]{update.brmsfit}} to "fin
 #-- #-- Example 01: Simple model
 #> Default model formula is exponential change, with no covariates or random effects
 m1 <- TEbrm(
-acc ~ trialNum   #> equivalent to `acc ~ tef_change_expo3('trialNum')`
-,data = anstrain_s1
+  acc ~ trialNum   #> equivalent to `acc ~ tef_change_expo3('trialNum')`
+  ,data = anstrain_s1
 )
 
 prior_summary(m1)
@@ -103,31 +103,31 @@ conditional_effects(m1)
 #-- #-- Example 02: Random effects
 #> using the tef_change_expo3 function to construct the model formula, with random effects
 m2 <- TEbrm(
-acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
-,data = anstrain
-,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')   #> for demonstration, also include non-default priors
+  acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
+  ,data = anstrain
+  ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')   #> for demonstration, also include non-default priors
 )
 
 #-- #-- Example 03: Bernoulli family
 #> Estimate accuracy using a more appropriate [bernoulli] response function,
 #> > and also estimate the start and asymptote parameters using invert-logit links
 m3 <- TEbrm(
-acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
-,data = anstrain
-,link_start_asym = 'inv_logit'
-,family=bernoulli(link='identity')
+  acc ~ tef_change_expo3('trialNum')
+  ,data = anstrain_s1
+  ,link_start_asym = 'inv_logit'
+  ,family=bernoulli(link='identity')
 )
 
 #-- #-- Example 04: Logistic PF
 #> Fit a time-evolving logistic mixed-effects model (see, e.g., Cochrane et al., 2019, AP&P, 10.3758/s13414-018-01636-w).
 #> > May take a few minutes to run.
 m4 <- TEbrm(
-resp ~ tef_link_logistic(
-   tef_change_expo3('trialNum', parForm = ~ (1|subID))
-   ,linkX = 'ratio' )
-,family=bernoulli(link='identity')
-,iter = 4000   #> most models, in practice, will need more than the default number of iterations in order to converge as well as have a sufficient effective sample size (ESS)
-,data = anstrain
+  resp ~ tef_link_logistic(
+     tef_change_expo3('trialNum', parForm = ~ (1|subID))
+     ,linkX = 'ratio' )
+  ,family=bernoulli(link='identity')
+  ,iter = 4000   #> most models, in practice, will need more than the default number of iterations in order to converge as well as have a sufficient effective sample size (ESS)
+  ,data = anstrain
 )
 
 summary(m4) # note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
@@ -140,32 +140,34 @@ cat(attr(m4$right_hand_side,'link_explanation')) # An explanation of the link fu
 d_temp <- anstrain_s1   #> make temporary data
 d_temp$absRat <- abs(d_temp$ratio)   #> calculate absolute stimulus strength
 m5 <- TEbrm(
-acc ~ tef_link_weibull(tef_change_expo3('trialNum'),linkX = 'absRat')
-,data = d_temp
+  acc ~ tef_link_weibull(
+    tef_change_expo3('trialNum'),linkX = 'absRat')
+  ,data = d_temp
 )
 
 #-- #-- Example 06: d prime
 #> Model change in d-prime
- d_tmp <- anstrain_s1 #> make temporary data
- d_tmp$dprime <- tef_acc2dprime(d_tmp$acc, d_tmp$ratio > 0)   #> calculate by-trial d-prime; it isn't prototypical data for d-prime because `resp` doesn't categorize `acc` into "hits" and "false alarms", but it's a decent demonstration of the method.
- m6 <- TEbrm(
-dprime ~  tef_change_expo3('trialNum')
-,data = d_tmp
+d_tmp <- anstrain_s1 #> make temporary data
+d_tmp$dprime <- tef_acc2dprime(d_tmp$acc, d_tmp$ratio > 0)   #> calculate by-trial d-prime; it isn't prototypical data for d-prime because `resp` doesn't categorize `acc` into "hits" and "false alarms", but it's a decent demonstration of the method.
+m6 <- TEbrm(
+  dprime ~  tef_change_expo3('trialNum')
+  ,data = d_tmp
 )
 
 #-- #-- Example 07: Power change
 #> Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change
 m7 <- TEbrm(
-acc ~ tef_change_power3('trialNum',parForm = ~ (1|subID))
-,data = anstrain
+  acc ~ tef_change_power3('trialNum')
+  ,data = anstrain_s1
 )
 
 #-- #-- Example 08: Weibull change
 #> Model learning as a Weibull function of time (3-parameter exponential with one additional "acceleration" or "deceleration" parameter, "pShape")
 #> > May take a few minutes to run.
 m8 <- TEbrm(
-acc ~ tef_change_weibull('trialNum',parForm = ~ (1|subID) )
-,anstrain)
+  acc ~ tef_change_weibull('trialNum')
+  ,anstrain_s1
+)
 
 #> Test whether learning is accelerating or decelerating, relative to a 3-parameter exponential
 hypothesis(m8, 'pShape_Intercept = 0')    #> acceleration or deceleration is not evident in this task on this timescale
@@ -173,9 +175,9 @@ hypothesis(m8, 'pShape_Intercept = 0')    #> acceleration or deceleration is not
 #-- #-- Example 09: fixing a parameter
 #> Fix a parameter to a constant rather than estimating it (here, fix asymptotic accuracy to 90 percent)
 m9 <- TEbrm(
-acc ~ tef_change_expo3('trialNum'
+  acc ~ tef_change_expo3('trialNum'
                       ,asymForm = .9)
-,data = anstrain_s1
+  ,data = anstrain_s1
 )
 
 #-- #-- Example 10: updating a model
@@ -183,16 +185,16 @@ acc ~ tef_change_expo3('trialNum'
 d_tmp <- anstrain_s1 #> make temporary data
 d_tmp$acc_smooth <- tef_runningMean(d_tmp$acc)   #> get smoothed accuracy
 m10_initial <-  TEbrm(
-acc_smooth ~ tef_change_expo3('trialNum')
-,data = d_tmp
-,iter = 200
+  acc_smooth ~ tef_change_expo3('trialNum')
+  ,data = d_tmp
+  ,iter = 200
 )
 
 m10_final <- update(
-m10_initial
-,family=student() #> heavier-tailed (t distribution) regression
-,iter = 4000
-,chains=4
+ m10_initial
+ ,family=student() #> heavier-tailed (t distribution) regression
+ ,iter = 4000
+ ,chains=4
 )
 
 }
@@ -200,7 +202,7 @@ m10_initial
 \seealso{
 For additional flexibility, and full explanations of model options, see \code{\link[brms]{brms-package}}. In
 particular, the "..." argument that is passed to \code{\link[brms]{brm}} includes many important options, such
-as parallelization (e.g., \code{cores = 3}).
+as increasing iterations (argument \code{iter})or parallelization (e.g., \code{cores = 3}).
 
 For other approaches to time-evolving models, see \code{\link{TEfits}}.
 }
