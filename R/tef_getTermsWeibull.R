@@ -7,6 +7,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 
 tef_getTermsWeibull <- function(modList,pPrefix){
 

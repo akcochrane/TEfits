@@ -15,11 +15,11 @@ tef_link_logistic(
 )
 }
 \arguments{
-\item{changeForm}{The formula describing the change in either}
+\item{changeForm}{The formula describing the change in either threshold or bias}
 
 \item{linkX}{Character. The name of the "x" variable in the logistic link function (e.g., stimulus strength in a psychometric function)}
 
-\item{changePar}{Character. Which variable, "threshold" or "bias", changes over time. The other one is stable over time; \emph{the stable component inherits its formula from the asymptote component}.}
+\item{changePar}{Character. Which variable, "threshold" or "bias", changes over time. The other one is stable over time; \emph{the stable component inherits its formula from the asymptote parameter of the changing component}.}
 
 \item{threshVal}{The threshold at which to evaluate the logistic function (i.e., the y-value for which threshold describes the x-value).}
 
@@ -35,7 +35,7 @@ and is likely to be buggy, and to change frequently.
 }
 \details{
 If bias is changing, threshold inherits its formula from asymptotic bias.
-If threshold is changing, bias inherits its formula from asymptotic threhold.
+If threshold is changing, bias inherits its formula from asymptotic threshold.
 }
 \examples{
 

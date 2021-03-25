@@ -6,6 +6,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 
 tef_vars2forms <- function(modList){
   # # set up covariates

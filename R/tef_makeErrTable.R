@@ -4,6 +4,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 tef_makeErrTable <- function(){
   errTable <- data.frame(
     smallVariance = 'The variation in the response variable is very small. Reconsider the appropriateness of predicting it. '

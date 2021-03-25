@@ -9,6 +9,7 @@
 #'
 #' @export
 #'
+#' @noRd
 #'
 
 tef_getTermsExpo <- function(modList,pPrefix){

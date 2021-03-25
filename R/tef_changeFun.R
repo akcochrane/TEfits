@@ -7,6 +7,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 tef_changeFun <- function(modList,covarVects){
 timeVar_origin <- min(modList$varIn[,modList$timeVar],na.rm=T)
 

@@ -18,6 +18,8 @@
 #' @param thresh_fun if relevant, the threshold function
 #' @param paramTerms the terms for parameters
 #'
+#' @noRd
+#'
 #' @export
 #'
 #'

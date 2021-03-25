@@ -10,6 +10,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 tef_getBounds <- function(modList,whichPnames='pNames',linkFunX=NA){
   modList$guessNames <- modList[[whichPnames]]
 

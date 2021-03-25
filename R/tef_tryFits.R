@@ -13,6 +13,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 tef_tryFits <- function(modList,whichPnames='pNames',whichFun='evalFun'){
 
   if(modList$linkFun$link=='weibull'){linkFunX=modList$linkFun$weibullX}else{linkFunX=NA}

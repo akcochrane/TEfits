@@ -9,6 +9,8 @@
 #'
 #' @export
 #'
+#' @noRd
+#'
 #'
 
 tef_getTermsExpoFatigue <- function(modList,pPrefix){
