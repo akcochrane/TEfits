@@ -244,16 +244,16 @@ TEbrm <- function(
   ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best...
 
   rate_prior_scale <- round(log(midTime,base=tef_control_list$rateBase)/3,3) ## use this to control it; refer to maxTime-minTime) instead probably
-  # bPrior <- set_prior(paste0('normal(0,'
-  #                            ,rate_prior_scale,')')
-  #                     ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
-  # )
-  bPrior <- set_prior(paste0('normal(',logMedTime,','
+  bPrior <- set_prior(paste0('normal(0,'
+                             ,rate_prior_scale,')')
+                      ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
+  )
+  bPrior <- bPrior + set_prior(paste0('normal(',logMedTime,','
                              ,rate_prior_scale,')')
                       ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
                       ,coef = 'Intercept'
 
-                      # ,ub = round(log((maxTime-minTime)*2,base=tef_control_list$rateBase),3) ##ISSUE## re-implement this, from the centered pars
+                      # ,ub = round(log((maxTime-minTime)*2,base=tef_control_list$rateBase),3) ##ISSUE## re-implement this, from the centered pars. Working around the "bounds can't be assigned with coefs" issue
                       # ,lb = round(log(
                       #   ((maxTime-minTime)/nrow(attr(rhs_form,'data')))*2
                       #   ,base=tef_control_list$expBase),3)

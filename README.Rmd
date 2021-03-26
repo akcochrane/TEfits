@@ -31,7 +31,7 @@ Although having vignettes is nice for exploring the functionality of the package
 
 ## Simple model of exponential change
 
-A basic maximum-likelihood model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable.
+A basic maximum-likelihood model nonlinearly relating time to an outcome variable. The first argument is a data frame, with the first column being the response variable and the second column being the time variable. The model is parameterized in terms of the starting value, the asymptotic value, and the [base-2] log of the time taken to change halfway from the starting to the asymptotic values.
 
 ```{r model_simple, message=FALSE, warning=FALSE}
 
