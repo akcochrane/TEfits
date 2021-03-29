@@ -8,7 +8,7 @@
 #' Function is \strong{under development}
 #' and is likely to be buggy, and to change frequently.
 #'
-#' @param timeVar String. The name of the variable in the model that corresponds to time. The variable of time should be positive and numeric, and the function of change should be expected to happen with increasing time.
+#' @param timeVar String. The name of the variable in the model that corresponds to time. The variable of time should be positive and numeric, and the function of change should be expected to happen with increasing time. \emph{Extensive testing has only been done on positive integer time variables with a minimum time of 1.}
 #' @param parForm The right-hand side of the formula defining all nonlinear parameters as well as the null [non-time-varying] model.
 #' @param startForm The right-hand side of the formula defining the start parameter. If anything besides \code{~1}, overwrites \code{parForm} for this parameter.
 #' @param rateForm The right-hand side of the formula defining the rate parameter. If anything besides \code{~1}, overwrites \code{parForm} for this parameter.

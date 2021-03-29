@@ -15,7 +15,7 @@ tef_change_expo3(
 )
 }
 \arguments{
-\item{timeVar}{String. The name of the variable in the model that corresponds to time. The variable of time should be positive and numeric, and the function of change should be expected to happen with increasing time.}
+\item{timeVar}{String. The name of the variable in the model that corresponds to time. The variable of time should be positive and numeric, and the function of change should be expected to happen with increasing time. \emph{Extensive testing has only been done on positive integer time variables with a minimum time of 1.}}
 
 \item{parForm}{The right-hand side of the formula defining all nonlinear parameters as well as the null [non-time-varying] model.}
 
