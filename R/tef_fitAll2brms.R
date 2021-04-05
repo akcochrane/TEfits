@@ -1,6 +1,9 @@
 
 #' Refit a TEfitAll model with brms
 #'
+#' \emph{This method has been superceded by} \code{\link{TEbrm}}. \emph{Please use
+#' that method instead.}
+#'
 #' Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using
 #' \code{\link[brms]{brms-package}}. Note that, due to the extensive time needed to
 #' fit \code{\link[brms]{brms-package}} models,

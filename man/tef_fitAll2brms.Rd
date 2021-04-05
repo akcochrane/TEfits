@@ -33,13 +33,16 @@ tef_fitAll2brms(
 A \code{\link[brms]{brms-package}} nonlinear mixed-effects model object.
 }
 \description{
+\emph{This method has been superceded by} \code{\link{TEbrm}}. \emph{Please use
+that method instead.}
+}
+\details{
 Passes a \code{\link{TEfitAll}} model to [nonlinear mixed-effects Bayesian] fitting using
 \code{\link[brms]{brms-package}}. Note that, due to the extensive time needed to
 fit \code{\link[brms]{brms-package}} models,
 this function is less tested than most functions in the \code{TEfits} package. Functionality is
 \strong{experimental}.
-}
-\details{
+
 Priors for nonlinear parameters are informed by the distributions of parameters in the \code{TEfitAll} object [models].
 However, any fixed effects should be minimally influenced by these priors
 
