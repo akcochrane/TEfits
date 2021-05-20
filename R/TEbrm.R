@@ -93,8 +93,6 @@
 #'   ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')   #> for demonstration, also include non-default priors
 #' )
 #'
-#' #> Test whether asymptote is reliable above start (i.e., learning happened)
-#'
 #' #-- #-- Example 03: Bernoulli family
 #' #> Estimate accuracy using a more appropriate [bernoulli] response function,
 #' #> > and also estimate the start and asymptote parameters using invert-logit links
@@ -118,7 +116,7 @@
 #' )
 #'
 #' summary(m4) #> note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
-#' conditional_effects(m4, 'ratio:trialNum') #> The psychometric function steepens with learning
+#' conditional_effects(m4, 'ratio:trialNum') #> The psychometric function steepens with learning; see ?brms::conditional_effects
 #' cat(attr(m4$right_hand_side,'link_explanation')) #> An explanation of the link function is included
 #'
 #' #-- #-- Example 05: Weibull PF
@@ -203,6 +201,8 @@ TEbrm <- function(
 
   ##ISSUE## should match.call() or something, to get the original call and include it in the output (and TEfits version, etc.)
 
+  ##ISSUE## re-work the NOTE to ensure conformity with the current prior method
+
   require(brms)
 
   ## ## Get RHS of formula
@@ -230,6 +230,9 @@ TEbrm <- function(
 
     ## Add the rest of the formula (dataIn and LHS)
     attr(rhs_form,'lhs')  <- as.character(formIn[[2]])
+    if(length(formIn[[2]]) == 3){ # for multi-part right-hand-sides
+      attr(rhs_form,'lhs')  <-  paste0(formIn[[2]][2],formIn[[2]][1],formIn[[2]][3],collapse='')
+    }
 
     ##ISSUE## it would be nice to have the brm model say the data "name" is the same as the input, rather than the attr(..etc). Would this take a match.call() or something?
     attr(rhs_form,'data') <- dataIn ; rm(dataIn)   }

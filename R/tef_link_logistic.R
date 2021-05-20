@@ -49,7 +49,7 @@ tef_link_logistic <- function(changeForm,
       attributes(rhs) <- attributes(changeStr)
       attr(rhs,'changePar') <- 'threshold'
       attr(rhs,'constantPar') <- 'bias'
-      attr(rhs,'parForm')[['bias']] <- attr(rhs,'parForm')$pAsym
+      attr(rhs,'parForm')[['bias']] <- attr(rhs,'parForm')$pAsym ##ISSUE## This inheritance doesn't work for GAM yet
       attr(attr(rhs,'parForm')[['bias']],'parameters') <- '' ##ISSUE## may need to include something here
       attr(attr(rhs,'parForm')[['bias']],'equation') <- '' ##ISSUE## may need to include something here
 
