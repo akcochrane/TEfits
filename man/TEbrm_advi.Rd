@@ -9,7 +9,7 @@ TEbrm_advi(
   dataIn = data.frame(),
   ...,
   algorithm = "fullrank",
-  conv_thresh = 0.2,
+  conv_thresh = 0.5,
   quiet = F
 )
 }
@@ -20,15 +20,15 @@ TEbrm_advi(
 
 \item{...}{Any other argument to pass to \code{\link[brms]{brm}}.}
 
-\item{algorithm}{which ADVI algorithm to use: "meanfield" or "fullrank".}
+\item{algorithm}{Which ADVI algorithm to use: "meanfield" or "fullrank".}
 
-\item{conv_thresh}{Re-fit models are compared, with the standardized distance (mean_diff / SD) being calculated. Models keep being re-fit until at least 2 models' largest standardized differences are smaller than this value (or until a certain number of models has been fit in total, which scales with this value). The better-fitting of these two models is then returned.}
+\item{conv_thresh}{Re-fit models are compared, with the standardized distance (mean_diff / SD) being calculated. Models keep being re-fit until at least 2 models' largest standardized differences are smaller than this value (or until a certain number of models has been fit in total, which scales inversely with this value). The better-fitting of these two models is then returned. Values over 30 will cause an error, which should not be an issue for any normal use of this function.}
 
 \item{quiet}{Progress is printed by default, but can be suppressed with quiet=T.}
 }
 \description{
 Uses Stan's stochastic gradient ascent methods "fullrank" or "meanfield" rather than full
-Bayesian sampling. Is likely to be faster than typical sampling, but possibly
+Bayesian sampling. Is likely to be faster than typical sampling for large models, but possibly
 less accurate. This function fits the model several times and returns the best model
 (initial model selection uses Bayesian R-squared, final model selection uses 10-fold
 cross-validation). \strong{Beware: This re-fitting

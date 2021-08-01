@@ -1,4 +1,4 @@
-#' Construct a 3-parameter exponential function of change
+#' Construct a by-time Generalized Additive Model formula
 #'
 #' By defining the model variable associated with time (e.g., trial number), and
 #' formulas defining each of the nonlinear parameters of time-related change,
@@ -13,7 +13,8 @@
 #'
 #' @param timeVar String. Indicates the name of the time variable
 #' @param timeCovar Vector of strings, for variables that will be included in the time-evolving model.
-#' @param groupingVar String. Optional grouping variable (e.g., participant ID, in a behavioral study). If this is non-NA, then all \code{timeCovar} are fit on the level of \code{groupingVar}
+#' @param groupingVar String. Optional grouping variable (e.g., participant ID, in a behavioral study). If this is non-empty, then all \code{timeCovar} are fit on the level of \code{groupingVar}
+#' @param bs Two letter character string inidicating the basis for smoothing. See ?mgcv::s
 #'
 #' @seealso
 #' \code{\link{TEbrm}} for examples of how to use this function in specifying models.
@@ -21,23 +22,28 @@
 #' @export
 #'
 #' @examples
-#' equation_to_fit <- tef_change_gam()
+#' equation_to_fit <- tef_change_gam('trialNum')
 #'
-#' equation_to_fit <- tef_change_gam(,,)
 #'
 tef_change_gam <- function(timeVar
                              ,timeCovar = c(NULL)
                              ,groupingVar = ''
-                           ,k = NA
+                           # ,k = NA
                            ,bs = c('ts','cr','cs','tp','cc')
 ){
 
   if(length(bs)>1){bs=bs[1]}
 
+  k <- -1
+
+  ## >> NEED TO TEST! Also include covariates / linear predictors / explanations of interpretations?
+
   ## >> possibly implement a gamlss() version?
 
     if(is.character(timeVar) || is.factor(timeVar)){
 
+
+      ## for testing!!
         if(F){
     library(TEfits) ; library(brms)
 d <- anstrain
@@ -85,13 +91,16 @@ d$absRat <- abs(d$ratio)
 
 
       if(nchar(groupingVar)==0){
-        rhs <- as.formula(paste0(
-          '~ ',
+        rhs <-
+          # as.formula(
+          paste0(
+          '',
           paste(c(1,timeCovar),collapse='+',sep='+')
           ,' + s('
           ,paste(c(timeCovar,timeVar),collapse=',',sep=',')
           ,',k=',k,',bs="',bs,'")'
-        ))
+        )
+        # )
 
         # m4 <- brm(
         #   as.formula(paste('acc ~',as.character(rhs)[[2]]))
@@ -99,8 +108,10 @@ d$absRat <- abs(d$ratio)
         # )
 
       }else{
-        rhs <- as.formula(paste0(
-          '~ ',
+        rhs <-
+          # as.formula(
+          paste0(
+          ' ',
           ' s('
           ,paste(c(timeVar,timeCovar),collapse=',',sep=',')
           ,',by='
@@ -108,7 +119,9 @@ d$absRat <- abs(d$ratio)
           ,',k=',k,',bs="',bs,'") + '
           ,'('
           , paste(c(1,timeCovar),collapse='+',sep='+')
-          ,' | ',groupingVar,')'))
+          ,' | ',groupingVar,')'
+          # )
+        )
       }
 
       ### ### ###

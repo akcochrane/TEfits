@@ -47,7 +47,7 @@ TEbrm_advi <- function(formIn,
                        dataIn = data.frame()
                        , ...
                        ,algorithm = 'fullrank'
-                       ,conv_thresh = .2
+                       ,conv_thresh = .5
                        ,quiet = F){
 
   compareMlist <- function(mlist){
@@ -83,6 +83,8 @@ TEbrm_advi <- function(formIn,
     m_fr <- list() ; m_fr_r2 <- c()  ;
     while(length(m_fr) < 2 && tryNum < maxTries){
       try({suppressMessages({suppressWarnings({
+
+       # The rewriting of tmpMod is likely causing crashes; should be writing to a "fresh" object instead
 
         if(is.null(tmpMod)){
           tmpMod <- brm(formIn,

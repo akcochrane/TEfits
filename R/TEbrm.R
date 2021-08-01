@@ -184,6 +184,16 @@
 #'  ,chains=4
 #' )
 #'
+#' #-- #-- Example 11: Generalized Additive Models
+#' #> Fit a generalized additive mixed-effects model with accuracy varying by time.
+#' m11 <- TEbrm(acc ~ tef_change_gam('trialNum', groupingVar = 'subID')
+#' ,data = anstrain)
+#'
+#' #-- #-- Example 12: Using a variational algorithm rather than full sampling
+#' m12 <- TEbrm(acc ~ tef_change_expo3('trialNum')
+#' ,algorithm = 'fullrank'
+#' ,data = anstrain_s1)
+#'
 #' }
 TEbrm <- function(
   formula
@@ -249,8 +259,21 @@ TEbrm <- function(
   ##ISSUE## Need to make this play nicely with the tef_control_list
   ##ISSUE## make sure that adding another prior overwrites it, and doesn't break it
   ##ISSUE## Split the prior definition into a different function for less ugliness and disorganization
-  ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best...
+  ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best.
 
+
+  if(attr(rhs,'changeFun') == 'GAM'){
+    bForm <- brmsformula(paste(
+      attr(rhs_form,'lhs')
+      ,'~'
+      , rhs_form
+    )
+    )
+
+    if(length(priorIn) > 0){bPrior <- priorIn}else{bPrior <- NULL}
+
+
+  }else{
   rate_prior_scale <- round(log(midTime,base=tef_control_list$rateBase)/3,3) ## use this to control it; refer to maxTime-minTime) instead probably
   bPrior <- set_prior(paste0('normal(0,'
                              ,rate_prior_scale,')')
@@ -329,6 +352,7 @@ TEbrm <- function(
 
   if(!is.null(attr(rhs,'constantPar_prior'))){
     bPrior <- bPrior + attr(rhs,'constantPar_prior')
+  }
   }
 
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}
