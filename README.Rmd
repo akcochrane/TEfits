@@ -48,7 +48,7 @@ plot(mod_simple,plot_title='Time-evolving fit of artificial data')
 summary(mod_simple)
 ```
 
-Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides more information about the model.
+Alternatively, a similar model can be fit using the Bayesian package `brms`. This takes a bit longer, but provides much more flexibility and information about the model.
 
 ```{r model_simple_TEbrm, message=FALSE, warning=FALSE, results='hide'}
 
@@ -104,7 +104,7 @@ plot(mod_4group)
 summary(mod_4group)
 ```
 
-An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm`.
+An analogous model, this time fitting "participant-level" models as random effects within a mixed-effects model, can be implemented using `TEbrm` (the recommended method).
 
 ```{r model_groups_TEbrm, message=FALSE, warning=FALSE, results='hide'}
 
@@ -159,7 +159,7 @@ testthat::test_package('TEfits')
 
 # Performance disclaimer
 
-**TEfits** comes with no guarantee of performance. Nonlinear regression can be very sensitive to small changes in parameterization, optimization starting values, etc. No universal out-of-the box implementation exists, and **TEfits** is simply an attempt to create an easy-to-use and robust framework for behavioral researchers to integrate the dimension of time into their analyses. **TEfits** may be unstable with poorly-behaved data, and using the option to bootstrap models is generally the best option for assessing the robustness of fits. In addition, running the same fitting code multiple times and comparing fit models should provide useful checks. All of these things take time, and **TEfits** is not built for speed; please be patient.
+**TEfits** comes with no guarantee of performance. Nonlinear regression can be very sensitive to small changes in parameterization, optimization starting values, etc. No universal out-of-the box implementation exists, and **TEfits** is simply an attempt to create an easy-to-use and robust framework for behavioral researchers to integrate the dimension of time into their analyses. **TEfits** may be unstable with poorly-behaved data, and using the option to bootstrap models or use Bayesian sampling, and run slight variations to test for robustness, is generally the best option for assessing fits. In addition, running the same fitting code multiple times and comparing fit models should provide useful checks. All of these things take time, and **TEfits** is not built for speed; please be patient.
 
 # Community guidelines
 
