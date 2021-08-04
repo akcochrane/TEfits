@@ -99,11 +99,12 @@ m1 <- TEbrm(
 prior_summary(m1)
 summary(m1)
 conditional_effects(m1)
+hypothesis(m1,'pAsym_Intercept > pStart_Intercept') #> Test for learning, i.e., whether asymptote was reliably higher than start. With this limited data, that difference is not reliable
 
 #-- #-- Example 02: Random effects
-#> using the tef_change_expo3 function to construct the model formula, with random effects
+#> using the tef_change_expo3 function to construct the model formula, with priors, and fixed and random effects
 m2 <- TEbrm(
-  acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
+  acc ~ tef_change_expo3('trialNum',parForm = ~ sizeRat + (1|subID))
   ,data = anstrain
   ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')   #> for demonstration, also include non-default priors
 )
@@ -130,19 +131,19 @@ m4 <- TEbrm(
   ,data = anstrain
 )
 
-summary(m4) # note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
-conditional_effects(m4, 'ratio:trialNum') # The psychometric function steepens with learning
-cat(attr(m4$right_hand_side,'link_explanation')) # An explanation of the link function is included
+summary(m4) #> note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
+conditional_effects(m4, 'ratio:trialNum') #> The psychometric function steepens with learning; see ?brms::conditional_effects
+cat(attr(m4$right_hand_side,'link_explanation')) #> An explanation of the link function is included
 
 #-- #-- Example 05: Weibull PF
 #> Model change in a Weibull psychometric function's threshold
 #> > (learning is change in the absolute stimulus strength at which accuracy is 75\%)
-d_temp <- anstrain_s1   #> make temporary data
-d_temp$absRat <- abs(d_temp$ratio)   #> calculate absolute stimulus strength
+d_tmp <- anstrain_s1   #> make temporary data
+d_tmp$absRat <- abs(d_tmp$ratio)   #> calculate absolute stimulus strength
 m5 <- TEbrm(
   acc ~ tef_link_weibull(
     tef_change_expo3('trialNum'),linkX = 'absRat')
-  ,data = d_temp
+  ,data = d_tmp
 )
 
 #-- #-- Example 06: d prime
@@ -155,9 +156,11 @@ m6 <- TEbrm(
 )
 
 #-- #-- Example 07: Power change
-#> Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change
+#> Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change.
+#> > Also, include a covariate for learning rate.
 m7 <- TEbrm(
-  acc ~ tef_change_power3('trialNum')
+  acc ~ tef_change_power3('trialNum'
+      ,rateForm = ~ sizeRat)
   ,data = anstrain_s1
 )
 
@@ -196,6 +199,16 @@ m10_final <- update(
  ,iter = 4000
  ,chains=4
 )
+
+#-- #-- Example 11: Generalized Additive Models
+#> Fit a generalized additive mixed-effects model with accuracy varying by time.
+m11 <- TEbrm(acc ~ tef_change_gam('trialNum', groupingVar = 'subID')
+,data = anstrain)
+
+#-- #-- Example 12: Using a variational algorithm rather than full sampling
+m12 <- TEbrm(acc ~ tef_change_expo3('trialNum')
+,algorithm = 'fullrank'
+,data = anstrain_s1)
 
 }
 }

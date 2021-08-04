@@ -83,11 +83,12 @@
 #' prior_summary(m1)
 #' summary(m1)
 #' conditional_effects(m1)
+#' hypothesis(m1,'pAsym_Intercept > pStart_Intercept') #> Test for learning, i.e., whether asymptote was reliably higher than start. With this limited data, that difference is not reliable
 #'
 #' #-- #-- Example 02: Random effects
-#' #> using the tef_change_expo3 function to construct the model formula, with random effects
+#' #> using the tef_change_expo3 function to construct the model formula, with priors, and fixed and random effects
 #' m2 <- TEbrm(
-#'   acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
+#'   acc ~ tef_change_expo3('trialNum',parForm = ~ sizeRat + (1|subID))
 #'   ,data = anstrain
 #'   ,priorIn = prior(normal(.5,.5),nlpar='pAsym') + prior(normal(.5,.5),nlpar='pStart')   #> for demonstration, also include non-default priors
 #' )
@@ -114,19 +115,19 @@
 #'   ,data = anstrain
 #' )
 #'
-#' summary(m4) # note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
-#' conditional_effects(m4, 'ratio:trialNum') # The psychometric function steepens with learning
-#' cat(attr(m4$right_hand_side,'link_explanation')) # An explanation of the link function is included
+#' summary(m4) #> note the `exp` inverse link function on pStartXform and pAsymXform(i.e., log link for threshold values)
+#' conditional_effects(m4, 'ratio:trialNum') #> The psychometric function steepens with learning; see ?brms::conditional_effects
+#' cat(attr(m4$right_hand_side,'link_explanation')) #> An explanation of the link function is included
 #'
 #' #-- #-- Example 05: Weibull PF
 #' #> Model change in a Weibull psychometric function's threshold
 #' #> > (learning is change in the absolute stimulus strength at which accuracy is 75%)
-#' d_temp <- anstrain_s1   #> make temporary data
-#' d_temp$absRat <- abs(d_temp$ratio)   #> calculate absolute stimulus strength
+#' d_tmp <- anstrain_s1   #> make temporary data
+#' d_tmp$absRat <- abs(d_tmp$ratio)   #> calculate absolute stimulus strength
 #' m5 <- TEbrm(
 #'   acc ~ tef_link_weibull(
 #'     tef_change_expo3('trialNum'),linkX = 'absRat')
-#'   ,data = d_temp
+#'   ,data = d_tmp
 #' )
 #'
 #' #-- #-- Example 06: d prime
@@ -139,9 +140,11 @@
 #' )
 #'
 #'#-- #-- Example 07: Power change
-#' #> Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change
+#' #> Rather than a 3-parameter exponential function of change, use a 3-parameter power function of change.
+#' #> > Also, include a covariate for learning rate.
 #' m7 <- TEbrm(
-#'   acc ~ tef_change_power3('trialNum')
+#'   acc ~ tef_change_power3('trialNum'
+#'       ,rateForm = ~ sizeRat)
 #'   ,data = anstrain_s1
 #' )
 #'
@@ -181,6 +184,16 @@
 #'  ,chains=4
 #' )
 #'
+#' #-- #-- Example 11: Generalized Additive Models
+#' #> Fit a generalized additive mixed-effects model with accuracy varying by time.
+#' m11 <- TEbrm(acc ~ tef_change_gam('trialNum', groupingVar = 'subID')
+#' ,data = anstrain)
+#'
+#' #-- #-- Example 12: Using a variational algorithm rather than full sampling
+#' m12 <- TEbrm(acc ~ tef_change_expo3('trialNum')
+#' ,algorithm = 'fullrank'
+#' ,data = anstrain_s1)
+#'
 #' }
 TEbrm <- function(
   formula
@@ -197,6 +210,8 @@ TEbrm <- function(
   dataIn <- data ; rm(data)
 
   ##ISSUE## should match.call() or something, to get the original call and include it in the output (and TEfits version, etc.)
+
+  ##ISSUE## re-work the NOTE to ensure conformity with the current prior method
 
   require(brms)
 
@@ -225,6 +240,9 @@ TEbrm <- function(
 
     ## Add the rest of the formula (dataIn and LHS)
     attr(rhs_form,'lhs')  <- as.character(formIn[[2]])
+    if(length(formIn[[2]]) == 3){ # for multi-part right-hand-sides
+      attr(rhs_form,'lhs')  <-  paste0(formIn[[2]][2],formIn[[2]][1],formIn[[2]][3],collapse='')
+    }
 
     ##ISSUE## it would be nice to have the brm model say the data "name" is the same as the input, rather than the attr(..etc). Would this take a match.call() or something?
     attr(rhs_form,'data') <- dataIn ; rm(dataIn)   }
@@ -241,8 +259,21 @@ TEbrm <- function(
   ##ISSUE## Need to make this play nicely with the tef_control_list
   ##ISSUE## make sure that adding another prior overwrites it, and doesn't break it
   ##ISSUE## Split the prior definition into a different function for less ugliness and disorganization
-  ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best...
+  ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best.
 
+
+  if(attr(rhs,'changeFun') == 'GAM'){
+    bForm <- brmsformula(paste(
+      attr(rhs_form,'lhs')
+      ,'~'
+      , rhs_form
+    )
+    )
+
+    if(length(priorIn) > 0){bPrior <- priorIn}else{bPrior <- NULL}
+
+
+  }else{
   rate_prior_scale <- round(log(midTime,base=tef_control_list$rateBase)/3,3) ## use this to control it; refer to maxTime-minTime) instead probably
   bPrior <- set_prior(paste0('normal(0,'
                              ,rate_prior_scale,')')
@@ -321,6 +352,7 @@ TEbrm <- function(
 
   if(!is.null(attr(rhs,'constantPar_prior'))){
     bPrior <- bPrior + attr(rhs,'constantPar_prior')
+  }
   }
 
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}

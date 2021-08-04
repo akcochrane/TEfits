@@ -43,7 +43,8 @@ A \code{TEfit} S3 object including:
 }
 }
 \description{
-This is the primary function for the \code{TEfits} package. Fits a
+This is the primary function for the \code{TEfits} package (but see \code{\link{TEbrm}} for
+a more powerful approach). Fits a
 time-evolving regression model. Many options are available for
 various error functions, functional forms of change,
 nested timescales, bootstrapping/subsampling/cross-validation, and so on.
