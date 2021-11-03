@@ -373,6 +373,13 @@ TEbrm <- function(
     }
   }
 
+  ##ISSUE## should not have this hardcoding in this function
+  if(attr(rhs,'changeFun') == 'power_4par' && !all(bPrior$nlpar == 'pPrevTime')){
+    bPrior <- bPrior +
+      prior(normal(0,2),nlpar = 'pPrevTime') +
+      prior(normal(4,2),nlpar = 'pPrevTime',coef = 'Intercept')
+  }
+
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}
   # if(exists('prior')){bPrior <- prior} ##ISSUE## make sure this works under various conditions.
 
@@ -398,19 +405,4 @@ TEbrm <- function(
   modOut$right_hand_side <- rhs
 
   return(modOut)
-
-  if(F){ # for testing ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-
-    library(TEfits)
-    formIn <- acc ~ tef_change_expo3('trialNum')
-
-    m1 <- TEbrm(
-      acc ~ tef_change_expo3('trialNum',parForm = ~ (1|subID))
-      ,dataIn = anstrain
-      ,link_start_asym = 'inv_logit'
-      ,family=bernoulli(link='identity')
-    )
-
-  }
-
 }
