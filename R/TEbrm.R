@@ -213,6 +213,8 @@ TEbrm <- function(
 
   ##ISSUE## re-work the NOTE to ensure conformity with the current prior method
 
+  ##ISSUE## it seems that some versions of brms need priors for power4 prevTime, while others don't
+
   require(brms)
 
   ## ## Get RHS of formula
@@ -236,13 +238,15 @@ TEbrm <- function(
                        ,logMedTime
                        ,rhs_form
       )
+      rhs_form <- strsplit(rhs_form,', parameter_',fixed=T)
     },error = function(error){stop('\nInput formula is not formatted properly or data is missing.')})
 
     ## Add the rest of the formula (dataIn and LHS)
     attr(rhs_form,'lhs')  <- as.character(formIn[[2]])
-    if(length(formIn[[2]]) == 3){ # for multi-part right-hand-sides
+    if(length(formIn[[2]]) == 3){ # for multi-part left-hand-sides
       attr(rhs_form,'lhs')  <-  paste0(formIn[[2]][2],formIn[[2]][1],formIn[[2]][3],collapse='')
     }
+
 
     ##ISSUE## it would be nice to have the brm model say the data "name" is the same as the input, rather than the attr(..etc). Would this take a match.call() or something?
     attr(rhs_form,'data') <- dataIn ; rm(dataIn)   }
@@ -261,98 +265,112 @@ TEbrm <- function(
   ##ISSUE## Split the prior definition into a different function for less ugliness and disorganization
   ##ISsuE## there's the classic problem of the nlpar intercept being non-zero-centered, while its covariates should have zero-centered priors. There are a couple routes forward... just having zero centered everything will bias results toward "instant" learning and nonsense starts... could add a median-time-var constant to the rate? That gets weirdly ad hoc, and then would require even more explanation. But might be the best.
 
+  # cat(paste(
+  #   attr(rhs_form,'lhs')
+  #   ,'~'
+  #   , rhs_form[[1]][1] # Need to ensure compatibility with thresholds!
+  # ))
 
   if(attr(rhs,'changeFun') == 'GAM'){
     bForm <- brmsformula(paste(
       attr(rhs_form,'lhs')
       ,'~'
-      , rhs_form
+      , rhs_form[[1]][1] # Need to ensure compatibility with thresholds!
     )
     )
+
 
     if(length(priorIn) > 0){bPrior <- priorIn}else{bPrior <- NULL}
 
 
   }else{
-  rate_prior_scale <- round(log(midTime,base=tef_control_list$rateBase)/3,3) ## use this to control it; refer to maxTime-minTime) instead probably
-  bPrior <- set_prior(paste0('normal(0,'
-                             ,rate_prior_scale,')')
-                      ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
-  )
-  bPrior <- bPrior + set_prior(paste0('normal(',logMedTime,','
-                             ,rate_prior_scale,')')
-                      ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
-                      ,coef = 'Intercept'
+    rate_prior_scale <- round(log(midTime,base=tef_control_list$rateBase)/3,3) ## use this to control it; refer to maxTime-minTime) instead probably
+    bPrior <- set_prior(paste0('normal(0,'
+                               ,rate_prior_scale,')')
+                        ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
+    )
+    bPrior <- bPrior + set_prior(paste0('normal(',logMedTime,','
+                                        ,rate_prior_scale,')')
+                                 ,nlpar = names(attr(rhs,'parForm'))[grep('rate',tolower(names(attr(rhs,'parForm'))))][1]
+                                 ,coef = 'Intercept'
 
-                      # ,ub = round(log((maxTime-minTime)*2,base=tef_control_list$rateBase),3) ##ISSUE## re-implement this, from the centered pars. Working around the "bounds can't be assigned with coefs" issue
-                      # ,lb = round(log(
-                      #   ((maxTime-minTime)/nrow(attr(rhs_form,'data')))*2
-                      #   ,base=tef_control_list$expBase),3)
+                                 # ,ub = round(log((maxTime-minTime)*2,base=tef_control_list$rateBase),3) ##ISSUE## re-implement this, from the centered pars. Working around the "bounds can't be assigned with coefs" issue
+                                 # ,lb = round(log(
+                                 #   ((maxTime-minTime)/nrow(attr(rhs_form,'data')))*2
+                                 #   ,base=tef_control_list$expBase),3)
 
-  )
+    )
 
-  ## ## Put it together into a formula ((THINK ABOUT SPLITTING THIS INTO PF AND CHANGE))
-  ##ISSUE## Yes, need to split into PF and change
-  bForm <- brmsformula(paste(
-    attr(rhs_form,'lhs')
-    ,'~'
-    , rhs_form
-  )
-  ,nl=T)
+    ## ## Put it together into a formula ((THINK ABOUT SPLITTING THIS INTO PF AND CHANGE))
+    ##ISSUE## Yes, need to split into PF and change
 
-  if(link_start_asym == 'identity'){transformed <- ''}else{transformed <- 'Xform'}
 
-  for(curPar in names(attr(rhs,'parForm'))){
-    if(!is.numeric( attr(rhs,'parForm')[[curPar]] )){ # # don't do this stuff if the parameter was given as a constant
-      # define the parameter formula
-      bForm <- bForm + lf(formula = paste0(
-        curPar
-        ,paste(attr(rhs,'parForm')[[curPar]],collapse='')
-      ))
-      # if there is a link function, overwrite the start and asymptote parameter formulas
-      suppressMessages({
-        if( any(grep('start',tolower(curPar))) || any(grep('asym',tolower(curPar)) ) ){
-          if(transformed == 'Xform'){
-            bForm <- bForm + nlf(formula = paste0(
-              curPar
-              ,' ~ '
-              ,link_start_asym,'('
-              ,curPar,transformed
-              ,')'
-            ))
-            bForm <- bForm + lf(formula = paste0(
-              curPar,transformed
-              ,paste(attr(rhs,'parForm')[[curPar]],collapse='')
-            ))
-            if(length(priorIn) == 0){
-              bPrior <- bPrior + set_prior('normal(0,3)', nlpar = paste0(curPar,transformed), coef = 'Intercept')}
-          }else{
-            if(length(priorIn) == 0){
-              # bPrior <- bPrior + set_prior(paste0('normal('
-              #                                     ,0
-              #                                     ,','
-              #                                     ,signif(sd(attr(rhs_form,'data')[,attr(rhs_form,'lhs')],na.rm=T)*2,4)
-              #                                     ,')')
-              #                              , nlpar = paste0(curPar,transformed))
 
-              bPrior <- bPrior + set_prior(paste0('normal('
-                                                  ,signif(mean(attr(rhs_form,'data')[,attr(rhs_form,'lhs')],na.rm=T),4)
-                                                  ,','
-                                                  ,signif(sd(attr(rhs_form,'data')[,attr(rhs_form,'lhs')],na.rm=T)*2,4)
-                                                  ,')')
-                                           ,coef = 'Intercept'
-                                           , nlpar = paste0(curPar,transformed))
-            }
-          }
-
-        }
-      })
+    bForm <- brmsformula(paste(
+      attr(rhs_form,'lhs')
+      ,'~'
+      , rhs_form[[1]][1]
+    )
+    ,nl=T)
+    if(length(rhs_form[[1]])>1){
+      for(curComponent in 2:length(rhs_form[[1]])){
+        bForm <- bForm + nlf(rhs_form[[1]][curComponent])
+      }
     }
-  }
 
-  if(!is.null(attr(rhs,'constantPar_prior'))){
-    bPrior <- bPrior + attr(rhs,'constantPar_prior')
-  }
+    if(link_start_asym == 'identity'){transformed <- ''}else{transformed <- 'Xform'}
+
+    for(curPar in names(attr(rhs,'parForm'))){
+      if(!is.numeric( attr(rhs,'parForm')[[curPar]] )){ # # don't do this stuff if the parameter was given as a constant
+        # define the parameter formula
+        bForm <- bForm + lf(formula = paste0(
+          curPar
+          ,paste(attr(rhs,'parForm')[[curPar]],collapse='')
+        ))
+        # if there is a link function, overwrite the start and asymptote parameter formulas
+        suppressMessages({
+          if( any(grep('start',tolower(curPar))) || any(grep('asym',tolower(curPar)) ) ){
+            if(transformed == 'Xform'){
+              bForm <- bForm + nlf(formula = paste0(
+                curPar
+                ,' ~ '
+                ,link_start_asym,'('
+                ,curPar,transformed
+                ,')'
+              ))
+              bForm <- bForm + lf(formula = paste0(
+                curPar,transformed
+                ,paste(attr(rhs,'parForm')[[curPar]],collapse='')
+              ))
+              if(length(priorIn) == 0){
+                bPrior <- bPrior + set_prior('normal(0,3)', nlpar = paste0(curPar,transformed), coef = 'Intercept')}
+            }else{
+              if(length(priorIn) == 0){
+                # bPrior <- bPrior + set_prior(paste0('normal('
+                #                                     ,0
+                #                                     ,','
+                #                                     ,signif(sd(attr(rhs_form,'data')[,attr(rhs_form,'lhs')],na.rm=T)*2,4)
+                #                                     ,')')
+                #                              , nlpar = paste0(curPar,transformed))
+
+                bPrior <- bPrior + set_prior(paste0('normal('
+                                                    ,signif(mean(attr(rhs_form,'data')[,attr(rhs_form,'lhs')],na.rm=T),4)
+                                                    ,','
+                                                    ,signif(sd(attr(rhs_form,'data')[,attr(rhs_form,'lhs')],na.rm=T)*2,4)
+                                                    ,')')
+                                             ,coef = 'Intercept'
+                                             , nlpar = paste0(curPar,transformed))
+              }
+            }
+
+          }
+        })
+      }
+    }
+
+    if(!is.null(attr(rhs,'constantPar_prior'))){
+      bPrior <- bPrior + attr(rhs,'constantPar_prior')
+    }
   }
 
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}

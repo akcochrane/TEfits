@@ -61,8 +61,8 @@ tef_link_logistic <- function(changeForm,
 
       ## formula for TEbrm
       attr(rhs,'formula') <- paste0(lapseRate,' + (1-2*',lapseRate,')/(1+',threshBase,'^(((',
-                                    'bias)-',linkX,')/(',
-                                    attr(changeStr,'formula'),')))'
+                                    'bias)-',linkX,')/threshold)), parameter_threshold ~ ',
+                                    attr(changeStr,'formula')
       )
 
     } # collapse the attributes for the thresh

@@ -67,9 +67,8 @@ tef_link_weibull <- function(changeForm,
       ## formula for TEbrm
       attr(rhs,'formula') <- paste0(
              yIntercept,'+((',rhAsymptote,'-',yIntercept,')-',lapseRate,')*(1-',
-             expBase,'^(-(',linkX,'/(',
-             attr(changeStr,'formula'),'))^(',
-             expBase,'^shape)))'
+             expBase,'^(-(',linkX,'/threshold)^(',
+             expBase,'^shape))) , parameter_threshold ~ ',attr(changeStr,'formula')
 
       )
 

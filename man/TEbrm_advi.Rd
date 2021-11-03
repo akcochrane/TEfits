@@ -53,7 +53,7 @@ conditional_effects(m)
 ## Use in the context of TEfits
 m1 <- TEbrm(
 acc ~ tef_change_expo3('trialNum')
-,dataIn = anstrain_s1,
+,data = anstrain_s1,
 ,algorithm = 'meanfield'
 )
 

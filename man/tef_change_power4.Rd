@@ -43,7 +43,7 @@ Function is \strong{under development}
 and is likely to be buggy, and to change frequently.
 }
 \examples{
-equation_to_fit <- tef_change_power4('timeVar',parForm = ~ xvar1*xvar2) # both variables should be numeric for TEfit methods! TEbrm should work with factorsas well
+equation_to_fit <- tef_change_power4('timeVar',parForm = ~ xvar1*xvar2) # both variables should be numeric for TEfit methods! TEbrm should work with factors as well
 }
 \seealso{
 \code{\link{TEbrm}} for examples of how to use this function in specifying models.
