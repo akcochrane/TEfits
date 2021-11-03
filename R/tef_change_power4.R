@@ -23,7 +23,7 @@
 #' @export
 #'
 #' @examples
-#' equation_to_fit <- tef_change_power4('timeVar',parForm = ~ xvar1*xvar2) # both variables should be numeric for TEfit methods! TEbrm should work with factorsas well
+#' equation_to_fit <- tef_change_power4('timeVar',parForm = ~ xvar1*xvar2) # both variables should be numeric for TEfit methods! TEbrm should work with factors as well
 
 tef_change_power4 <- function(timeVar
                               ,parForm = ~ 1

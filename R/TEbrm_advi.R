@@ -38,7 +38,7 @@
 #' ## Use in the context of TEfits
 #' m1 <- TEbrm(
 #' acc ~ tef_change_expo3('trialNum')
-#' ,dataIn = anstrain_s1,
+#' ,data = anstrain_s1,
 #' ,algorithm = 'meanfield'
 #' )
 #'
@@ -55,11 +55,13 @@ TEbrm_advi <- function(formIn,
     compDF <- data.frame()
 
     for(curMod1 in 1:length(mlist)){
+      m1fix <- fixef(mlist[[curMod1]])
       for(curMod2 in 2:length(mlist)){
         if(curMod2 > curMod1){
+          m2fix <- fixef(mlist[[curMod2]])
 
-          curMaxD <- max(abs((fixef(mlist[[curMod1]])[,'Estimate'] - fixef(mlist[[curMod2]])[,'Estimate'])/
-                               ((fixef(mlist[[curMod1]])[,'Est.Error'] + fixef(mlist[[curMod2]])[,'Est.Error'])/2)))
+          curMaxD <- max(abs((m1fix[,'Estimate'] - m2fix[,'Estimate'])/
+                               ((m1fix[,'Est.Error'] + m2fix[,'Est.Error'])/2)))
 
           compDF <- rbind(compDF,
                           data.frame(mod1 = curMod1
@@ -101,8 +103,9 @@ TEbrm_advi <- function(formIn,
                         ,refresh = 0
                         ,algorithm = algorithm)
           if(!quiet){ cat('Fitting the model...\n[') }
-        }else{
-          tmpMod <- update(tmpMod
+        }
+
+        m_fr[[length(m_fr) + 1]] <- update(tmpMod
                            ,grad_samples = 3
                            , output_samples = 2000
                            ,elbo_samples = 500
@@ -111,11 +114,11 @@ TEbrm_advi <- function(formIn,
                            ,silent = T
                            ,refresh = 0
           )
-        }
 
-        tmpMod <- add_criterion(tmpMod, 'bayes_R2')
-        m_fr[[length(m_fr) + 1]] <- tmpMod
-        m_fr_r2[length(m_fr_r2) + 1] <- mean(tmpMod$criteria$bayes_R2)
+
+        m_fr[[length(m_fr)]] <- add_criterion(m_fr[[length(m_fr)]], 'bayes_R2')
+
+        m_fr_r2[length(m_fr_r2) + 1] <- mean(m_fr[[length(m_fr)]]$criteria$bayes_R2)
 
       })})
         Sys.sleep(.5)
