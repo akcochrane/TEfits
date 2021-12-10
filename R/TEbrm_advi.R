@@ -86,15 +86,12 @@ TEbrm_advi <- function(formIn,
     while(length(m_fr) < 2 && tryNum < maxTries){
       try({suppressMessages({suppressWarnings({
 
-       # The rewriting of tmpMod is likely causing crashes; should be writing to a "fresh" object instead
-
         if(is.null(tmpMod)){
           tmpMod <- brm(formIn,
                         data = dataIn
-                        , iter = 10000
+                        , iter = 500
                         , ...
                         ,grad_samples = 3
-                        ,init_r = .02
                         , output_samples = 2000
                         ,elbo_samples = 500 # X samples to get ELBO
                         ,eval_elbo = 50 # Every X iterations
@@ -106,14 +103,15 @@ TEbrm_advi <- function(formIn,
         }
 
         m_fr[[length(m_fr) + 1]] <- update(tmpMod
-                           ,grad_samples = 3
-                           , output_samples = 2000
-                           ,elbo_samples = 500
-                           ,eval_elbo = 50
-                           ,adapt_iter = 200
-                           ,silent = T
-                           ,refresh = 0
-          )
+                                           ,grad_samples = 3
+                                           ,iter = 5000
+                                           , output_samples = 2000
+                                           ,elbo_samples = 500
+                                           ,eval_elbo = 50
+                                           ,adapt_iter = 200
+                                           ,silent = T
+                                           ,refresh = 0
+        )
 
 
         m_fr[[length(m_fr)]] <- add_criterion(m_fr[[length(m_fr)]], 'bayes_R2')
@@ -121,7 +119,7 @@ TEbrm_advi <- function(formIn,
         m_fr_r2[length(m_fr_r2) + 1] <- mean(m_fr[[length(m_fr)]]$criteria$bayes_R2)
 
       })})
-        Sys.sleep(.5)
+        Sys.sleep(.25)
 
       },silent=T)
       tryNum <- tryNum + 1
@@ -143,8 +141,8 @@ TEbrm_advi <- function(formIn,
   if(max_mod_diff_d == 1E3){stop('Something went wrong. Please check your data and model specification.')}
 
   suppressMessages({
-  mod1 <- add_criterion( modList[[compDF$mod1]] , 'kfold', seed=T)
-  mod2 <- add_criterion( modList[[compDF$mod2]] , 'kfold', seed=T)
+    mod1 <- add_criterion( modList[[compDF$mod1]] , 'kfold', seed=T)
+    mod2 <- add_criterion( modList[[compDF$mod2]] , 'kfold', seed=T)
   })
 
   if(!quiet){ cat(']')}
@@ -155,9 +153,9 @@ TEbrm_advi <- function(formIn,
 
   if(
     mod1$criteria$kfold$estimates['elpd_kfold','Estimate']
-     >
+    >
     mod2$criteria$kfold$estimates['elpd_kfold','Estimate']
-     ){
+  ){
     return(mod1)
   }else{
     return(mod2)}

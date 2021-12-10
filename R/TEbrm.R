@@ -374,7 +374,7 @@ TEbrm <- function(
   }
 
   ##ISSUE## should not have this hardcoding in this function
-  if(attr(rhs,'changeFun') == 'power_4par' && !all(bPrior$nlpar == 'pPrevTime')){
+  if(attr(rhs,'changeFun') == 'power_4par' && all(bPrior$nlpar != 'pPrevTime')){
     bPrior <- bPrior +
       prior(normal(0,2),nlpar = 'pPrevTime') +
       prior(normal(4,2),nlpar = 'pPrevTime',coef = 'Intercept')
@@ -382,6 +382,7 @@ TEbrm <- function(
 
   if(length(priorIn) > 0){bPrior <- bPrior + priorIn}
   # if(exists('prior')){bPrior <- prior} ##ISSUE## make sure this works under various conditions.
+  # for example, if there is already some combination of coef, dpar, and nlpar, then that should be replaced rather than appended
 
   if(algorithm == 'sampling'){
     modOut <- brm(bForm
