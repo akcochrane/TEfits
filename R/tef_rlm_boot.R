@@ -42,6 +42,10 @@
 #'
 tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
 
+  # to do:
+  # - see line 146, regarding drsq_oos central tendency calculation
+  # - get an overall model rsq_oos
+
   if(!is.numeric(nBoot)){cat('Your number of bootstraps must be numeric.')}
   if(nBoot<2){(cat('Your number of bootstraps must be positive'))}
   nBoot <- round(nBoot)
@@ -74,7 +78,7 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
     colnames(m$boots) <- names(m$coefficients)
     comment(m$boots) <- paste('Parameter estimates from',nBoot,
                               'MASS::rlm fits to data resampled with replacement.')
-    m$bootQs <-apply(na.omit(data.frame(t(m$boots))),1,quantile,probs=c(.025,.25,.5,.75,.975))
+    m$bootQs <-apply(na.omit(data.frame(t(m$boots))),1,tef_quantileBoot,probs=c(.025,.25,.5,.75,.975),nBoot = 200)
   }
   # # # #
   ## out-of-sample delta R squared:
@@ -117,8 +121,9 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
                              'Fits using all predictors were compared to fits dropping',
                              'each predictor in turn. Out-of-sample delta R-squared was',
                              'calculated on each remaining 20% of data by comparing',
-                             'full parameter set fits to drop-one parameter set fits.')
-    m$dRsqQs <-apply(na.omit(data.frame(t(m$dRsq))),1,quantile,probs=c(.025,.25,.5,.75,.975))
+                             'full parameter set fits to drop-one parameter set fits.',
+                             'Quantiles were calculated with the function tef_quantileBoot().')
+    m$dRsqQs <-apply(na.omit(data.frame(t(m$dRsq))),1,tef_quantileBoot,probs=c(.025,.25,.5,.75,.975),nBoot = 200)
   }
   ## ## ##
   # # # #
@@ -141,7 +146,10 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
     outDF$dRsq_oos[1] <- NA
     for(curCoef in colnames(m$dRsqQs)){
     if(any(rownames(outDF)==curCoef)){
-    outDF[curCoef,'dRsq_oos'] <- round(m$dRsqQs['50%',curCoef],4)}}
+
+      outDF[curCoef,'dRsq_oos'] <- round(m$dRsqQs['50%',curCoef],4)}}
+    # # # better, but needs testing:
+    # apply(na.omit(data.frame(t(m$dRsq))),1,mean,trim = .49)
 
     comment(outDF) <- paste('Summary of rlm_boot. The first 3 columns are from the standard rlm fit.',
                             'ci025 and ci975 are the 2.5% and 97.5% quantiles of parameter estimates to bootstrapped fits.',
