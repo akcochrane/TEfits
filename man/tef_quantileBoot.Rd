@@ -23,7 +23,7 @@ for each resample, and returns the trimmed average of the resampled quantiles.
 See \code{\link[stats]{quantile}}.
 }
 \details{
-Returns the mean of the middle 5% of the resamples for each quantile (i.e., \code{mean(quantile_i,trim = .475)}). In
+Returns the mean of the middle 5 percent of the resamples for each quantile (i.e., \code{mean(quantile_i,trim = .475)}). In
 practice this means that the median will be returned if the number of resamples is small enough, and
 that the default number of 1000 resamples will use the middle 50 resamples to compute the mean.
 }
