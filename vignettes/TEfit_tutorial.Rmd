@@ -18,11 +18,11 @@ knitr::opts_chunk$set(
 library(TEfits)
 ```
 
-# Example: Memory span
+# Example of time-evolving data: Memory span
 
-One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). The task is novel to them and difficult, and it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
+One context in which a time-evolving model would be fit is within cognitive psychology. For instance, within a test of working memory span, participants may complete a set of trials (e.g., 80) each with some set size (e.g., memory load of 6 items). The task is novel and difficult, and it is possible that they are learning within the task. This would manifest as an increase in accuracy with increasing trial number.
 
-As a rough simulation of one participants' data, we will generate by-trial accuracies that exponentially increases from a starting point accuracy of .4 to an asymptotic accuracy of .9.
+As a rough simulation of one participants' data, we will generate by-trial accuracies that exponentially increase from a starting point accuracy of .4 to an asymptotic accuracy of .9.
 
 ```{r simulate_data}
 set.seed(111)
