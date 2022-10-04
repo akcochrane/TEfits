@@ -30,9 +30,7 @@ residuals.TEfit <- function(modelIn,toPlot=F){
                    round(modelIn$modell$conditional_independence$modelConditionalSpearman,3)))
     par(mfrow=c(1,1))
   }else{
-
   return(modelResids)
-
   }
 
 }
