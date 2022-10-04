@@ -65,7 +65,7 @@ a very long time to run. The primary purpose of this function is to allow for by
 detrending of time-related changes in data (i.e., to estimate and test fixed effects at asymptotic time,
 or to estimate and test the magnitude of time-related effects).
 If reliable by-\code{groupingVar} parameters are desired, it is highly recommended to use
-\code{\link{TEfit}} or \code{\link{TEfitAll}}.
+\code{\link{TEbrm}}.
 
 The \code{formIn} must include a random effect of \code{timeVar} by \code{groupingVar}
 (e.g., \code{(time_variable | grouping_variable)}).
