@@ -37,31 +37,37 @@ time_basisFun_mem(
 }
 \description{
 Given a typical [generalized] mixed-effects model, augment this model
-using a random-effects structure including basis functions constructed 
+using a random-effects structure including basis functions constructed
 from a vector of times (e..g, trial numbers).
-This allows for simultaneously controlling for time-related variations, and for 
+This allows for simultaneously controlling for time-related variations, and for
 recovery of those variations from the fitted model.
 }
 \details{
-Various fitting functions (\code{backends}) can be used, such as 
-\code{\link[lme4]{lmer}}, \code{\link[lme4]{glmer}}, and \code{\link[brms]{brm}}. 
+Various fitting functions (\code{backends}) can be used, such as
+\code{\link[lme4]{lmer}}, \code{\link[lme4]{glmer}}, and \code{\link[brms]{brm}}.
 These require that their respective packages and dependencies be installed.
 
-In the case that out-of-sample likelihoods are desired, see 
+In the case that out-of-sample likelihoods are desired, see
 `attr(modelObject,'delta_logLik_outOfSample_description')` for a description and
-`attr(mod,'delta_logLik_outOfSample')` for the vector of out-of-sample delta-log-likelihoods. 
-Out-of-sample log-likelihoods are calculated as an difference from the pointwise in-sample 
+`attr(mod,'delta_logLik_outOfSample')` for the vector of out-of-sample delta-log-likelihoods.
+Out-of-sample log-likelihoods are calculated as an difference from the pointwise in-sample
 likelihood from a static fit (i.e., a model fit with only \code{formula_mem} and no bases).
-This provides a uniform baseline pointwise in-sample likelihood against which various 
+This provides a uniform baseline pointwise in-sample likelihood against which various
 models (e.g., with different basis densities) can be compared.
 }
 \examples{
+
+library(lme4)
+
+## generate data
  d <- data.frame(
      subID = rep(c('A','B','C'),each=200)
    , x = rbinom(600,1,.5)
    , sinOffset = sin((1:600)/10) # one possible kind of change: oscillation without trend
    , trialNum = rep(1:200, 3)
 ) ; d$y <- rnorm(600) + d$x + d$sinOffset
+
+## fit a model with default basis widths
 m1 <- time_basisFun_mem(
    y ~ x + (x|subID)
    ,d
@@ -72,14 +78,14 @@ m1 <- time_basisFun_mem(
 ## overall model summary:
 summary(m1)
 
-## extract the fitted timecourse:
+## extract the fitted timecourse (using `lme4` because this is an `lmer` model):
 m1_fitted_timeCourse <- predict(m1,random.only=T
    ,re.form = as.formula(paste('~',gsub('x + (x | subID) + ','',as.character(formula(m1))[3],fixed=T)) ) )
 plot(d$trialNum,m1_fitted_timeCourse)
 ## it doesn't look very good, because the default basis function width is fairly wide to prevent overfitting
-#
+
 ## let's compare two models' out-of-sample likelihoods and choose the best
-#
+
 ## The default, conservative, size (see m1)
 m2 <- time_basisFun_mem(
    y ~ x + (x|subID)
@@ -89,7 +95,7 @@ m2 <- time_basisFun_mem(
    ,basisDens = 66
    ,n_oos = 50
 )
-#
+
 ## A less-dense set of bases, every 20 trials
 m3 <- time_basisFun_mem(
    y ~ x + (x|subID)
@@ -99,13 +105,14 @@ m3 <- time_basisFun_mem(
    ,basisDens = 20
    ,n_oos = 50
 )
-#
-## approximate Cohen's D:
+## This takes noticeably longer to run
+
+## approximate Cohen's D of the out-of-sample log-likelihoods for m3 over m2:
 (mean(attr(m3,'delta_logLik_outOfSample')) - mean(attr(m2,'delta_logLik_outOfSample')) )/
    sd(c(attr(m3,'delta_logLik_outOfSample'),attr(m2,'delta_logLik_outOfSample')))
 ## Clearly m3's out-of-sample predictiveness is better than m2's
 ## What about its fitted timecourse?
-#
+
 m3_fitted_timeCourse <- predict(m3,random.only=T
    ,re.form = as.formula(paste('~',gsub('x + (x | subID) + ','',as.character(formula(m3))[3],fixed=T)) ) )
 plot(d$trialNum,m3_fitted_timeCourse)
