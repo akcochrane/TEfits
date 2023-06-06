@@ -78,7 +78,7 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
     colnames(m$boots) <- names(m$coefficients)
     comment(m$boots) <- paste('Parameter estimates from',nBoot,
                               'MASS::rlm fits to data resampled with replacement.')
-    m$bootQs <-apply(na.omit(data.frame(t(m$boots))),1,tef_quantileBoot,probs=c(.025,.25,.5,.75,.975),nBoot = 200)
+    m$bootQs <-apply(na.omit(data.frame(t(m$boots))),1,quantile,probs=c(.025,.25,.5,.75,.975))
   }
   # # # #
   ## out-of-sample delta R squared:
@@ -121,9 +121,8 @@ tef_rlm_boot <- function(formIn,datIn,nBoot=500,useLM=F){
                              'Fits using all predictors were compared to fits dropping',
                              'each predictor in turn. Out-of-sample delta R-squared was',
                              'calculated on each remaining 20% of data by comparing',
-                             'full parameter set fits to drop-one parameter set fits.',
-                             'Quantiles were calculated with the function tef_quantileBoot().')
-    m$dRsqQs <-apply(na.omit(data.frame(t(m$dRsq))),1,tef_quantileBoot,probs=c(.025,.25,.5,.75,.975),nBoot = 200)
+                             'full parameter set fits to drop-one parameter set fits.')
+    m$dRsqQs <-apply(na.omit(data.frame(t(m$dRsq))),1,quantile,probs=c(.025,.25,.5,.75,.975))
   }
   ## ## ##
   # # # #
