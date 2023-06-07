@@ -20,7 +20,8 @@ approach uses the nonlinear functionality of the \code{\link{brms}} package for 
 modeling with Stan. The second approach uses base R likelihood-optimization, and minimizes
 dependencies. The third approach uses a stepwise approach and the \code{\link{lme4}} framework.
 
-There is a last approach that uses basis functions over the dimension of time (e.g., trial number)
+There is a last approach that, rather than fitting a parametric curve to change over time,
+uses basis functions over the dimension of time (e.g., trial number)
 to approximate arbitrary fluctuations. This can be a powerful way of controlling for
 unknown variations over time, as well as recovering those timecourses. The implementation
 is a straightforward augmentation of standard mixed-effects models; see \code{\link{time_basisFun_mem}}
