@@ -1,4 +1,6 @@
 .Rproj.user
+.RData
+.Rhistory
 Meta
 inst/doc
 desktop.ini

@@ -14,13 +14,13 @@ tef_gaussRBF(x, quantiles = 4)
 \description{
 Given a numeric vector (e.g., time points) and the number of quantiles to divide it into (e.g., quartiles),
 define a set of weight vectors. In the case of quartiles, for example, the most weight for the vectors
-is centered on the the 0, .25, .5, .75, and 1 quantiles of the input vector. In addition, two extra 
-weight vectors are included that extrapolate beyond the original data (in this case, they would be the 
+is centered on the the 0, .25, .5, .75, and 1 quantiles of the input vector. In addition, two extra
+weight vectors are included that extrapolate beyond the original data (in this case, they would be the
 "-.25 quantile" and the "1.25 quantile"). The weight vectors are calculated using a Gaussian radial
-basis function (https://en.wikipedia.org/wiki/Radial_basis_function), with a width approximately defined 
+basis function (https://en.wikipedia.org/wiki/Radial_basis_function), with a width approximately defined
 to have the values with half the maximum weight of the vector be half of the inter-peak width.
 After the basis functions are defined, they are normalized for every value
-of the original vectors (i.e., \code[weight_i/sum(weights)]).
+of the original vectors (i.e., \code{weight_i/sum(weights)}).
 }
 \examples{
 tim <- 1:200
