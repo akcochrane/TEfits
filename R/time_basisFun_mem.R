@@ -12,12 +12,15 @@
 #' These require that their respective packages and dependencies be installed.
 #'
 #' In the case that out-of-sample likelihoods are desired, see
-#' `attr(modelObject,'delta_logLik_outOfSample_description')` for a description and
-#' `attr(mod,'delta_logLik_outOfSample')` for the vector of out-of-sample delta-log-likelihoods.
+#' \code{attr(modelObject,'delta_logLik_outOfSample_description')} for a description and
+#' \code{attr(mod,'delta_logLik_outOfSample')} for the vector of out-of-sample delta-log-likelihoods.
 #' Out-of-sample log-likelihoods are calculated as an difference from the pointwise in-sample
 #' likelihood from a static fit (i.e., a model fit with only \code{formula_mem} and no bases).
 #' This provides a uniform baseline pointwise in-sample likelihood against which various
 #' models (e.g., with different basis densities) can be compared.
+#'
+#' @seealso
+#' \code{vignette('mem_basis_vignette')}
 #'
 #'
 #' @param formula_mem Mixed-effects model formula, as in \code{\link[lme4]{glmer}} or \code{\link[brms]{brm}}
@@ -69,7 +72,7 @@
 #'    ,d
 #'    ,groupingVarName = 'subID'
 #'    ,timeVarName = 'trialNum'
-#'    ,basisDens = 66
+#'    ,basisDens = 50
 #'    ,n_oos = 50
 #' )
 #'
@@ -168,7 +171,7 @@ time_basisFun_mem <- function(formula_mem
   }
 
   if(basisDens == 'wide'){
-    basisDens <- floor((max(data_mem[,timeVarName],na.rm = T) - min(data_mem[,timeVarName],na.rm=T))/3)
+    basisDens <- floor((max(data_mem[,timeVarName],na.rm = T) - min(data_mem[,timeVarName],na.rm=T))/4)
   }
 
   formIn <- time_basisFun_formula(formula_mem = formula_mem

@@ -14,10 +14,17 @@ functions is made as intuitive and painless as is feasible, with many
 extensions if desired.
 }
 \details{
-There are three broad approaches to model fitting in \code{TEfits}. The first, recommended,
+There are three broad approaches to parametric model fitting in \code{TEfits} (i.e.,
+fitting a curve to change over time, such as a learning curve). The first, recommended,
 approach uses the nonlinear functionality of the \code{\link{brms}} package for Bayesian
 modeling with Stan. The second approach uses base R likelihood-optimization, and minimizes
 dependencies. The third approach uses a stepwise approach and the \code{\link{lme4}} framework.
+
+There is a last approach that uses basis functions over the dimension of time (e.g., trial number)
+to approximate arbitrary fluctuations. This can be a powerful way of controlling for
+unknown variations over time, as well as recovering those timecourses. The implementation
+is a straightforward augmentation of standard mixed-effects models; see \code{\link{time_basisFun_mem}}
+and \code{vignette('mem_basis_vignette',package='TEfits')}.
 }
 \section{Bayesian time-evolving fits}{
 
