@@ -37,7 +37,9 @@ time_basisFun_mem(
 }
 \description{
 Given a typical [generalized] mixed-effects model, augment this model
-using a random-effects structure including basis functions constructed
+in order to account for time-related variations. Additions to the
+original model, which are included to account for variations over time,
+use a random-effects structure including basis functions constructed
 from a vector of times (e..g, trial numbers).
 This allows for simultaneously controlling for time-related variations, and for
 recovery of those variations from the fitted model.
@@ -50,7 +52,7 @@ These require that their respective packages and dependencies be installed.
 In the case that out-of-sample likelihoods are desired, see
 \code{attr(modelObject,'delta_logLik_outOfSample_description')} for a description and
 \code{attr(mod,'delta_logLik_outOfSample')} for the vector of out-of-sample delta-log-likelihoods.
-Out-of-sample log-likelihoods are calculated as an difference from the pointwise in-sample
+Out-of-sample log-likelihoods are calculated as a difference from the pointwise in-sample
 likelihood from a static fit (i.e., a model fit with only \code{formula_mem} and no bases).
 This provides a uniform baseline pointwise in-sample likelihood against which various
 models (e.g., with different basis densities) can be compared.

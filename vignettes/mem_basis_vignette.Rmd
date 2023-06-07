@@ -38,7 +38,7 @@ Please don't forget to cite `TEfits` [@cochrane_tefits_2020] if you use this sof
 
 As an introductory example, it is possible to fit a dataset with a simple linear mixed-effects model with basis functions over time. Here we will first look at the Approximate Number System training data included in the `TEfits` package [originally from @cochrane_approximate_2019]. We will fit accuracy as predicted by a main effect of the absolute value of stimulus strength (ratio of black dots to white dots), with by-participant intercepts, by-participant slopes, and by-participant basis functions over trial number.
 
-```{r introductory_example}
+```{r introductory_example, message=FALSE, warning=FALSE}
 library(TEfits)
 library(lme4)
 library(dplyr)
@@ -50,7 +50,7 @@ m1 <- time_basisFun_mem(acc ~ abs(ratio) + (abs(ratio) | subID)
                         ,groupingVarName = 'subID'
                         ,timeVarName = 'trialNum') 
 mNULL <- lmer(acc ~ abs(ratio) + (abs(ratio) | subID)
-                        ,anstrain)
+              ,anstrain)
 summary(m1)
 ```
 
@@ -96,26 +96,31 @@ nTrials <- 300
 interPeakWidth <- 30
 fluctBeta=.5
 xVarBeta = .5
+nSubjects = 10
 
 dat <- do.call('rbind'
-        ,replicate(10,{
-          subjDat <- data.frame(
-            subID = paste0(sample(letters,5),sample(0:9,5),collapse='')
-            ,trialNum = 1:nTrials
-            ,xVar = sample(c(-.5,.5),nTrials,replace = T)
-          )
-          subjDat$subjBases <- genBasisOffsets(subjDat$trialNum, interPeakWidth + rnorm(1))
-          subjDat$yVar <- rnorm(1,0,.25) + # subject-level intercept
-            rnorm(nTrials) + # "true" noise
-            xVarBeta * rnorm(1,1,.1) * subjDat$xVar + # "X" with random subject-level offset
-            fluctBeta * subjDat$subjBases # Bases over time
-          
-          subjDat  
-        },simplify = F)
+               ,replicate(nSubjects,{
+                 subjDat <- data.frame(
+                   subID = paste0(sample(letters,5),sample(0:9,5),collapse='')
+                   ,trialNum = 1:nTrials
+                   ,xVar = sample(c(-.5,.5),nTrials,replace = T)
+                 )
+                 subjDat$subjBases <- genBasisOffsets(subjDat$trialNum, interPeakWidth + rnorm(1))
+                 subjDat$yVar <- rnorm(1,0,.25) + # subject-level intercept
+                   rnorm(nTrials) + # "true" noise
+                   xVarBeta * rnorm(1,1,.1) * subjDat$xVar + # "X" with random subject-level offset
+                   fluctBeta * subjDat$subjBases # Bases over time
+                 
+                 subjDat  
+               },simplify = F)
 )
+```
 
-psych::pairs.panels(dat,hist.col='darkred')
+First we can look at the structure of the generated data (histograms, scatterplots, and correlations). 
+We will look at a single subject's data, though the rest would be very similar:
 
+```{r plot_data}
+psych::pairs.panels(dat[1:300,2:5],hist.col='darkred')
 ```
 
 Here we see that there are fluctuations over time, but upon visual inspection the outcome variable `yVar` is only somewhat correlated with these fluctuations, and any trends over time are not visible due to the random noise in the data.
@@ -130,12 +135,12 @@ m2 <- time_basisFun_mem(yVar ~ xVar + (xVar | subID)
                         ,groupingVarName = 'subID'
                         ,timeVarName = 'trialNum'
                         ,basisDens = 30
-                        )
+)
 
 summary(m2)
 
 m2_fitted_timeCourse <- predict(m2,random.only=T
-   ,re.form = as.formula(paste('~',gsub('xVar + (xVar | subID) + ','',as.character(formula(m2))[3],fixed=T)) ) )
+                                ,re.form = as.formula(paste('~',gsub('xVar + (xVar | subID) + ','',as.character(formula(m2))[3],fixed=T)) ) )
 
 plot(dat$trialNum,m2_fitted_timeCourse)
 ```
