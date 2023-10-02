@@ -45,16 +45,19 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
+# model with basis functions over time
 m1 <- time_basisFun_mem(acc ~ abs(ratio) + (abs(ratio) | subID)
                         ,data_mem = anstrain
                         ,groupingVarName = 'subID'
                         ,timeVarName = 'trialNum') 
+
+# "null" typical mixed-effects model
 mNULL <- lmer(acc ~ abs(ratio) + (abs(ratio) | subID)
               ,anstrain)
 summary(m1)
 ```
 
-This is not a very good model specification for the data (because the predicted variable is binary, using a generalized model would be better). Still, it can be easily seen that basis functions over trial number are simple to implement. Here they also increase the T value of the fixed-effects predictor (from `r round(summary(mNULL)$coefficients['abs(ratio)','t value'],2)` to `r round(summary(m1)$coefficients['abs(ratio)','t value'],2)`), thereby showing how accounting for variations improves power for fixed effects. This is a common observation, as shown below.
+This is not a very good model specification for the data (because the predicted variable is binary, using a generalized model would be better). Still, it can be easily seen that basis functions over trial number are simple to include in the mixed-effect model. Here they also increase the T value of the fixed-effects predictor (from `r round(summary(mNULL)$coefficients['abs(ratio)','t value'],2)` to `r round(summary(m1)$coefficients['abs(ratio)','t value'],2)`), thereby showing how accounting for variations improves power for fixed effects. This is a common observation, as shown below.
 
 # Simulated Data and Model
 
@@ -79,13 +82,13 @@ This process is automated within model fitting using `time_basisFun_mem()`. As a
 set.seed(9876)
 
 genBasisOffsets <- function(trials,interPeakWidth){
-  #
+  # Construct basis functions using `time_basisFun_df` from the `TEfits` package
   dTmp <- time_basisFun_df(trials,interPeakWidth)
   dTmp <- dTmp[,2:ncol(dTmp)]
-  #
+  # Choose the number of columns [bases] to have positive and negative offsets
   basisRandomOffsetN <- ceiling(ncol(dTmp) / 3) 
   shuffleCols <- sample(1:ncol(dTmp))
-  #
+  # Have 1/3 of the bases be negatively offset, and the other 1/3 be positively
   basisRandomOffset <- rowSums(dTmp[,shuffleCols[1:basisRandomOffsetN]]) -
     rowSums(dTmp[,shuffleCols[(basisRandomOffsetN+1):(2*basisRandomOffsetN)]])
   #
@@ -101,9 +104,9 @@ nSubjects = 10
 dat <- do.call('rbind'
                ,replicate(nSubjects,{
                  subjDat <- data.frame(
-                   subID = paste0(sample(letters,5),sample(0:9,5),collapse='')
-                   ,trialNum = 1:nTrials
-                   ,xVar = sample(c(-.5,.5),nTrials,replace = T)
+                   subID = paste0(sample(letters,5),sample(0:9,5),collapse='') # ID
+                   ,trialNum = 1:nTrials # Trial numbers
+                   ,xVar = sample(c(-.5,.5),nTrials,replace = T) # Binary "fixed effect"
                  )
                  subjDat$subjBases <- genBasisOffsets(subjDat$trialNum, interPeakWidth + rnorm(1))
                  subjDat$yVar <- rnorm(1,0,.25) + # subject-level intercept
@@ -120,7 +123,7 @@ First we can look at the structure of the generated data (histograms, scatterplo
 We will look at a single subject's data, though the rest would be very similar:
 
 ```{r plot_data}
-psych::pairs.panels(dat[1:300,2:5],hist.col='darkred')
+psych::pairs.panels(dat[1:nTrials,2:ncol(dat)],hist.col='darkred')
 ```
 
 Here we see that there are fluctuations over time, but upon visual inspection the outcome variable `yVar` is only somewhat correlated with these fluctuations, and any trends over time are not visible due to the random noise in the data.
@@ -129,7 +132,7 @@ Here we see that there are fluctuations over time, but upon visual inspection th
 
 First we will fit the model to the data we just generated, then we will look at the summary and recovered timecourse.
 
-```{r fit_example, fig.height=3, fig.width=4}
+```{r fit_example, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
 m2 <- time_basisFun_mem(yVar ~ xVar + (xVar | subID)
                         ,data_mem = dat
                         ,groupingVarName = 'subID'
@@ -155,7 +158,7 @@ The above workflow of data simulation and fitting can be done for many combinati
 
 ![](pearsonR_20230607.svg)
 
-Within the typical regime (heuristically denoted by the grey dashed line) recovery appears to be fairly good, and within the area where the model basis size is similar to the generative basis size (black dashed line) it is quite high.
+Within the typical regime (heuristically denoted by the grey dashed line) recovery appears to be fairly good, and within the area where the model basis size is similar to the generative basis size (black dashed line) it is quite high. Unsurprisingly, when the timescale of change is larger than the number of trials, recovery is quite poor. The white contour indicates _r_ = .5.
 
 ## Increase in fixed-effect power
 
@@ -167,7 +170,7 @@ Power does not appear to be decreased in any case. In addition, under certain ci
 
 ![](oos_20230607.svg)
 
-Out-of-sample predictive likelihood is often quite good (see `?time_basisFun_mem` for details). However, the improvements in predictive likelihood are not particularly high for model basis function sizes that match the sizes of generative basis functions, thereby indicating that the method of accounting for variation over time is not _selective_ (i.e., choosing the best-fitting basis function size cannot allow the recovery of the true basis function size).
+Out-of-sample predictive likelihood is often quite good (see `?time_basisFun_mem` for details). However, the improvements in predictive likelihood are not specifically high for model basis function sizes that match the sizes of generative basis functions, thereby indicating that the method of accounting for variation over time is not _selective_ (i.e., choosing the best-fitting basis function size cannot allow the recovery of the true generative basis function size). Nonetheless, out-of-sample predictiveness appears to allow the selection of a model basis width that is sufficiently small. Said differently: In the simulations presented here, for a given true timescale of change (x value), rejecting model basis sizes with low out-of-sample predictiveness in favor of higher ones (blue over pink) would approximately lead to the use of bases that allow for increases in recovery of fluctuations and increases in power (see the overlap with the two plots above).
 
 # References
 

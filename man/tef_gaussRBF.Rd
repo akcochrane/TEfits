@@ -12,6 +12,8 @@ tef_gaussRBF(x, quantiles = 4)
 \item{quantiles}{}
 }
 \description{
+\strong{deprecated}. Please refer to \code{\link{time_basisFun_mem}}, \code{\link{time_basisFun_formula}},
+and \code{\link{time_basisFun_df}}.
 Given a numeric vector (e.g., time points) and the number of quantiles to divide it into (e.g., quartiles),
 define a set of weight vectors. In the case of quartiles, for example, the most weight for the vectors
 is centered on the the 0, .25, .5, .75, and 1 quantiles of the input vector. In addition, two extra

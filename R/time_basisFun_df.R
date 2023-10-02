@@ -21,8 +21,9 @@
 time_basisFun_df <- function(timeVar,basisDens, basis_calc_fun='gaussian'){
 
   if(is.character(basis_calc_fun)){
+    constAdj <- sqrt(2 * log(2)) /2
     calc_fun <- switch(basis_calc_fun
-                       ,gaussian = function(...,width){dnorm(...,sd=width  /.5875)} # tune this constant!
+                       ,gaussian = function(...,width){dnorm(...,sd=width/constAdj )}
     )
   }else{
     calc_fun <- basis_calc_fun

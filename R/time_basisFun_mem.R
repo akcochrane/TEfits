@@ -41,36 +41,56 @@
 #'
 #' library(lme4)
 #'
+#' ## define data
+#' nSubj <- 20
+#' nTrials <- 200
+#' betweenSubjSD <- .2
+#' xEffect <- 1
+#' changeEffect <- .5
+#' noiseSD <- .25
+#'
 #' ## generate data
-#'  d <- data.frame(
-#'      subID = rep(c('A','B','C'),each=200)
-#'    , x = rbinom(600,1,.5)
-#'    , sinOffset = sin((1:600)/10) # one possible kind of change: oscillation without trend
-#'    , trialNum = rep(1:200, 3)
-#' ) ; d$y <- rnorm(600) + d$x + d$sinOffset
+#' d <- do.call('rbind',replicate(nSubj,{
+#'   dSubj <- data.frame(
+#'     subID = paste0(sample(letters,8),collapse='')
+#'     , trialNum = 1:nTrials
+#'     , xVar = rbinom(nTrials,1,.5)
+#'   )
 #'
-#' ## fit a model with default basis widths
+#'   dSubj$xNum <- (dSubj$xVar * xEffect - xEffect/2) * rnorm(1,1,betweenSubjSD)
+#'
+#'   dSubj$sinVar <- sin(rnorm(1,0,10) + # phase offset
+#'                       (1:nTrials)/
+#'                         rnorm(1,25,2) # frequency offset
+#'   ) * changeEffect * rnorm(1,1,betweenSubjSD)
+#'
+#'   dSubj$y <- dSubj$xNum +
+#'     dSubj$sinVar +
+#'     rnorm(1,0,betweenSubjSD) +
+#'     rnorm(nTrials, 0 ,noiseSD)
+#'
+#'   dSubj
+#' },simplify=F))
+#'
+#' ## fit basis function model
 #' m1 <- time_basisFun_mem(
-#'    y ~ x + (x|subID)
-#'    ,d
-#'    ,groupingVarName = 'subID'
-#'    ,timeVarName = 'trialNum'
+#'   y ~ xVar + (0 + xVar|subID)
+#'   ,d
+#'   ,groupingVarName = 'subID'
+#'   ,timeVarName = 'trialNum'
 #' )
-#'
-#' ## overall model summary:
-#' summary(m1)
 #'
 #' ## extract the fitted timecourse (using `lme4` because this is an `lmer` model):
 #' m1_fitted_timeCourse <- predict(m1,random.only=T
-#'    ,re.form = as.formula(paste('~',gsub('x + (x | subID) + ','',as.character(formula(m1))[3],fixed=T)) ) )
+#'    ,re.form = as.formula(paste('~',gsub('(0 + xVar|subID) + ','',as.character(formula(m1))[3],fixed=T)) ) )
 #' plot(d$trialNum,m1_fitted_timeCourse)
-#' ## it doesn't look very good, because the default basis function width is fairly wide to prevent overfitting
+#'
 #'
 #' ## let's compare two models' out-of-sample likelihoods and choose the best
 #'
-#' ## The default, conservative, size (see m1)
+#' ## The default, fairly conservative, size (see m1)
 #' m2 <- time_basisFun_mem(
-#'    y ~ x + (x|subID)
+#'    y ~ xVar + (0 + xVar|subID)
 #'    ,d
 #'    ,groupingVarName = 'subID'
 #'    ,timeVarName = 'trialNum'
@@ -80,7 +100,7 @@
 #'
 #' ## A less-dense set of bases, every 20 trials
 #' m3 <- time_basisFun_mem(
-#'    y ~ x + (x|subID)
+#'    y ~ xVar + (0 + xVar|subID)
 #'    ,d
 #'    ,groupingVarName = 'subID'
 #'    ,timeVarName = 'trialNum'
@@ -96,9 +116,9 @@
 #' ## What about its fitted timecourse?
 #'
 #' m3_fitted_timeCourse <- predict(m3,random.only=T
-#'    ,re.form = as.formula(paste('~',gsub('x + (x | subID) + ','',as.character(formula(m3))[3],fixed=T)) ) )
+#'    ,re.form = as.formula(paste('~',gsub('xVar + (0 + xVar|subID) + ','',as.character(formula(m3))[3],fixed=T)) ) )
 #' plot(d$trialNum,m3_fitted_timeCourse)
-#' ## These look much more like the sin-wave oscillations that were originally generated!
+#' ## These look like the sin-wave oscillations that were originally generated!
 #'
 time_basisFun_mem <- function(formula_mem
                               ,data_mem
