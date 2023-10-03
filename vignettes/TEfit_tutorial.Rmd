@@ -3,8 +3,8 @@ title: "TEfit tutorial"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{TEfit tutorial}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
