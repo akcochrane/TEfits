@@ -31,8 +31,10 @@ time_basisFun_df <- function(timeVar,basisDens, basis_calc_fun='gaussian'){
 
   basisDF_ref <- data.frame(time_orig = sort(unique(na.omit(timeVar))))
 
-  basisCenters <- seq(min(basisDF_ref$time_orig) - (basisDens+1)
-                      ,max(basisDF_ref$time_orig) + basisDens
+  lowerOffset <- signif(mean(diff(timeVar)),2)
+
+  basisCenters <- seq(min(basisDF_ref$time_orig) - (basisDens/2+lowerOffset)
+                      ,max(basisDF_ref$time_orig) + basisDens/2
                       ,basisDens)
   basisNamePrec <- 3 - nchar(signif(max(basisCenters) - min(basisCenters),3))
 
