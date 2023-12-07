@@ -77,13 +77,12 @@ d <- do.call('rbind',replicate(nSubj,{
     , xVar = rbinom(nTrials,1,.5)
   )
 
-  dSubj$xNum <- (dSubj$xVar * xEffect - xEffect/2)* rnorm(1,1,betweenSubjSD)
+  dSubj$xNum <- (dSubj$xVar * xEffect - xEffect/2) * rnorm(1,1,betweenSubjSD)
 
-  dSubj$sinVar <- sin(rnorm(1,0,10) # phase offset
-                      + (1:nTrials)/
+  dSubj$sinVar <- sin(rnorm(1,0,10) + # phase offset
+                      (1:nTrials)/
                         rnorm(1,25,2) # frequency offset
-  ) *
-    changeEffect * rnorm(1,1,betweenSubjSD)
+  ) * changeEffect * rnorm(1,1,betweenSubjSD)
 
   dSubj$y <- dSubj$xNum +
     dSubj$sinVar +
@@ -139,7 +138,7 @@ m3 <- time_basisFun_mem(
 m3_fitted_timeCourse <- predict(m3,random.only=T
    ,re.form = as.formula(paste('~',gsub('xVar + (0 + xVar|subID) + ','',as.character(formula(m3))[3],fixed=T)) ) )
 plot(d$trialNum,m3_fitted_timeCourse)
-## These look much more like the sin-wave oscillations that were originally generated!
+## These look like the sin-wave oscillations that were originally generated!
 
 }
 \seealso{
