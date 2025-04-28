@@ -9,20 +9,20 @@ time_basisFun_df(timeVar, basisDens, basis_calc_fun = "gaussian")
 \arguments{
 \item{timeVar}{Vector of time (e.g., trial number)}
 
-\item{basisDens}{Space between basis function peaks}
+\item{basisDens}{Space between basis function peaks (equal if gaussian; approximate if bspline)}
 
-\item{basis_calc_fun}{The function with which to calculate the basis functions.}
+\item{basis_calc_fun}{The function with which to calculate the basis functions. Either \code{bspline} (relies on \code{fda} package) or \code{gaussian}.}
 }
 \description{
 Given a numeric time vector, construct a set of overlapping basis functions.
 }
 \details{
-Bases are equally-spaces with respect to time. Together, entered as linear predictors
+Bases are equally-spaced with respect to time. Together, entered as linear predictors
 into a typical regression model, each basis function acts as a "bump" offset from the
 overall model fit, thereby approximating arbitrary nonlinear changes over time.
 
 The function defining the bases defaults to Gaussian with a half-width half-max equal
-to the distance between the basis centeres, that is, each basis function
+to the distance between the basis centers, that is, each basis function
 uses appxroximately \code{dnorm(time_vector,basis_center,basis_width / .5875)}.
 The bases are then normalized so that each timepoint's bases sum to 1.
 }

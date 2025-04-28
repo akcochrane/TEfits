@@ -21,6 +21,13 @@
 #' This provides a uniform baseline pointwise in-sample likelihood against which various
 #' models (e.g., with different basis densities) can be compared.
 #'
+#' Note that, if by-`groupingVar` intercepts are included in the random effects
+#' structure, then at least one random effect will be unidentified, because the
+#' combination of basis function offsets can act as an overall intercept. Also
+#' note that, if there is a sufficiently strong group-level temporal trend, it is
+#' likely that including a by-timepoint random intercept (e.g., `(1|timeVar`)
+#' may be very useful.
+#'
 #' @seealso
 #' \code{vignette('mem_basis_vignette')}
 #'
@@ -88,7 +95,7 @@
 #'
 #' ## let's compare two models' out-of-sample likelihoods and choose the best
 #'
-#' ## The default, fairly conservative, size (see m1)
+#' ## A fairly conservative, size (see m1 for conservative default)
 #' m2 <- time_basisFun_mem(
 #'    y ~ xVar + (0 + xVar|subID)
 #'    ,d
@@ -98,7 +105,7 @@
 #'    ,n_oos = 50
 #' )
 #'
-#' ## A less-dense set of bases, every 20 trials
+#' ## A more-dense set of bases, every 20 trials
 #' m3 <- time_basisFun_mem(
 #'    y ~ xVar + (0 + xVar|subID)
 #'    ,d
@@ -112,7 +119,7 @@
 #' ## approximate Cohen's D of the out-of-sample log-likelihoods for m3 over m2:
 #' (mean(attr(m3,'delta_logLik_outOfSample')) - mean(attr(m2,'delta_logLik_outOfSample')) )/
 #'    sd(c(attr(m3,'delta_logLik_outOfSample'),attr(m2,'delta_logLik_outOfSample')))
-#' ## Clearly m3's out-of-sample predictiveness is better than m2's
+#' ## Clearly m3's out-of-sample predictiveness is better than m2's, although only slightly
 #' ## What about its fitted timecourse?
 #'
 #' m3_fitted_timeCourse <- predict(m3,random.only=T
