@@ -56,7 +56,7 @@ time_basisFun_df <- function(timeVar,basisDens, basis_calc_fun='gaussian'){
                       }
                       ,bspline ={
                         library(fda)
-                        nBases <- floor(length(timeVar)/basisDens) + 1
+                        nBases <- floor(length(unique(timeVar))/basisDens) + 1
 
                         bsplineObj <- create.bspline.basis(rangeval = c(min(timeVar,na.rm=T)
                                                                         ,max(timeVar,na.rm = T))
