@@ -3,14 +3,16 @@
 #'
 #' Given a numeric time vector, construct a set of overlapping basis functions.
 #'
-#' Bases are equally-spaced with respect to time. Together, entered as linear predictors
+#' Gaussian bases are equally-spaced with respect to time. Together, entered as linear predictors
 #' into a typical regression model, each basis function acts as a "bump" offset from the
 #' overall model fit, thereby approximating arbitrary nonlinear changes over time.
 #'
 #' The function defining the bases defaults to Gaussian with a half-width half-max equal
 #' to the distance between the basis centers, that is, each basis function
-#' uses appxroximately \code{dnorm(time_vector,basis_center,basis_width / .5875)}.
+#' uses approximately \code{dnorm(time_vector,basis_center,basis_width / .5875)}.
 #' The bases are then normalized so that each timepoint's bases sum to 1.
+#'
+#' B spline bases are also implemented (and are more conventional), relying on the \code{fda} package.
 #'
 #' @param timeVar Vector of time (e.g., trial number)
 #' @param basisDens Space between basis function peaks (equal if gaussian; approximate if bspline)
@@ -54,7 +56,7 @@ time_basisFun_df <- function(timeVar,basisDens, basis_calc_fun='gaussian'){
                       }
                       ,bspline ={
                         library(fda)
-                        nBases <- floor(length(timeVar)/basisDens) + 1
+                        nBases <- floor(length(unique(timeVar))/basisDens) + 1
 
                         bsplineObj <- create.bspline.basis(rangeval = c(min(timeVar,na.rm=T)
                                                                         ,max(timeVar,na.rm = T))
